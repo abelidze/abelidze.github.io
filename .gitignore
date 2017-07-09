@@ -1,0 +1,6 @@
+HeXen/
+dev/
+*.log
+*.db
+*.ai
+.htaccess
