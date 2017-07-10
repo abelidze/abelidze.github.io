@@ -20,10 +20,19 @@ img {
 	user-drag: none;
 }
 
-.game {
-	margin: auto;
-	min-width: 640px;
+#game, #field {
+	position: absolute;
+	border: none;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	background: #fefefe;
+	/*min-width: 640px;
 	min-height: 360px;
 	width: 90vw;
-	height: 50vw;
+	height: 50vw;*/
+}
+
+#field {
+	z-index: -2;
 }

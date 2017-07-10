@@ -6,6 +6,7 @@ function GameObject(gmanager) {
 	this.gm = gmanager;
 }
 
+
 /* STATIC */
 function StaticObject() {
 	this.cell = null;
