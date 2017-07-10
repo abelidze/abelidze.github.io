@@ -2,8 +2,12 @@
 <html>
 <head>
 	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<title>TicTacToe</title>
 	<link rel='stylesheet' href='style.css' />
+	<!--[if IE]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
 	<script src='js/jquery-3.2.1.min.js'></script>
 	<script src='js/game.const.js'></script>
 	<script src='js/game.classes.js'></script>
@@ -12,13 +16,31 @@
 	<script src='js/game.main.js'></script>
 </head>
 <body>
-	<h1>XO game</h1>
+	<h1 onclick='ToggleMenu()'>->Menu<-</h1>
 	<div class='game'></div>
 
-	<script>
-		$("h1").on("click", function() {
-			alert($(this).text());
-		});
-	</script>
+	<!-- BAD CODER -->
+	<section class="container">
+		<span id="Width" class="input input--nariko">
+			<input class="input__field input__field--nariko" type="number" id="input-20">
+			<label class="input__label input__label--nariko" for="input-20">
+			<span class="input__label-content input__label-content--nariko">Width</span>
+		</label>
+		</span>
+		<span id="Height" class="input input--nariko">
+			<input class="input__field input__field--nariko" type="number" id="input-20">
+			<label class="input__label input__label--nariko" for="input-20">
+			<span class="input__label-content input__label-content--nariko">Height</span>
+		</label>
+		</span>
+		<span id="INRow" class="input input--nariko">
+			<input class="input__field input__field--nariko" type="number" id="input-20">
+			<label class="input__label input__label--nariko" for="input-20">
+			<span class="input__label-content input__label-content--nariko">INRow</span>
+		</label>
+		</span>
+		<button onclick="$('#result').remove(); ResetField();">Set Field</button>
+	</section>
+	<button onclick="$('#result').remove(); gameManager.Restart();">Restart</button>
 </body>
 </html>

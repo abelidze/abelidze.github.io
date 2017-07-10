@@ -23,8 +23,8 @@ jQuery.fn.center = function(gm, parent) {
 			duration: 750,
 			complete: function(){
 				setTimeout(function() {
-					if(gm.freeze) {
-						parent.fadeOut('slow', gm.Restart.bind(gm));
+					if(gm.result != GameResult.NONE) {
+						parent.fadeOut('slow', gm.ShowGameResult.bind(gm));
 					}
 				}, 1200);
 			}
@@ -32,3 +32,52 @@ jQuery.fn.center = function(gm, parent) {
 	);
 	return this;
 }
+
+function ResetField() {
+	gameManager.SetMode(Number($('#Width > input')[0].value),
+						Number($('#Height > input')[0].value),
+						Number($('#INRow > input')[0].value));
+}
+
+function InitMenu() {
+	$('.input__field').each(function() {
+		var el = $(this);
+		el.on('focus', 	function () {
+			el.parent().find($('span')).text(el.parent().attr('id'));
+		});
+		$(this).on('blur', onInputBlur);
+	});
+
+
+	function onInputBlur() {
+		let text = $(this).parent().attr('id');
+		console.log(this.value);
+		if($(this)[0].value.trim() !== '') {
+			text += ': ' + $(this)[0].value;
+		}
+		$(this).parent().find($('span')).text(text);
+	}
+}
+
+function ToggleMenu() {
+	let cnt = $('.container');
+	if(cnt.is( ":hidden" )) {
+		$("html, body").animate({ scrollTop: $(document).height() }, "slow");
+	}
+	cnt.toggle('slow');
+}
+
+// function AlphaBeta(position, alpha, beta, depth, player) {
+// 	if isTerminal(position) {
+// 		return -heuristic(position);
+// 	}
+// 	score = beta;
+// 	for(child of children(position, player)) {
+// 		s = -AlphaBeta(child, -score, -alpha, depth+1, -player);
+// 		if(s < score)
+// 			score = s;
+// 			if(score <= alpha)
+// 				return score;
+// 	}
+// 	return score
+// }

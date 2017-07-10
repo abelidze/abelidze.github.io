@@ -19,6 +19,14 @@ h1 {
 	font-size-adjust: auto;
 }
 
+h2 {
+	margin: 0;
+	text-align: center;
+	font-family: Reckoner Bold;
+	font-size: 10vw;
+	font-size-adjust: auto;
+}
+
 img {
 	-webkit-user-select: none;
 	-webkit-user-drag: none;
@@ -27,6 +35,30 @@ img {
 	pointer-events: none;
 	user-select: none;
 	user-drag: none;
+}
+
+button {
+	display: block;
+	margin: auto;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	font-family: Reckoner Bold;
+	color: #fffc6d;
+	font-size: 24pt;
+	width: 50%;
+	height: 48px;
+	background-color: #ff3d3d;
+	border-color: black;
+	border-radius: 9px;
+}
+
+button:hover {
+	color: white;
+	background-color: #aa3a3a;
+}
+
+button:active {
+	background-color: black;
 }
 
 table {
@@ -64,6 +96,34 @@ table tr th:last-child {
 	display: none;
 }
 
+#result {
+	position: relative;
+	text-align: center;
+	padding-top: 20%;
+	width: 100%;
+	height: 100%;
+	display: none;
+	/*background: #cdcdcd;*/
+}
+
+#result > img {
+	display: inline-block;
+	width: 40%;
+	height: 40%;
+}
+
+#result > .style1 {
+	color: #004d96;
+}
+
+#result > .style2 {
+	color: #ff3d3d;
+}
+
+#result > .style3 {
+	color: #333030;
+}
+
 .cell {
 	position: relative;
 	background: #fffc6d;
@@ -90,3 +150,144 @@ table tr th:last-child {
 /*#333030*/
 /*#f2f2f2*/
 /*#ffc41d*/
+/*#004d96*/
+
+.container {
+	position: relative;
+	display: none;
+}
+
+.input {
+	position: relative;
+	margin: auto;
+	z-index: 1;
+	display: block;
+	margin-bottom: 8px;
+	max-width: 350px;
+	font-size: 16pt;
+	width: 100%;
+	vertical-align: top;  
+}
+
+.input__field {
+	position: relative;
+	display: block;
+	float: right;
+	padding: 0.8em;
+	width: 60%;
+	border: none;
+	border-radius: 0;
+	background: #f0f0f0;
+	color: #aaa;
+	font-weight: 400;
+	box-sizing: border-box;
+	-webkit-appearance: none; /* for box shadows to show on iOS */
+}
+
+.input__field:focus {
+	outline: none;
+}
+
+.input__label {
+	display: inline-block;
+	float: right;
+	padding: 0 1em;
+	width: 40%;
+	color: #696969;
+	font-weight: bold;
+	font-size: 70.25%;
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.input__label-content {
+	position: relative;
+	display: block;
+	padding: 1.6em 0;
+	width: 100%;
+}
+
+.input--nariko {
+	overflow: hidden;
+	padding-top: 2em;
+}
+
+.input__field--nariko {
+	width: 100%;
+	background: transparent;
+	opacity: 0;
+	padding: 0.35em;
+	z-index: 100;
+	color: #000000;
+}
+
+.input__label--nariko {
+	width: 100%;
+	bottom: 0;
+	position: absolute;
+	pointer-events: none;
+	text-align: left;
+	color: #8E9191;
+	padding: 0 0.5em;
+}
+
+.input__label--nariko::before {
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 4em;
+	top: 100%;
+	left: 0;
+	background: #fff;
+	border-top: 4px solid #ff3d3d;
+	-webkit-transform: translate3d(0, -3px, 0);
+	transform: translate3d(0, -3px, 0);
+	-webkit-transition: -webkit-transform 0.4s;
+	transition: transform 0.4s;
+	-webkit-transition-timing-function: cubic-bezier(0.7, 0, 0.3, 1);
+	transition-timing-function: cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+.input__label-content--nariko {
+	padding: 0.5em 0;
+	-webkit-transform-origin: 0% 100%;
+	transform-origin: 0% 100%;
+	-webkit-transition: -webkit-transform 0.4s, color 0.4s;
+	transition: transform 0.4s, color 0.4s;
+	-webkit-transition-timing-function: cubic-bezier(0.7, 0, 0.3, 1);
+	transition-timing-function: cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+.input__field--nariko:focus,
+.input--filled .input__field--nariko {
+	cursor: text;
+	font-family: Comic Sans MS;
+	font-size: 12px;
+	/*font-family: Reckoner Bold;
+	font-size: 4px;*/
+	opacity: 1;
+	-webkit-transition: opacity 0s 0.4s;
+	transition: opacity 0s 0.4s;
+}
+
+.input__field--nariko:focus + .input__label--nariko::before,
+.input--filled .input__label--nariko::before {
+	-webkit-transition-delay: 0.05s;
+	transition-delay: 0.05s;
+	-webkit-transform: translate3d(0, -3.3em, 0);
+	transform: translate3d(0, -3.3em, 0);
+}
+
+.input__field--nariko:focus + .input__label--nariko .input__label-content--nariko,
+.input--filled .input__label-content--nariko {
+	color: #6B6E6E;
+	-webkit-transform: translate3d(0, -3.3em, 0) scale3d(0.81, 0.81, 1);
+	transform: translate3d(0, -3.3em, 0) scale3d(0.81, 0.81, 1);
+}

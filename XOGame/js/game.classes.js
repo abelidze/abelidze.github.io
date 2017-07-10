@@ -3,7 +3,7 @@ function Cell(field, row, width) {
 	this.width = width;
 	this.state = CellState.EMPTY;
 	this.id = getRandomInt(10000000, 99999999);
-	this.cell = $('<td>').attr('id', this.id).addClass('cell').click({me: this}, this.Use);
+	this.cell = $('<td>').attr('id', this.id).addClass('cell').click(this.Use.bind(this));
 	this.cell.append($('<img>').addClass('cross').attr('src', 'img/cross.svg'));
 	this.cell.append($('<img>').addClass('circle').attr('src', 'img/circle.svg'));
 	this.cell.appendTo(row);
@@ -35,6 +35,8 @@ function Player(gmanager, marker, mode) {
 }
 Player.prototype.DoTurn;
 Player.prototype.EASYTurn;
+Player.prototype.NORMALTurn;
+Player.prototype.HARDTurn;
 
 function Turn(gmanager) {
 	this.gm = gmanager;
@@ -48,6 +50,7 @@ function GameManager(width, height, inrow) {
 	this.turn = -1;
 	this.field = null;
 	this.freeze = false;
+	this.result = GameResult.NONE;
 	this.MAXINROW = inrow;
 	this.players = [];
 	$this = this;
@@ -55,8 +58,12 @@ function GameManager(width, height, inrow) {
 }
 GameManager.prototype.Init;
 GameManager.prototype.StartGame;
-GameManager.prototype.AddPlayer;
+GameManager.prototype.Restart;
+GameManager.prototype.Pause;
+GameManager.prototype.GameOver;
+GameManager.prototype.StopGame;
+GameManager.prototype.ShowGameResult;
 GameManager.prototype.GetCurrentTurn;
 GameManager.prototype.CheckWinner;
-GameManager.prototype.Restart;
-GameManager.prototype.GameOver;
+GameManager.prototype.AddPlayer;
+GameManager.prototype.SetMode;

@@ -3,13 +3,34 @@ GameManager.prototype.Init = function(width, height) {
 	let table = $('<table>').attr({id:'field', rules:'all'}).appendTo($('.game'));
 	this.field = new Field(this, table, width, height);
 	this.field.Clear();
+
+	// $('<>')
+
 	this.StartGame();
 }
 
 GameManager.prototype.StartGame = function() {
 	this.freeze = false;
+	this.result = GameResult.NONE;
 	this.turn = getRandomInt(0, this.players.length);
 	this.players[this.turn].DoTurn();
+}
+
+GameManager.prototype.StopGame = function() {
+	this.freeze = true;
+	this.result = GameResult.NONE;
+	this.turn = -1;
+	this.field = null;
+	$('table').remove();
+}
+
+GameManager.prototype.SetMode = function(width, height, inrow) {
+	if(width <= 1 || width > 64) width = 3;
+	if(height <= 1 || height > 64) height = 3;
+	if(inrow <= 1 || inrow > 64) inrow = 3;
+	this.MAXINROW = inrow;
+	this.StopGame();
+	this.Init(width, height);
 }
 
 GameManager.prototype.Restart = function() {
@@ -17,11 +38,44 @@ GameManager.prototype.Restart = function() {
 	this.StartGame();
 }
 
+GameManager.prototype.ShowGameResult = function() {
+	if(this.result == GameResult.NONE) return;
+
+	let result = this.result;
+	this.result = GameResult.NONE;
+	let that = this;
+	let res = $('<div>').attr('id', 'result').click(function() {
+				$('#result').remove();
+				that.Restart();
+			});
+
+	switch(result) {
+		case GameResult.DRAW:
+			res.append($('<img>').attr('src', 'img/cross.svg'));
+			res.append($('<img>').attr('src', 'img/circle.svg'));
+			res.append($('<h2>DRAW!</h2>').addClass('style1'));
+		break;
+
+		case GameResult.CROSS:
+			res.append($('<img>').attr('src', 'img/cross.svg'));
+			res.append($('<h2>WIN!</h2>').addClass('style2'));
+		break;
+
+		case GameResult.CIRCLE:
+			res.append($('<img>').attr('src', 'img/circle.svg'));
+			res.append($('<h2>WIN!</h2>').addClass('style3'));
+		break;
+	}
+	res.appendTo($('.game'));
+	res.fadeIn('slow');
+}
+
 GameManager.prototype.GameOver = function(result) {
 	this.freeze = true;
-	switch(result[0]) {
+	this.result = result[0];
+	switch(this.result) {
 		case GameResult.DRAW:
-			$('#field').fadeOut('slow');
+			$('#field').fadeOut('slow', this.ShowGameResult.bind(this));
 		break;
 
 		case GameResult.CROSS:
@@ -51,13 +105,12 @@ GameManager.prototype.GetCurrentTurn = function() {
 }
 
 GameManager.prototype.CheckWinner = function() {
-	let cur, count, empty = 0, winners = [];
+	let cur, count, winners = [];
+
 	// ROWS
 	for(let i = 0; i < this.field.height; ++i) {
 		cur = -1;
 		for(let j = 0; j < this.field.width; ++j) {
-			if(this.field._map[i][j].state == CellState.EMPTY)
-				empty++;
 			if(this.field._map[i][j].state == cur) {
 				winners.push(this.field._map[i][j]);
 				count++;
@@ -143,7 +196,14 @@ GameManager.prototype.CheckWinner = function() {
 		}
 	}
 
-	if(empty == 0)
+	// DRAW
+	let free = this.field.height * this.field.width;
+	for(let i = 0; i < this.field.height; ++i)
+		for(let j = 0; j < this.field.width; ++j)
+			if(this.field._map[i][j].state != CellState.EMPTY)
+				free--;
+
+	if(free <= 0)
 		return [GameResult.DRAW, null];
 	return [GameResult.NONE, null];
 }
@@ -158,6 +218,8 @@ Player.prototype.DoTurn = function() {
 }
 
 Player.prototype.EASYTurn = function(field) {
+	if(field.gm.freeze) return;
+
 	let free = [];
 	for(let i = 0; i < field.height; ++i) {
 		for(let j = 0; j < field.width; ++j) {
@@ -165,6 +227,22 @@ Player.prototype.EASYTurn = function(field) {
 				free.push(field._map[i][j]);
 		}
 	}
+	free[getRandomInt(0, free.length)].Use();
+}
+
+Player.prototype.NORMALTurn = function(field) {
+	if(field.gm.freeze) return;
+
+	let free = [];
+	for(let i = 0; i < field.height; ++i) {
+		for(let j = 0; j < field.width; ++j) {
+			if(field._map[i][j].state == CellState.EMPTY)
+				free.push(field._map[i][j]);
+		}
+	}
+
+	
+	
 	free[getRandomInt(0, free.length)].Use();
 }
 
@@ -201,8 +279,8 @@ Field.prototype.Draw = function() {
 Cell.prototype.Draw = function() {
 	switch(this.state) {
 		case CellState.EMPTY:  this.cell.children('img').hide(); break;
-		case CellState.CROSS:  this.cell.find('.cross').fadeIn('slow'); break;
-		case CellState.CIRCLE: this.cell.find('.circle').fadeIn('slow'); break;
+		case CellState.CROSS:  this.cell.find('.cross').fadeIn(300); break;
+		case CellState.CIRCLE: this.cell.find('.circle').fadeIn(300); break;
 	}
 }
 
@@ -214,19 +292,14 @@ Cell.prototype.Clear = function() {
 }
 
 Cell.prototype.Use = function(event) {
-	let AI_Turn = true;
-	if(event != undefined) {
-		$this = event.data.me;
-		AI_Turn = false;
-	}
-	else $this = this;
+	let AI_Turn = (event == undefined);
 
-	if($this.state != CellState.EMPTY || $this.field.gm.freeze) return;
+	if(this.state != CellState.EMPTY || this.field.gm.freeze) return;
 
-	let turn = $this.field.gm.GetCurrentTurn();
+	let turn = this.field.gm.GetCurrentTurn();
 	if(turn.isPlayer() || AI_Turn) {
-		$this.state = turn.turnMark;
-		$this.Draw();
+		this.state = turn.turnMark;
+		this.Draw();
 		turn.Make();
 	}
 }
