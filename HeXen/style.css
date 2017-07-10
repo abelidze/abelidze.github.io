@@ -25,12 +25,14 @@ img {
 	border: none;
 	top: 0;
 	left: 0;
-	z-index: -1;
-	background: #fefefe;
 	/*min-width: 640px;
 	min-height: 360px;
 	width: 90vw;
 	height: 50vw;*/
+}
+
+#game {
+	z-index: -1;
 }
 
 #field {

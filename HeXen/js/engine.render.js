@@ -8,10 +8,13 @@ function Point(x, y) {
 }
 
 function Render() {
+	this.lastRender = 0;
+
 	this.fgcanvas = document.getElementById('game');
-	this.fgcanvas.width = window.innerWidth;
+	this.fgcanvas.width = window.innerWidth;// window.outerWidth;
 	this.fgcanvas.height = window.innerHeight;
 	this.cnt_fg = this.fgcanvas.getContext('2d');
+	// this.cnt_fg.fillStyle = 'rgba(0, 255, 0, 0.3)';
 
 	this.bgcanvas = document.createElement('canvas');
 	this.bgcanvas.id = 'field';
@@ -27,6 +30,18 @@ Render.prototype.Clear = function() {
 
 Render.prototype.ClearBack = function() {
 	this.cnt_bg.clearRect(0, 0, this.bgcanvas.width, this.bgcanvas.height);
+}
+
+Render.prototype.GetCanvas = function() {
+	return this.fgcanvas;
+}
+
+Render.prototype.deltaTime = function() {
+	let currentDate = new Date();
+	let dTime = currentDate - this.lastRender;
+	if(this.lastRender === 0) dTime = 0;
+	this.lastRender = currentDate;
+	return dTime;
 }
 
 Render.prototype.DrawPath = function(points, onBack, effect) {
