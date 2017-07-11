@@ -9,15 +9,19 @@ function GameManager() {
 	Clickable.prototype.gm = this;
 	EventSystem.prototype.gm = this;
 
-	this.freeze = true;
 	this.render = null;
 	this.mouse = null;
+	this.animator = new Animator();
+	this.grid = new Grid(this, 240, 240, 12, 36);
+	
+	this.freeze = true;
 	this.gameState = GameState.PAUSE;
 	this.result = GameResult.NONE;
-	this.grid = new Grid(this, 240, 240, 12, 36);
+	
 	this.objects = [];
 	this.players = [];
 	this.GUIElements = [];
+
 	that = this;
 	$(document).ready(function(){that.Init()});
 }
@@ -63,11 +67,15 @@ GameManager.prototype.Update = function() {
 GameManager.prototype.RenderEvent = function() {
 	let delta = this.render.deltaTime();
 
-	this.render.Clear();
+	this.animator.ProcessMotions(delta);
 
+	this.render.Clear();
 	for(let i = 0; i < this.objects.length; ++i) {
 		this.objects[i].Draw();
 	}
+
+	// this.render.ClearBack();
+	// this.grid.Draw();
 
 	requestAnimationFrame(this.RenderEvent.bind(this));
 }
@@ -96,6 +104,7 @@ GameManager.prototype.GridClicked = function(pos) {
 				player = this.grid.PixelToHex(this.players[i].cell.center.x, this.players[i].cell.center.y);
 				x = player.x - pos.x;
 				y = player.y - pos.y;
+				
 				if(Math.abs(x) <= 1 && Math.abs(y) <= 1 && x != y) {
 					this.players[i].MoveTo(cell);
 				}

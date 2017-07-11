@@ -5,18 +5,18 @@ GameObjects Module
 function GameObject(cell) {
 	this.cell = cell;
 	this.rotation = 0;
-    this.triggers = [];
-    this._type_ = GameObjectTypes.NONE;
+	this.triggers = [];
+	this._type_ = GameObjectTypes.NONE;
 }
 
 GameObject.prototype.AddTrigger = function(trigger) {
-    this.triggers.push(trigger);
+	this.triggers.push(trigger);
 };
 
 GameObject.prototype.ClearTrigger = function () {
-    for(let i = 0; i < this.triggers.length; ++i)
-        delete this.triggers[i];
-    this.triggers = [];
+	for(let i = 0; i < this.triggers.length; ++i)
+		delete this.triggers[i];
+	this.triggers = [];
 };
 
 GameObject.prototype.GetType = function() {
@@ -28,7 +28,7 @@ GameObject.prototype.Collide = function(object, callback) {
 };
 
 GameObject.prototype.Draw = function() {
-    //do nothing
+	//do nothing
 };
 
 GameObject.prototype.Destroy = function() {
@@ -93,8 +93,13 @@ DynamicObject.prototype.MoveTo = function(cell) {
 			case InteractResult.MOVED:
 				that.cell.Clear();
 				cell.MoveObject(that);
+				// that.position = cell.center;
+				that.gm.gameState = GameState.ANIMATING;
+				that.gm.animator.AddMotion(that.cell.center, cell.center, 4,
+					function(pos) {
+						that.position = pos;
+					});
 				that.cell = cell;
-				that.position = cell.center;
 			break;
 		}
 	});
@@ -136,23 +141,23 @@ function Player(cell, sprite) {
 Player.prototype = Object.create(Actor.prototype);
 
 Player.prototype.Collide = function (object, callback) {
-if (object.GetType() === GameObjectTypes.ENEMY) {
-	callback(InteractResult.ATTACK);
-} else {
-	callback(InteractResult.NOTHING);
-}
+	if (object.GetType() === GameObjectTypes.ENEMY) {
+		callback(InteractResult.ATTACK);
+	} else {
+		callback(InteractResult.NOTHING);
+	}
 };
 
 function Enemy(cell, sprite) {
-Actor.call(this, cell, sprite);
-this._type_ = GameObjectTypes.ENEMY;
+	Actor.call(this, cell, sprite);
+	this._type_ = GameObjectTypes.ENEMY;
 }
 Enemy.prototype = Object.create(Actor.prototype);
 
 Enemy.prototype.Collide = function (object, callback) {
-if (object.GetType() === GameObjectTypes.PLAYER) {
-callback(InteractResult.ATTACK);
-} else {
-callback(InteractResult.NOTHING);
-}
+	if (object.GetType() === GameObjectTypes.PLAYER) {
+		callback(InteractResult.ATTACK);
+	} else {
+		callback(InteractResult.NOTHING);
+	}
 };

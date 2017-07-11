@@ -18,8 +18,7 @@ function Level (size, arr) {
 const GameLevels =
 	[
 		new Level(16, [
-			[LevelObjects.DOOR, 1, 1, [null]],
-			[LevelObjects.PLAYER, 1, 3, [null]],
+			[LevelObjects.PLAYER, 0, 0, [null]],
 		])
 
 	];

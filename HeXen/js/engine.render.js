@@ -7,6 +7,15 @@ function Point(x, y) {
 	this.y = y;
 }
 
+Point.prototype.Distance = function(point) {
+	return Math.sqrt( Math.pow((this.x - point.x), 2) + Math.pow((this.y - point.y), 2) );
+}
+
+Point.prototype.GetVector = function(point) {
+	return new Point(point.x - this.x, point.y - this.y);
+}
+
+
 function Rect(x, y, w, h) {
 	this.x = x;
 	this.y = y;
@@ -22,10 +31,12 @@ Rect.prototype.isInArea = function (x, y) {
 		return false;
 }
 
+
 function Drawable(scale) {
 	if(scale === undefined) scale = 1;
 	this.scale = scale;
 }
+
 
 function Sprite(image, scale) {
 	Drawable.call(this, scale);
@@ -37,16 +48,41 @@ Sprite.prototype.Draw = function(x, y) {
 
 }
 
+
 function Animation() {
 	// Future
 }
 Animation.prototype = Object.create(Drawable.prototype);
 
+
 function Animator() {
-	// Future
+	this.motion = [];
 }
 Animator.prototype = Object.create(Drawable.prototype);
 
+Animator.prototype.AddMotion = function(start, end, speed, func) {
+	this.motion.push([speed, start, end, func]);
+}
+
+Animator.prototype.ProcessMotions = function(dTime) {
+	let dir;
+	for(let i = 0; i < this.motion.length; ++i) {
+		dir = this.motion[i][1].GetVector(this.motion[i][2]);
+		this.motion[i][1].x += dir.x * dTime / 1000 * this.motion[i][0];
+		this.motion[i][1].y += dir.y * dTime / 1000 * this.motion[i][0];
+
+		if(this.motion[i][1].Distance(this.motion[i][2]) < this.motion[i][0] / 5) {
+			this.motion[i][3](this.motion[i][2]);
+			this.motion.splice(i, 1);
+			i--;
+		} else {
+			this.motion[i][3](this.motion[i][1]);
+		}
+	}
+	if(this.motion.length == 0 && this.gm.gameState == GameState.ANIMATING) {
+		this.gm.gameState = GameState.TURN;
+	}
+}
 
 
 function Render() {
