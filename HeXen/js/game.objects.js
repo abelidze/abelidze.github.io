@@ -80,14 +80,14 @@ function Container(cell, sprite, content) {
 Container.prototype = Object.create(Obstacle.prototype);
 
 function Entry(cell, sprite) {
-    StaticObject.call(this, cell, sprite);
-    this._type_ = GameObjectTypes.ENTRY;
+	StaticObject.call(this, cell, sprite);
+	this._type_ = GameObjectTypes.ENTRY;
 }
 Entry.prototype = Object.create(StaticObject.prototype);
 
 function Exit(cell, sprite) {
-    StaticObject.call(this, cell, sprite);
-    this._type_ = GameObjectTypes.EXIT;
+	StaticObject.call(this, cell, sprite);
+	this._type_ = GameObjectTypes.EXIT;
 }
 Exit.prototype = Object.create(StaticObject.prototype);
 
@@ -103,6 +103,7 @@ DynamicObject.prototype.MoveTo = function(cell) {
 	cell.Interact(this.cell, function(result) {
 		switch(result) {
 			case InteractResult.MOVED:
+				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
 				that.cell.Clear();
 				cell.MoveObject(that);
 				// that.position = cell.center;
@@ -129,22 +130,26 @@ Cube.prototype.Collide = function (object, callback) {
 	}
 };
 
-function Actor(cell, sprite) {
-DynamicObject.call(this, cell);
+function Actor(cell, anim) {
+	DynamicObject.call(this, cell);
 	this.position = new Point(cell.center.x, cell.center.y);
-	this.sprite = sprite;
+	this.anim = anim;
+	this.anim[0].Play();
+	this.animationClip = 0;
 	this.actionPoints = 0;
 	this.inventory = [];
 }
 Actor.prototype = Object.create(DynamicObject.prototype);
 
 Actor.prototype.Draw = function () {
-	this.gm.render.DrawCircle(this.position, 20, false, {fill: 'red', edge: 'rgba(255, 255, 255, 0)'});
-	//DrawSprite(this.sprite, this.position.x, this.position.y, this.sprite.scale, false)
+	// this.gm.render.DrawCircle(this.position, 20, false, {fill: 'red', edge: 'rgba(255, 255, 255, 0)'});
+	// this.gm.render.DrawSprite(this.sprite, this.position.x, this.position.y, this.sprite.scale, false);
+	let ani = this.anim[this.animationClip];
+	ani.Draw(this.position.x, this.position.y, 1, this.rotation, true);
 };
 
-function Player(cell, sprite) {
-	Actor.call(this, cell, sprite);
+function Player(cell, anim) {
+	Actor.call(this, cell, anim);
 	this._type_ = GameObjectTypes.PLAYER;
 	this.gm.AddPlayer(this);
 }
@@ -158,8 +163,8 @@ Player.prototype.Collide = function (object, callback) {
 	}
 };
 
-function Enemy(cell, sprite) {
-	Actor.call(this, cell, sprite);
+function Enemy(cell, anim) {
+	Actor.call(this, cell, anim);
 	this._type_ = GameObjectTypes.ENEMY;
 }
 Enemy.prototype = Object.create(Actor.prototype);

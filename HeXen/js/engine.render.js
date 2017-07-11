@@ -15,6 +15,10 @@ Point.prototype.GetVector = function(point) {
 	return new Point(point.x - this.x, point.y - this.y);
 }
 
+Point.prototype.PolarAngle = function() {
+	return Math.atan2(this.y, this.x) - Math.PI / 2;
+}
+
 
 function Rect(x, y, w, h) {
 	this.x = x;
@@ -47,7 +51,7 @@ Sprite.prototype.Draw = function(x, y, onBack) {
 	this.gm.render.DrawSprite(this.img, x, y, this.scale, onBack);
 }
 
-function Animation(frames_img, frames_count, offsetX, offsetY, width, height, speed) {
+function Animation(frames_img, frames_count, offsetX, offsetY, width, height, fps) {
 	this.frames_img = frames_img;
 	this.frames_count = frames_count;
 	this.offset_x = offsetX;
@@ -55,30 +59,41 @@ function Animation(frames_img, frames_count, offsetX, offsetY, width, height, sp
 	this.w = width;
 	this.h = height;
 	this.cur_frame = 0;
-	this.speed = speed;
+	this.fps = fps;
+	this.timer = 0;
 	this.interval = null;
 	this.isPlayed = false;
 }
 Animation.prototype = Object.create(Drawable.prototype);
 
-Animation.prototype.Draw = function (x, y, scale, onBack) {
-	this.cur_frame++;
-	if (this.cur_frame >= this.frames_count)
-		this.cur_frame = 0;
-	this.gm.render.DrawFrame(this, x, y, scale, onBack);
+Animation.prototype.Draw = function (x, y, scale, rotation, onCenter, onBack) {
+	if(!this.isPlayed)
+		return;
+
+	this.timer++;
+	if(this.timer > this.fps) {
+		this.timer = 0;
+		this.cur_frame++;
+		if(this.cur_frame >= this.frames_count)
+			this.cur_frame = 0;
+	}
+	this.gm.render.DrawFrame(this, x, y, scale, rotation, onCenter, onBack);
 }
 
 Animation.prototype.Play = function () {
 	this.isPlayed = true;
-	this.interval = setInterval(this.UpdateFrame.bind(this), this.speed * 1000);
 }
 
 Animation.prototype.Stop = function () {
-	if (!this.isPlayed)
+	if(!this.isPlayed)
 		return;
 	this.isPlayed = false;
-	clearInterval(this.interval);
 }
+
+Animation.prototype.Toggle = function () {
+	this.isPlayed = !this.isPlayed;
+}
+
 
 function Animator() {
 	this.motion = [];
@@ -86,7 +101,6 @@ function Animator() {
 Animator.prototype = Object.create(Drawable.prototype);
 
 Animator.prototype.AddMotion = function(start, end, speed) {
-	console.log(start, end);
 	this.motion.push([speed, start, end]);
 }
 
@@ -218,14 +232,24 @@ Render.prototype.DrawRectangle = function(rect, onBack, effect) {
 	}
 }
 
-Render.prototype.DrawFrame = function (anim, x, y, scale, onBack) {
+Render.prototype.DrawFrame = function (anim, x, y, scale, rotation, onCenter, onBack) {
     let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
     let dx = anim.offset_x + anim.cur_frame * anim.w;
     let count = Math.floor(dx / anim.frames_img.width);
     let sx = dx - anim.frames_img.width * count;
     let sy = anim.offset_y + count * anim.h;
-    context.drawImage(anim.frames_img, sx, sy, anim.w, anim.h, x, y, anim.w * scale, anim.h * scale);
+
+    if(onCenter) {
+    	x -= anim.w / 2 * Math.cos(rotation) - anim.w / 2.5 * Math.sin(rotation);
+    	y -= anim.h / 2 * Math.sin(rotation) + anim.h / 2.5 * Math.cos(rotation);
+    }
+
+	context.translate(x, y);
+	context.rotate(rotation);
+    context.drawImage(anim.frames_img, sx, sy, anim.w, anim.h, 0, 0, anim.w * scale, anim.h * scale);
+	context.rotate(-rotation);
+	context.translate(-x, -y);
 }
 
 Render.prototype.DrawSprite = function (img, x, y, scale, onBack) {

@@ -21,7 +21,7 @@ function Level(size, arr) {
 const GameLevels =
     [
         new Level(16, [
-            [LevelObjects.PLAYER, 0, 0, [null]],
+            [LevelObjects.PLAYER, 0, 0, [ [anim_playerRun] ]],
         ]),
         new Level(11, [
             /*Sobstvenno map*/
