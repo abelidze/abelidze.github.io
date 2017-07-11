@@ -5,6 +5,7 @@ const ObjectTypes = {
     PLAYER: 3,
     ENEMY: 4
 };
+
 const CellState = {
     INVISIBLE: 0,
     EMPTY: 1,
@@ -30,6 +31,7 @@ const DoorState = {
     CLOSED: 0,
     OPENED: 1
 };
+
 const GameResult = {
     NONE: 0,
     WIN: 1,
@@ -39,7 +41,7 @@ const GameResult = {
 const LevelObjects = {
     INVISIBLE: -1,
     CONTAINER: 0,
-	DOOR: 1,
+    DOOR: 1,
     WALL: 2,
     PLAYER: 3,
     ENEMY: 4

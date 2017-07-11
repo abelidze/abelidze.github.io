@@ -22,13 +22,30 @@ Rect.prototype.isInArea = function (x, y) {
 		return false;
 }
 
-function Animator() {
-	// Future
+function Drawable(scale) {
+	if(scale === undefined) scale = 1;
+	this.scale = scale;
+}
+
+function Sprite(image, scale) {
+	Drawable.call(this, scale);
+	this.img = image;
+}
+Sprite.prototype = Object.create(Drawable.prototype);
+
+Sprite.prototype.Draw = function(x, y) {
+
 }
 
 function Animation() {
 	// Future
 }
+Animation.prototype = Object.create(Drawable.prototype);
+
+function Animator() {
+	// Future
+}
+Animator.prototype = Object.create(Drawable.prototype);
 
 
 function Render() {

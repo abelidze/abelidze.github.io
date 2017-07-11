@@ -5,6 +5,7 @@
 function GameManager() {
 	/* BAD CODER */
 	GameObject.prototype.gm = this;
+	Drawable.prototype.gm = this;
 	Clickable.prototype.gm = this;
 
 	this.freeze = true;
@@ -16,8 +17,7 @@ function GameManager() {
 	this.objects = [];
 	this.GUIElements = [];
 	$this = this;
-	window.onload = function(){$this.Init()};
-	//$(document).ready(function(){$this.Init()});
+	$(document).ready(function(){$this.Init()});
 }
 
 GameManager.prototype.Init = function() {
@@ -28,8 +28,9 @@ GameManager.prototype.Init = function() {
 
 GameManager.prototype.StartGame = function() {
 	this.freeze = false;
+	this.grid.LoadLevel(GameLevels[0]);
 	this.grid.Draw();
-	// requestAnimationFrame(this.RenderEvent);
+	requestAnimationFrame(this.RenderEvent.bind(this));
 }
 
 GameManager.prototype.CreateObject = function(object, cell, args) {
@@ -48,29 +49,35 @@ GameManager.prototype.Restart = function() {
 	this.StartGame();
 }
 
-GameManager.prototype.Update = function() {
-
-}
-
 GameManager.prototype.Pause = function() {
 	this.freeze = true;
+}
+
+GameManager.prototype.Update = function() {
+
 }
 
 GameManager.prototype.RenderEvent = function() {
 	let delta = this.render.deltaTime();
 
+	this.render.Clear();
 
-	requestAnimationFrame(this.RenderEvent);
+	for(let i = 0; i < this.objects.length; ++i) {
+		this.objects[i].Draw();
+	}
+
+	requestAnimationFrame(this.RenderEvent.bind(this));
+}
+
+GameManager.prototype.MouseEvent = function (event){
+	if (this.grid.bounds.isInArea(this.mouse.posX, this.mouse.posY))
+		this.grid.Select(this.mouse.posX, this.mouse.posY);
+	else
+		this.SelectGUI(event);
 }
 
 GameManager.prototype.SelectGUI = function (event) {
-    //ototot
-}
-GameManager.prototype.MouseEvent = function (event){
-    if (this.grid.bounds.isInArea(this.mouse.posX, this.mouse.posY))
-        this.grid.Select(this.mouse.posX, this.mouse.posY);
-    else
-        this.SelectGUI(event);
+	//ototot
 }
 
 GameManager.prototype.GameOver = dummyFunc;

@@ -83,7 +83,7 @@ function Grid(gmanager, offset_X, offset_Y, size, radius) {
 		}
 	}
 
-	this.bounds = new Rect(offset_X - this.shift_x, offset_Y - this.shift_y, x + this.shift_x, y + 3*this.shift_y);
+	this.bounds = new Rect(offset_X - this.shift_x, offset_Y - radius, x + this.shift_x, y + radius);
 }
 
 Grid.prototype.Draw = function() {
@@ -119,9 +119,9 @@ Grid.prototype.Select = function(x, y) {
 	this.map[pos.y][pos.x].Draw();
 };
 
-Grid.prototype.LoadMap = function(level) {
-	for (let i = 0; i < level.map.length; ++i){
-		if (level.map[i][0] === -1)
+Grid.prototype.LoadLevel = function(level) {
+	for(let i = 0; i < level.map.length; ++i) {
+		if(level.map[i][0] === -1)
 			continue;
 		let cell = this.map[level.map[i][1]][level.map[i][2]];
 		this.gm.CreateObject(LevelObjFunc[level.map[i][0]], cell, level.map[i][3]);

@@ -16,6 +16,10 @@ GameObject.prototype.Collide = function(object, callback) {
   //do smth
 };
 
+GameObject.prototype.Draw = function() {
+
+}
+
 GameObject.prototype.Destroy = function() {
 	this.cell.Clear();
 };
@@ -74,8 +78,9 @@ DynamicObject.prototype.MoveTo = function(cell) {
 	});
 };
 
-function Actor(sprite, cell) {
+function Actor(cell, sprite) {
     DynamicObject.call(this, cell);
+    this.position = new Point(cell.center.x, cell.center.y);
 	this.sprite = sprite;
 	this.actionPoints = 0;
 	this.inventory = [];
@@ -83,12 +88,16 @@ function Actor(sprite, cell) {
 }
 Actor.prototype = Object.create(DynamicObject.prototype);
 
+Actor.prototype.Draw = function () {
+	this.gm.render.DrawCircle(this.position, 20, false, {fill: 'blue', edge: 'rgba(255, 255, 255, 0)'});
+}
+
 function Player(cell, sprite) {
-    Actor.call(this, sprite, cell);
+    Actor.call(this, cell, sprite);
 }
 Player.prototype = Object.create(Actor.prototype);
 
 function Enemy(cell, sprite) {
-    Actor.call(this, sprite, cell);
+    Actor.call(this, cell, sprite);
 }
 Enemy.prototype = Object.create(Actor.prototype);
