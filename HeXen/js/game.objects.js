@@ -37,15 +37,15 @@ GameObject.prototype.Destroy = function() {
 
 
 /* STATIC */
-function StaticObject(cell) {
+function StaticObject(cell, sprite) {
 	GameObject.call(this, cell);
+	this.sprite = sprite;
 	this._type_ = GameObjectTypes.STATIC;
 }
 StaticObject.prototype = Object.create(GameObject.prototype);
 
 function Obstacle(cell, sprite) {
-	StaticObject.call(this, cell);
-	this.sprite = sprite;
+	StaticObject.call(this, cell, sprite);
 }
 Obstacle.prototype = Object.create(StaticObject.prototype);
 
@@ -55,9 +55,9 @@ function Wall(cell, sprite) {
 }
 Wall.prototype = Object.create(Obstacle.prototype);
 
-function Door(cell, sprite) {
+function Door(cell, sprite, status) {
 	Obstacle.call(this, cell, sprite);
-	this.status = DoorState.CLOSED;
+	this.status = status;
 	this._type_ = GameObjectTypes.DOOR;
 }
 Door.prototype = Object.create(Obstacle.prototype);
@@ -78,6 +78,18 @@ function Container(cell, sprite, content) {
 	this.content = content;
 }
 Container.prototype = Object.create(Obstacle.prototype);
+
+function Entry(cell, sprite) {
+    StaticObject.call(this, cell, sprite);
+    this._type_ = GameObjectTypes.ENTRY;
+}
+Entry.prototype = Object.create(StaticObject.prototype);
+
+function Exit(cell, sprite) {
+    StaticObject.call(this, cell, sprite);
+    this._type_ = GameObjectTypes.EXIT;
+}
+Exit.prototype = Object.create(StaticObject.prototype);
 
 /* DYNAMIC */
 function DynamicObject(cell) {

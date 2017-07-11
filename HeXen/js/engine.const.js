@@ -5,10 +5,12 @@ const GameObjectTypes = {
     DYNAMIC: 1,
     DOOR: 2,
     WALL: 3,
-    CONTAINER: 4,
-    CUBE: 5,
-    PLAYER: 6,
-    ENEMY: 7
+    ENTRY: 4,
+    EXIT:5,
+    CONTAINER: 6,
+    CUBE: 7,
+    PLAYER: 8,
+    ENEMY: 9
 };
 
 const CellState = {

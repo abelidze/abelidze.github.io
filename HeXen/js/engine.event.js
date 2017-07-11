@@ -2,8 +2,8 @@
  * Created by ADMIN on 11.07.2017.
  * Event module
  */
-function EventSystem() {
 
+function EventSystem() {
 
 }
 
