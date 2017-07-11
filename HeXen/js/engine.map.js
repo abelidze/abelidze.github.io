@@ -94,6 +94,8 @@ function Grid(gmanager, offset_X, offset_Y, size, radius) {
 			this.map[i][j] = new Cell(this, new Point(x, y));
 		}
 	}
+
+	this.bounds = new Rect(offset_X, offset_Y, x, y);
 }
 
 Grid.prototype.Draw = function() {

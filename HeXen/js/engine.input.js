@@ -28,9 +28,8 @@ Mouse.prototype.Up = function(event) {
 Mouse.prototype.Down = function(event) {
 	this.isMoving = true;
 	this.UpdateCoords(event);
-	this.gm.grid.Select(this.posX, this.posY);
+	this.gm.MouseEvent(event);
 }
-
 
 Mouse.prototype.MoveTouch = function(event) {
 	this.UpdateCoordsTouch(event, true);

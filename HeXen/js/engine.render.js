@@ -7,12 +7,19 @@ function Point(x, y) {
 	this.y = y;
 }
 
-
 function Rect(x, y, w, h) {
 	this.x = x;
 	this.y = y;
 	this.w = w;
 	this.h = h;
+}
+
+Rect.prototype.isInArea = function (x, y) {
+	if (this.x < x && x < (this.x + this.w) &&
+		this.y < y && y < (this.y + this.h))
+		return true;
+	else
+		return false;
 }
 
 function Animator() {

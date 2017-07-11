@@ -5,6 +5,7 @@
 function GameManager() {
 	/* BAD CODER */
 	GameObject.prototype.gm = this;
+	Clickable.prototype.gm = this;
 
 	this.freeze = true;
 	this.render = null;
@@ -13,6 +14,7 @@ function GameManager() {
 	this.result = GameResult.NONE;
 	this.grid = new Grid(this, 240, 240, 12, 36);
 	this.objects = [];
+	this.GUIElements = [];
 	$this = this;
 	$(document).ready(function(){$this.Init()});
 }
@@ -55,11 +57,14 @@ GameManager.prototype.RenderEvent = function() {
 	requestAnimationFrame(this.RenderEvent);
 }
 
-GameManager.prototype.CreateObject = function(createFunc) {
-	let obj = createFunc();
-	this.objects.push(obj);
-	obj.cell.AddObject(obj);
-	console.log(obj);
+GameManager.prototype.SelectGUI = function (event) {
+    //ototot
+}
+GameManager.prototype.MouseEvent = function (event){
+    if (this.grid.bounds.isInArea(this.mouse.posX, this.mouse.posY))
+        this.grid.Select(this.mouse.posX, this.mouse.posY);
+    else
+        this.SelectGUI(event);
 }
 
 GameManager.prototype.GameOver = dummyFunc;
