@@ -19,6 +19,10 @@ const GameState = {
 	RESULTS: 4
 };
 
+const DoorState = {
+	CLOSED: 0,
+	OPENED: 1
+};
 const GameResult = {
 	NONE: 0,
 	WIN: 1,
