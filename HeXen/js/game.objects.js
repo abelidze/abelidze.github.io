@@ -18,7 +18,7 @@ GameObject.prototype.Collide = function(object, callback) {
 
 GameObject.prototype.Draw = function() {
 
-}
+};
 
 GameObject.prototype.Destroy = function() {
 	this.cell.Clear();
@@ -96,6 +96,14 @@ function Cube(cell, sprite) {
 }
 Cube.prototype = Object.create(DynamicObject.prototype);
 
+Cube.prototype.Collide = function (object, callback) {
+    if ((object.GetType() === GameObjectTypes.PLAYER)) {
+        callback(InteractResult.TAKE);
+    } else {
+        callback(InteractResult.NOTHING);
+    }
+};
+
 function Actor(cell, sprite) {
     DynamicObject.call(this, cell);
     this.position = new Point(cell.center.x, cell.center.y);
@@ -116,8 +124,24 @@ function Player(cell, sprite) {
 }
 Player.prototype = Object.create(Actor.prototype);
 
+Player.prototype.Collide = function (object, callback) {
+  if (object.GetType() === GameObjectTypes.ENEMY) {
+      callback(InteractResult.ATTACK);
+  } else {
+      callback(InteractResult.NOTHING);
+  }
+};
+
 function Enemy(cell, sprite) {
     Actor.call(this, cell, sprite);
     this._type_ = GameObjectTypes.ENEMY;
 }
 Enemy.prototype = Object.create(Actor.prototype);
+
+Enemy.prototype.Collide = function (object, callback) {
+    if (object.GetType() === GameObjectTypes.PLAYER) {
+        callback(InteractResult.ATTACK);
+    } else {
+        callback(InteractResult.NOTHING);
+    }
+};
