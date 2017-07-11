@@ -119,4 +119,11 @@ Grid.prototype.Select = function(x, y) {
 	this.map[pos.y][pos.x].Draw();
 };
 
-Grid.prototype.LoadMap = dummyFunc;
+Grid.prototype.LoadMap = function(level) {
+	for (let i = 0; i < level.map.length; ++i){
+		if (level.map[i][0] === -1)
+			continue;
+		let cell = this.map[level.map[i][1]][level.map[i][2]];
+		this.gm.CreateObject(LevelObjFunc[level.map[i][0]], cell, level.map[i][3]);
+	}
+};

@@ -83,12 +83,12 @@ function Actor(sprite, cell) {
 }
 Actor.prototype = Object.create(DynamicObject.prototype);
 
-function Player(sprite, cell) {
+function Player(cell, sprite) {
     Actor.call(this, sprite, cell);
 }
 Player.prototype = Object.create(Actor.prototype);
 
-function Enemy(sprite, cell) {
+function Enemy(cell, sprite) {
     Actor.call(this, sprite, cell);
 }
 Enemy.prototype = Object.create(Actor.prototype);

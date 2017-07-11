@@ -16,7 +16,8 @@ function GameManager() {
 	this.objects = [];
 	this.GUIElements = [];
 	$this = this;
-	$(document).ready(function(){$this.Init()});
+	window.onload = function(){$this.Init()};
+	//$(document).ready(function(){$this.Init()});
 }
 
 GameManager.prototype.Init = function() {
@@ -28,12 +29,11 @@ GameManager.prototype.Init = function() {
 GameManager.prototype.StartGame = function() {
 	this.freeze = false;
 	this.grid.Draw();
-	this.CreateObject(Player, this.grid.map[0][0]);
 	// requestAnimationFrame(this.RenderEvent);
 }
 
-GameManager.prototype.CreateObject = function(object, cell) {
-	let obj = cell.AddObject(function() { return new object(null, cell) });
+GameManager.prototype.CreateObject = function(object, cell, args) {
+	let obj = cell.AddObject(function() { return new object(cell, ...args) });
 	if(obj !== undefined)
 		this.objects.push(obj);
 }

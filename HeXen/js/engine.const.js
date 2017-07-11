@@ -36,6 +36,15 @@ const GameResult = {
     LOSE: 2
 };
 
+const LevelObjects = {
+    INVISIBLE: -1,
+    CONTAINER: 0,
+	DOOR: 1,
+    WALL: 2,
+    PLAYER: 3,
+    ENEMY: 4
+};
+
 const HexDirections = [
     [+1, 0], [+1, -1], [0, -1],
     [-1, 0], [-1, +1], [0, +1]
