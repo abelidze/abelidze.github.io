@@ -45,17 +45,10 @@ Cell.prototype.Interact = function(cell, callback) {
 	}
 }
 
-Cell.prototype.CreateObject = function(object) {
+Cell.prototype.AddObject = function(objectFunc) {
 	if(this.state != CellState.EMPTY) return;
 
-	this.object = object;
-	this.state = CellState.OBJECT;
-}
-
-Cell.prototype.AddObject = function(object) {
-	if(this.state != CellState.EMPTY) return;
-
-	this.object = object;
+	this.object = objectFunc();
 	this.state = CellState.OBJECT;
 }
 
@@ -90,7 +83,7 @@ function Grid(gmanager, offset_X, offset_Y, size, radius) {
 		this.map[i] = [];
 		for(let j = 0; j < size; ++j) {
 			x = offset_X + this.shift_x * j * 2 + i * this.shift_x;
-			y = offset_Y + this.shift_y * i * 3
+			y = offset_Y + this.shift_y * i * 3;
 			this.map[i][j] = new Cell(this, new Point(x, y));
 		}
 	}

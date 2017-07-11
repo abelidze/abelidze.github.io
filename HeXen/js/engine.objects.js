@@ -11,7 +11,8 @@ GameObject.prototype.Collide = function(object, callback) {
 }
 
 GameObject.prototype.Destroy = function() {
-	this.cell.Clear();
+	if(this.cell !== null)
+		this.cell.Clear();
 }
 
 
