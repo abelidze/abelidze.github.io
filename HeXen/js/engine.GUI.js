@@ -63,7 +63,7 @@ InfoWindow.prototype.Show = function () {
 InfoWindow.prototype.Close = function () {
     let new_text = '';
     $('h3').text(new_text);
-    //this.FadeOut();
+    this.FadeOut();
 };
 
 function QuestionWindow(text) {
