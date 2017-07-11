@@ -3,6 +3,9 @@
 */
 
 function GameManager() {
+	/* BAD CODER */
+	GameObject.prototype.gm = this;
+
 	this.freeze = true;
 	this.render = null;
 	this.mouse = null;
@@ -23,6 +26,7 @@ GameManager.prototype.Init = function() {
 GameManager.prototype.StartGame = function() {
 	this.freeze = false;
 	this.grid.Draw();
+	this.grid.map[0][0].CreateObject(function() { return new Player(null, that.grid.map[0][0]) });
 	// requestAnimationFrame(this.RenderEvent);
 }
 
@@ -30,8 +34,13 @@ GameManager.prototype.StopGame = function() {
 	this.freeze = true;
 }
 
-GameManager.prototype.Update = function() {
+GameManager.prototype.Restart = function() {
+	this.StopGame();
+	this.grid.Clear();
+	this.StartGame();
+}
 
+GameManager.prototype.Update = function() {
 
 }
 
@@ -46,7 +55,13 @@ GameManager.prototype.RenderEvent = function() {
 	requestAnimationFrame(this.RenderEvent);
 }
 
-GameManager.prototype.Restart = dummyFunc;
+GameManager.prototype.CreateObject = function(createFunc) {
+	let obj = createFunc();
+	this.objects.push(obj);
+	obj.cell.AddObject(obj);
+	console.log(obj);
+}
+
 GameManager.prototype.GameOver = dummyFunc;
 GameManager.prototype.ShowGameResult = dummyFunc;
 GameManager.prototype.SetMode = dummyFunc;

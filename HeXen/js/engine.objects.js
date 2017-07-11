@@ -2,18 +2,26 @@
 	GameObjects Module 
 */
 
-function GameObject(gmanager) {
-	this.gm = gmanager;
+function GameObject() {
+	this.cell = null;
+}
+
+GameObject.prototype.Collide = function(object, callback) {
+	// Do Stuff
+}
+
+GameObject.prototype.Destroy = function() {
+	this.cell.Clear();
 }
 
 
 /* STATIC */
 function StaticObject() {
-	this.cell = null;
+
 }
 StaticObject.prototype = Object.create(GameObject.prototype);
 
-function Obstacle() {
+function Obstacle(cell) {
 	// Properties
 }
 Obstacle.prototype = Object.create(StaticObject.prototype);
@@ -24,19 +32,31 @@ function DynamicObject() {
 	this.cell = null;
 }
 DynamicObject.prototype = Object.create(GameObject.prototype);
-DynamicObject.prototype.MoveTo = dummyFunc;
 
-function Actor() {
-	// Properties
+DynamicObject.prototype.MoveTo = function(cell) {
+	let that = this;
+	cell.Interact(this.cell, function(result) {
+		if(result == InteractResult.MOVED) {
+			that.cell.Clear();
+			cell.AddObject(that);
+		}
+	});
+}
+
+function Actor(sprite, cell) {
+	this.sprite = sprite;
+	this.cell = cell;
 }
 Actor.prototype = Object.create(DynamicObject.prototype);
 
-function Player() {
-	// Properties
+function Player(sprite, cell) {
+	this.sprite = sprite;
+	this.cell = cell;
 }
 Player.prototype = Object.create(Actor.prototype);
 
-function Enemy() {
-	// Properties
+function Enemy(sprite, cell) {
+	this.sprite = sprite;
+	this.cell = cell;
 }
 Enemy.prototype = Object.create(Actor.prototype);

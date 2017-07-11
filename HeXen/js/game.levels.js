@@ -1,0 +1,5 @@
+/*
+	Levels File
+*/
+
+const GameLevels = [];

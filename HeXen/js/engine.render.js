@@ -7,6 +7,23 @@ function Point(x, y) {
 	this.y = y;
 }
 
+
+function Rect(x, y, w, h) {
+	this.x = x;
+	this.y = y;
+	this.w = w;
+	this.h = h;
+}
+
+function Animator() {
+	// Future
+}
+
+function Animation() {
+	// Future
+}
+
+
 function Render() {
 	this.lastRender = 0;
 
@@ -56,13 +73,8 @@ Render.prototype.DrawPath = function(points, onBack, effect) {
 	}
 	context.closePath();
 
-	if(effect.width !== undefined) {
-		context.lineWidth = effect.width;
-	} 
-
-	if(effect.edge !== undefined) {
-		context.strokeStyle = effect.edge;
-	}
+	context.lineWidth = (effect.width !== undefined ? effect.width : 1);
+	context.strokeStyle = (effect.edge !== undefined ? effect.edge : 'black');
 	context.stroke();
 
 	if(effect.fill !== undefined) {
@@ -71,15 +83,51 @@ Render.prototype.DrawPath = function(points, onBack, effect) {
 	}
 }
 
-Render.prototype.DrawHex = function(center, r, onBack, effect) {
+Render.prototype.DrawHex = function(center, radius, onBack, effect) {
 	let hexagon = [];
 	for(let i = 0; i < 6; ++i) {
 		let angle_deg = 60*i + 30;
 		let angle_rad = Math.PI / 180 * angle_deg;
-		hexagon.push({x: center.x + r*Math.cos(angle_rad),
-			y: center.y + r*Math.sin(angle_rad)});
+		hexagon.push({
+						x: center.x + radius * Math.cos(angle_rad),
+						y: center.y + radius * Math.sin(angle_rad)
+					 });
 	}
 	this.DrawPath(hexagon, effect, onBack);
 }
 
-Render.prototype.DrawCircle = dummyFunc;
+Render.prototype.DrawLine = function(point1, point2, onBack, effect) {
+	this.DrawPath([point1, point2], effect, onBack);
+}
+
+Render.prototype.DrawCircle = function(center, radius, onBack, effect) {
+	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
+
+	context.beginPath();
+	context.arc(center.x, center.y, radius, 0, 2 * Math.PI, false);
+
+	context.lineWidth = (effect.width !== undefined ? effect.width : 1);
+	context.strokeStyle = (effect.edge !== undefined ? effect.edge : 'black');
+	context.stroke();
+
+	if(effect.fill !== undefined) {
+		context.fillStyle = effect.fill;
+		context.fill();
+	}
+}
+
+Render.prototype.DrawRectangle = function(rect, onBack, effect) {
+	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
+
+	context.beginPath();
+	context.rect(rect.x, rect.y, rect.w, rect.h);
+
+	context.lineWidth = (effect.width !== undefined ? effect.width : 1);
+	context.strokeStyle = (effect.edge !== undefined ? effect.edge : 'black');
+	context.stroke();
+
+	if(effect.fill !== undefined) {
+		context.fillStyle = effect.fill;
+		context.fill();
+	}
+}

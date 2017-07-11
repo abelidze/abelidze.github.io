@@ -1,8 +1,14 @@
 const CellState = {
-	INVISIBLE: -1,
-	EMPTY: 0,
-	STATIC: 1,
-	DYNAMIC: 2
+	INVISIBLE: 0,
+	EMPTY: 1,
+	OBJECT: 2
+};
+
+const InteractResult = {
+	NOTHING: 0,
+	MOVED: 1,
+	ATTACK: 2,
+	DIE: 3
 };
 
 const GameState = {

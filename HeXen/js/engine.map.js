@@ -2,14 +2,19 @@
 	Map Module
 */
 
+
+/* TRIGGERS */
 function Trigger() {
 	// Trigger
 }
 
+
+/* CELLS */
 function Cell(grid, center) {
 	this.grid = grid;
 	this.center = center;
 	this.state = CellState.EMPTY;
+	this.object = null;
 	this.style = {edge: 'black', fill: 'red', width: 3};
 	this.id = getRandomInt(10000000, 99999999);
 }
@@ -19,11 +24,55 @@ Cell.prototype.Draw = function(render) {
 }
 
 Cell.prototype.Clear = function() {
-
+	delete this.object;
+	this.object = null;
+	this.state = CellState.EMPTY;
+	// this.style
 }
 
-Cell.prototype.Use = dummyFunc;
+Cell.prototype.Interact = function(cell, callback) {
+	switch(this.state) {
+		case CellState.INVISIBLE:
+			callback(InteractResult.NOTHING);
+		break;
 
+		case CellState.EMPTY:
+			callback(InteractResult.MOVED);
+		break;
+
+		default:
+			this.object.Collide(cell.object, callback);
+	}
+}
+
+Cell.prototype.CreateObject = function(object) {
+	if(this.state != CellState.EMPTY) return;
+
+	this.object = object;
+	this.state = CellState.OBJECT;
+}
+
+Cell.prototype.AddObject = function(object) {
+	if(this.state != CellState.EMPTY) return;
+
+	this.object = object;
+	this.state = CellState.OBJECT;
+}
+
+Cell.prototype.GetNearby = function() {
+	let pos, nearby = [];
+	for(let i = 0; i < HexDirections.length; ++i) {
+		pos = this.grid.PixelToHex(this.center);
+		pos.x += HexDirections[i][0], pos.y += HexDirections[i][0];
+		if(pos.x < 0 || pos.y < 0 || pos.x >= this.size || pos.y >= this.size) continue;
+
+		nearby.push(this.grid.map[pos.y][pos.x]);
+	}
+	return nearby;
+}
+
+
+/* GRID */
 function Grid(gmanager, offset_X, offset_Y, size, radius) {
 	this.gm = gmanager;
 	this.size = size;
@@ -47,37 +96,37 @@ function Grid(gmanager, offset_X, offset_Y, size, radius) {
 	}
 }
 
-// const drawMap = function(edge) {
-// 	var r = 30;
-// 	var shift_x = r*Math.cos(Math.PI/180*30);
-// 	var shift_y = r*Math.sin(Math.PI/180*30);
-
-//     for(let j = 100; j < 100 + 9 * shift_y; j += 3 * shift_y) {
-//         for(let i = 100; i < 100 + 8 * shift_x; i += 2 * shift_x) {
-//             drawHex(context, {
-//                 x: i + shift_x *(j - 100)/3/shift_y + i / 25,
-//                 y: j + j / 25
-//             }, r, {style: '#2D936C', fill: '#E8E9EB'});
-//         }
-//     }
-// }
-
 Grid.prototype.Draw = function() {
 	for(let i = 0; i < this.size; ++i)
 		for(let j = 0; j < this.size; ++j)
 			this.map[i][j].Draw();
 }
 
-Grid.prototype.Select = function(x, y) {
+Grid.prototype.Clear = function() {
+	this.gm.render.Clear();
+	this.gm.render.ClearBack();
+	for(let i = 0; i < this.size; ++i)
+		for(let j = 0; j < this.size; ++j)
+			this.map[i][j].Clear();
+	this.Draw();
+}
+
+Grid.prototype.PixelToHex = function(x, y) {
 	y -= this.offset_y - this.radius;
 	let sy = Math.floor(y / this.shift_y / 3);
 	x -= this.offset_x + this.shift_x * sy - this.shift_x;
 	let sx = Math.floor(x / this.shift_x / 2);
 
-	if(sx < 0 || sy < 0 || sx >= this.size || sy >= this.size) return;
-
-	this.map[sy][sx].style = {edge: 'black', fill: 'white', width: 1};
-	this.map[sy][sx].Draw();
+	if(sx < 0 || sy < 0 || sx >= this.size || sy >= this.size) return undefined;
+	return new Point(sx, sy);
 }
 
-Grid.prototype.Clear = dummyFunc;
+Grid.prototype.Select = function(x, y) {
+	let pos = this.PixelToHex(x, y);
+	if(pos === undefined) return;
+
+	this.map[pos.y][pos.x].style = {edge: 'black', fill: '#1F282D', width: 1};
+	this.map[pos.y][pos.x].Draw();
+}
+
+Grid.prototype.LoadMap = dummyFunc;
