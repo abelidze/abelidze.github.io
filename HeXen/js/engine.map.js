@@ -38,19 +38,13 @@ Cell.prototype.Interact = function(cell, callback) {
 	}
 };
 
-<<<<<<< HEAD
-Cell.prototype.CreateObject = function(object) {
-	if(this.state !== CellState.EMPTY) return;
+Cell.prototype.AddObject = function(objectFunc) {
+	if(this.state !== CellState.EMPTY) return undefined;
 
-	this.object = object;
+	this.object = objectFunc();
 	this.state = CellState.OBJECT;
-};
 
-Cell.prototype.AddObject = function(object) {
-	if(this.state !== CellState.EMPTY) return;
-
-	this.object = object;
-	this.state = CellState.OBJECT;
+	return this.object;
 };
 
 Cell.prototype.GetNearby = function() {

@@ -32,7 +32,9 @@ GameManager.prototype.StartGame = function() {
 }
 
 GameManager.prototype.CreateObject = function(object, cell) {
-	cell.AddObject(function() { return new object(null, cell) });
+	let obj = cell.AddObject(function() { return new object(null, cell) });
+	if(obj !== undefined)
+		this.objects.push(obj);
 }
 
 GameManager.prototype.StopGame = function() {
@@ -59,14 +61,6 @@ GameManager.prototype.RenderEvent = function() {
 
 	requestAnimationFrame(this.RenderEvent);
 }
-
-GameManager.prototype.CreateObject = function(createFunc) {
-	let obj = createFunc();
-	this.objects.push(obj);
-	obj.cell.AddObject(obj);
-	console.log(obj);
-}
-
 GameManager.prototype.GameOver = dummyFunc;
 GameManager.prototype.ShowGameResult = dummyFunc;
 GameManager.prototype.SetMode = dummyFunc;

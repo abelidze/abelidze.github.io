@@ -1,7 +1,6 @@
 /*
 	GameObjects Module 
 */
-"use strict";
 
 function GameObject(cell) {
 	this.cell = cell;
@@ -13,7 +12,6 @@ GameObject.prototype.Collide = function(object, callback) {
 };
 
 GameObject.prototype.Destroy = function() {
-<<<<<<< HEAD
 	this.cell.Clear();
 };
 
@@ -48,7 +46,7 @@ Door.prototype = Object.create(Obstacle.prototype);
 
 /* DYNAMIC */
 function DynamicObject(cell) {
-    DynamicObject.call(this, cell);
+    GameObject.call(this, cell);
 }
 DynamicObject.prototype = Object.create(GameObject.prototype);
 
