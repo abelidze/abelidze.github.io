@@ -38,6 +38,15 @@ Cell.prototype.Interact = function(cell, callback) {
 	}
 };
 
+Cell.prototype.MoveObject = function(object) {
+	if(this.state !== CellState.EMPTY) return undefined;
+
+	this.object = object;
+	this.state = CellState.OBJECT;
+
+	return this.object;
+};
+
 Cell.prototype.AddObject = function(objectFunc) {
 	if(this.state !== CellState.EMPTY) return undefined;
 
@@ -115,8 +124,9 @@ Grid.prototype.Select = function(x, y) {
 	let pos = this.PixelToHex(x, y);
 	if(pos === undefined) return;
 
-	this.map[pos.y][pos.x].style = {edge: 'black', fill: '#1F282D', width: 1};
-	this.map[pos.y][pos.x].Draw();
+	this.gm.GridClicked(pos);
+	// this.map[pos.y][pos.x].style = {edge: 'black', fill: '#1F282D', width: 1};
+	// this.map[pos.y][pos.x].Draw();
 };
 
 Grid.prototype.LoadLevel = function(level) {

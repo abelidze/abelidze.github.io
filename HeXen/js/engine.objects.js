@@ -71,9 +71,13 @@ DynamicObject.prototype = Object.create(GameObject.prototype);
 DynamicObject.prototype.MoveTo = function(cell) {
 	let that = this;
 	cell.Interact(this.cell, function(result) {
-		if(result === InteractResult.MOVED) {
-			that.cell.Clear();
-			cell.AddObject(that);
+		switch(result) {
+			case InteractResult.MOVED:
+				that.cell.Clear();
+				cell.MoveObject(that);
+				that.cell = cell;
+				that.position = cell.center;
+			break;
 		}
 	});
 };
@@ -94,6 +98,7 @@ Actor.prototype.Draw = function () {
 
 function Player(cell, sprite) {
     Actor.call(this, cell, sprite);
+    this.gm.AddPlayer(this);
 }
 Player.prototype = Object.create(Actor.prototype);
 

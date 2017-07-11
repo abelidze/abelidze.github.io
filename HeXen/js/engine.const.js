@@ -23,8 +23,9 @@ const GameState = {
     MENU: 0,
     PAUSE: 1,
     TURN: 2,
-    LOADING: 3,
-    RESULTS: 4
+    ANIMATING: 3,
+    LOADING: 4,
+    RESULTS: 5
 };
 
 const DoorState = {
