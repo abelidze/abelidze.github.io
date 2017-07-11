@@ -37,23 +37,48 @@ function Drawable(scale) {
 	this.scale = scale;
 }
 
-
 function Sprite(image, scale) {
 	Drawable.call(this, scale);
 	this.img = image;
 }
 Sprite.prototype = Object.create(Drawable.prototype);
 
-Sprite.prototype.Draw = function(x, y) {
-
+Sprite.prototype.Draw = function(x, y, onBack) {
+	this.gm.render.DrawSprite(this.img, x, y, this.scale, onBack);
 }
 
-
-function Animation() {
-	// Future
+function Animation(frames_img, frames_count, offsetX, offsetY, width, height, speed) {
+	this.frames_img = frames_img;
+	this.frames_count = frames_count;
+	this.offset_x = offsetX;
+	this.offset_y = offsetY;
+	this.w = width;
+	this.h = height;
+	this.cur_frame = 0;
+	this.speed = speed;
+	this.interval = null;
+	this.isPlayed = false;
 }
 Animation.prototype = Object.create(Drawable.prototype);
 
+Animation.prototype.Draw = function (x, y, scale, onBack) {
+	this.cur_frame++;
+	if (this.cur_frame >= this.frames_count)
+		this.cur_frame = 0;
+	this.gm.render.DrawFrame(this, x, y, scale, onBack);
+}
+
+Animation.prototype.Play = function () {
+	this.isPlayed = true;
+	this.interval = setInterval(this.UpdateFrame.bind(this), this.speed * 1000);
+}
+
+Animation.prototype.Stop = function () {
+	if (!this.isPlayed)
+		return;
+	this.isPlayed = false;
+	clearInterval(this.interval);
+}
 
 function Animator() {
 	this.motion = [];
@@ -191,4 +216,20 @@ Render.prototype.DrawRectangle = function(rect, onBack, effect) {
 		context.fillStyle = effect.fill;
 		context.fill();
 	}
+}
+
+Render.prototype.DrawFrame = function (anim, x, y, scale, onBack) {
+    let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
+
+    let dx = anim.offset_x + anim.cur_frame * anim.w;
+    let count = Math.floor(dx / anim.frames_img.width);
+    let sx = dx - anim.frames_img.width * count;
+    let sy = anim.offset_y + count * anim.h;
+    context.drawImage(anim.frames_img, sx, sy, anim.w, anim.h, x, y, anim.w * scale, anim.h * scale);
+}
+
+Render.prototype.DrawSprite = function (img, x, y, scale, onBack) {
+    let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
+
+    context.drawImage(img, 0, 0, img.width, img.height, x, y, img.width * scale, img.height * scale);
 }

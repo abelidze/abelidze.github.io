@@ -131,6 +131,7 @@ Actor.prototype = Object.create(DynamicObject.prototype);
 
 Actor.prototype.Draw = function () {
 	this.gm.render.DrawCircle(this.position, 20, false, {fill: 'blue', edge: 'rgba(255, 255, 255, 0)'});
+	//DrawSprite(this.sprite, this.position.x, this.position.y, this.sprite.scale, false)
 };
 
 function Player(cell, sprite) {
