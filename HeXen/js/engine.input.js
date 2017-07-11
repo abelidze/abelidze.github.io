@@ -23,6 +23,7 @@ Mouse.prototype.Move = function(event) {
 
 Mouse.prototype.Up = function(event) {
 	this.isMoving = false;
+	Info.Close();
 };
 
 Mouse.prototype.Down = function(event) {
