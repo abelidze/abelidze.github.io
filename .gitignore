@@ -3,3 +3,5 @@ dev/
 *.db
 *.ai
 .htaccess
+test*.*
+.idea/

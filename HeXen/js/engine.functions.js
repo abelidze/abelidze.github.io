@@ -3,7 +3,8 @@
 */
 
 function dummyFunc() {
-	alert(this + ' not implemented!');
+	console.log(this);
+	alert('Method isn`t implemented!');
 }
 
 function getRandomInt(min, max) {
