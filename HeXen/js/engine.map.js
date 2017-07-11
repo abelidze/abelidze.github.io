@@ -2,13 +2,6 @@
 	Map Module
 */
 
-
-/* TRIGGERS */
-function Trigger() {
-	// Trigger
-}
-
-
 /* CELLS */
 function Cell(grid, center) {
 	this.grid = grid;
@@ -21,14 +14,14 @@ function Cell(grid, center) {
 
 Cell.prototype.Draw = function(render) {
 	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style, true);
-}
+};
 
 Cell.prototype.Clear = function() {
 	delete this.object;
 	this.object = null;
 	this.state = CellState.EMPTY;
 	// this.style
-}
+};
 
 Cell.prototype.Interact = function(cell, callback) {
 	switch(this.state) {
@@ -43,21 +36,21 @@ Cell.prototype.Interact = function(cell, callback) {
 		default:
 			this.object.Collide(cell.object, callback);
 	}
-}
+};
 
 Cell.prototype.CreateObject = function(object) {
-	if(this.state != CellState.EMPTY) return;
+	if(this.state !== CellState.EMPTY) return;
 
 	this.object = object;
 	this.state = CellState.OBJECT;
-}
+};
 
 Cell.prototype.AddObject = function(object) {
-	if(this.state != CellState.EMPTY) return;
+	if(this.state !== CellState.EMPTY) return;
 
 	this.object = object;
 	this.state = CellState.OBJECT;
-}
+};
 
 Cell.prototype.GetNearby = function() {
 	let pos, nearby = [];
@@ -69,7 +62,7 @@ Cell.prototype.GetNearby = function() {
 		nearby.push(this.grid.map[pos.y][pos.x]);
 	}
 	return nearby;
-}
+};
 
 
 /* GRID */
@@ -90,7 +83,7 @@ function Grid(gmanager, offset_X, offset_Y, size, radius) {
 		this.map[i] = [];
 		for(let j = 0; j < size; ++j) {
 			x = offset_X + this.shift_x * j * 2 + i * this.shift_x;
-			y = offset_Y + this.shift_y * i * 3
+			y = offset_Y + this.shift_y * i * 3;
 			this.map[i][j] = new Cell(this, new Point(x, y));
 		}
 	}
@@ -100,7 +93,7 @@ Grid.prototype.Draw = function() {
 	for(let i = 0; i < this.size; ++i)
 		for(let j = 0; j < this.size; ++j)
 			this.map[i][j].Draw();
-}
+};
 
 Grid.prototype.Clear = function() {
 	this.gm.render.Clear();
@@ -109,7 +102,7 @@ Grid.prototype.Clear = function() {
 		for(let j = 0; j < this.size; ++j)
 			this.map[i][j].Clear();
 	this.Draw();
-}
+};
 
 Grid.prototype.PixelToHex = function(x, y) {
 	y -= this.offset_y - this.radius;
@@ -119,7 +112,7 @@ Grid.prototype.PixelToHex = function(x, y) {
 
 	if(sx < 0 || sy < 0 || sx >= this.size || sy >= this.size) return undefined;
 	return new Point(sx, sy);
-}
+};
 
 Grid.prototype.Select = function(x, y) {
 	let pos = this.PixelToHex(x, y);
@@ -127,6 +120,6 @@ Grid.prototype.Select = function(x, y) {
 
 	this.map[pos.y][pos.x].style = {edge: 'black', fill: '#1F282D', width: 1};
 	this.map[pos.y][pos.x].Draw();
-}
+};
 
 Grid.prototype.LoadMap = dummyFunc;
