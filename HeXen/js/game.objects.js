@@ -95,11 +95,7 @@ DynamicObject.prototype.MoveTo = function(cell) {
 				cell.MoveObject(that);
 				// that.position = cell.center;
 				that.gm.gameState = GameState.ANIMATING;
-				console.log(that.position, cell.center);
-				that.gm.animator.AddMotion(that.position, cell.center, 4,
-					function(pos) {
-						that.position = pos;
-					});
+				that.gm.animator.AddMotion(that.position, cell.center, 4);
 				that.cell = cell;
 			break;
 		}
@@ -131,7 +127,7 @@ DynamicObject.call(this, cell);
 Actor.prototype = Object.create(DynamicObject.prototype);
 
 Actor.prototype.Draw = function () {
-	this.gm.render.DrawCircle(this.position, 20, false, {fill: 'blue', edge: 'rgba(255, 255, 255, 0)'});
+	this.gm.render.DrawCircle(this.position, 20, false, {fill: 'red', edge: 'rgba(255, 255, 255, 0)'});
 	//DrawSprite(this.sprite, this.position.x, this.position.y, this.sprite.scale, false)
 };
 

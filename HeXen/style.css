@@ -39,42 +39,42 @@ img {
 	z-index: -2;
 }
 
-.modal_div {
-    width: 300px;
-    height: 300px;
-    border-radius: 5px;
-    border: 3px #000 solid;
-    background: #ffffff;
-    position: fixed;
-    top: 45%;
-    left: 50%;
-    margin-top: -150px;
-    margin-left: -150px;
-    display: none;
-    opacity: 0;
-    z-index: 5;
-    padding: 20px 10px;
+.splash {
+	position: fixed;
+	display: none;
+	width: 300px;
+	height: 300px;
+	border-radius: 5px;
+	border: 3px #000 solid;
+	background: white;
+	top: 45%;
+	left: 50%;
+	margin-top: -150px;
+	margin-left: -150px;
+	opacity: 0;
+	z-index: 5;
+	padding: 20px 10px;
 }
 
-.modal_close {
-    width: 21px;
-    height: 21px;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-    display: block;
+.splash_close {
+	position: absolute;
+	display: block;
+	cursor: pointer;
+	width: 21px;
+	height: 21px;
+	top: 10px;
+	right: 10px;
 }
 
 #overlay {
-    z-index: 3;
-    position: fixed;
-    background-color: #000000;
-    opacity: 0.8;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    cursor: pointer;
-    display: none;
+	position: fixed;
+	cursor: pointer;
+	display: none;
+	z-index: 3;
+	background-color: black;
+	opacity: 0.8;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
 }

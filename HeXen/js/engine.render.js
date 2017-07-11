@@ -85,30 +85,27 @@ function Animator() {
 }
 Animator.prototype = Object.create(Drawable.prototype);
 
-Animator.prototype.AddMotion = function(start, end, speed, func) {
+Animator.prototype.AddMotion = function(start, end, speed) {
 	console.log(start, end);
-	this.motion.push([speed, start, end, func]);
+	this.motion.push([speed, start, end]);
 }
 
 Animator.prototype.ProcessMotions = function(dTime) {
 	let dir;
 	for(let i = 0; i < this.motion.length; ++i) {
 		dir = this.motion[i][1].GetVector(this.motion[i][2]);
-		console.log(dir);
 		this.motion[i][1].x += dir.x * dTime / 1000 * this.motion[i][0];
 		this.motion[i][1].y += dir.y * dTime / 1000 * this.motion[i][0];
 
 		if(this.motion[i][1].Distance(this.motion[i][2]) < this.motion[i][0] / 5) {
-			this.motion[i][3](this.motion[i][2]);
+			this.motion[i][1].x = this.motion[i][2].x;
+			this.motion[i][1].y = this.motion[i][2].y;
 			this.motion.splice(i, 1);
 			i--;
-		} else {
-			this.motion[i][3](this.motion[i][1]);
 		}
 	}
 	if(this.motion.length == 0 && this.gm.gameState === GameState.ANIMATING) {
-		let gman = this.gm;
-		setTimeout(function() { gman.gameState = GameState.TURN; }, 100);
+		this.gm.gameState = GameState.TURN;
 	}
 }
 
