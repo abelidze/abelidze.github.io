@@ -86,6 +86,7 @@ function Animator() {
 Animator.prototype = Object.create(Drawable.prototype);
 
 Animator.prototype.AddMotion = function(start, end, speed, func) {
+	console.log(start, end);
 	this.motion.push([speed, start, end, func]);
 }
 
@@ -93,6 +94,7 @@ Animator.prototype.ProcessMotions = function(dTime) {
 	let dir;
 	for(let i = 0; i < this.motion.length; ++i) {
 		dir = this.motion[i][1].GetVector(this.motion[i][2]);
+		console.log(dir);
 		this.motion[i][1].x += dir.x * dTime / 1000 * this.motion[i][0];
 		this.motion[i][1].y += dir.y * dTime / 1000 * this.motion[i][0];
 
@@ -104,8 +106,9 @@ Animator.prototype.ProcessMotions = function(dTime) {
 			this.motion[i][3](this.motion[i][1]);
 		}
 	}
-	if(this.motion.length == 0 && this.gm.gameState == GameState.ANIMATING) {
-		this.gm.gameState = GameState.TURN;
+	if(this.motion.length == 0 && this.gm.gameState === GameState.ANIMATING) {
+		let gman = this.gm;
+		setTimeout(function() { gman.gameState = GameState.TURN; }, 100);
 	}
 }
 

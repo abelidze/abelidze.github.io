@@ -104,9 +104,10 @@ GameManager.prototype.GridClicked = function(pos) {
 				player = this.grid.PixelToHex(this.players[i].cell.center.x, this.players[i].cell.center.y);
 				x = player.x - pos.x;
 				y = player.y - pos.y;
-				
+
 				if(Math.abs(x) <= 1 && Math.abs(y) <= 1 && x != y) {
 					this.players[i].MoveTo(cell);
+					break;
 				}
 			}
 		break;

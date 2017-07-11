@@ -95,7 +95,8 @@ DynamicObject.prototype.MoveTo = function(cell) {
 				cell.MoveObject(that);
 				// that.position = cell.center;
 				that.gm.gameState = GameState.ANIMATING;
-				that.gm.animator.AddMotion(that.cell.center, cell.center, 4,
+				console.log(that.position, cell.center);
+				that.gm.animator.AddMotion(that.position, cell.center, 4,
 					function(pos) {
 						that.position = pos;
 					});
