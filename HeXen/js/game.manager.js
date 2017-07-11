@@ -18,8 +18,8 @@ function GameManager() {
 	this.objects = [];
 	this.players = [];
 	this.GUIElements = [];
-	$this = this;
-	$(document).ready(function(){$this.Init()});
+	that = this;
+	$(document).ready(function(){that.Init()});
 }
 
 GameManager.prototype.Init = function() {
@@ -72,14 +72,14 @@ GameManager.prototype.RenderEvent = function() {
 	requestAnimationFrame(this.RenderEvent.bind(this));
 }
 
-GameManager.prototype.MouseEvent = function (event) {
+GameManager.prototype.MouseEvent = function(event) {
 	if(this.grid.bounds.isInArea(this.mouse.posX, this.mouse.posY))
 		this.grid.Select(this.mouse.posX, this.mouse.posY);
 	else
 		this.SelectGUI(event);
 }
 
-GameManager.prototype.SelectGUI = function (event) {
+GameManager.prototype.SelectGUI = function(event) {
 	//ototot
 }
 

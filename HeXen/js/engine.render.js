@@ -48,6 +48,7 @@ function Animator() {
 Animator.prototype = Object.create(Drawable.prototype);
 
 
+
 function Render() {
 	this.lastRender = 0;
 
@@ -92,7 +93,7 @@ Render.prototype.DrawPath = function(points, onBack, effect) {
 
 	context.beginPath();
 	context.moveTo(Math.floor(points[0].x), Math.floor(points[0].y));
-	for (let i = 1; i < points.length; ++i) {
+	for(let i = 1; i < points.length; ++i) {
 		context.lineTo(Math.floor(points[i].x), Math.floor(points[i].y));
 	}
 	context.closePath();
