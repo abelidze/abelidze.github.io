@@ -83,7 +83,7 @@ function Grid(gmanager, offset_X, offset_Y, size, radius) {
 		}
 	}
 
-	this.bounds = new Rect(offset_X, offset_Y, x, y);
+	this.bounds = new Rect(offset_X - this.shift_x, offset_Y - this.shift_y, x + this.shift_x, y + 3*this.shift_y);
 }
 
 Grid.prototype.Draw = function() {
