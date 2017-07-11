@@ -108,7 +108,7 @@ DynamicObject.prototype.MoveTo = function(cell) {
 				cell.MoveObject(that);
 				// that.position = cell.center;
 				that.gm.gameState = GameState.ANIMATING;
-				that.gm.animator.AddMotion(that.position, cell.center, 4);
+				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR);
 				that.cell = cell;
 			break;
 		}
@@ -134,18 +134,34 @@ function Actor(cell, anim) {
 	DynamicObject.call(this, cell);
 	this.position = new Point(cell.center.x, cell.center.y);
 	this.anim = anim;
-	this.anim[0].Play();
-	this.animationClip = 0;
+	this.animationClip = AnimationState.IDLE;
 	this.actionPoints = 0;
 	this.inventory = [];
+
+	if(this.anim) {
+		this.anim[0].Play();
+	}
 }
 Actor.prototype = Object.create(DynamicObject.prototype);
 
 Actor.prototype.Draw = function () {
-	// this.gm.render.DrawCircle(this.position, 20, false, {fill: 'red', edge: 'rgba(255, 255, 255, 0)'});
 	// this.gm.render.DrawSprite(this.sprite, this.position.x, this.position.y, this.sprite.scale, false);
-	let ani = this.anim[this.animationClip];
-	ani.Draw(this.position.x, this.position.y, 1, this.rotation, true);
+	if(this.anim) {
+		let ani = this.anim[this.animationClip];
+		ani.Draw(this.position.x, this.position.y, 1, this.rotation, true);
+	}
+	else
+	{
+		this.gm.render.DrawCircle(this.position, 20, false, {fill: 'red', edge: 'rgba(255, 255, 255, 0)'});
+	}
+};
+
+Actor.prototype.ChangeAnimationClip = function(clip) {
+	if(this.anim) {
+		this.anim[this.animationClip].Stop();
+		this.anim[clip].Play();
+		this.animationClip = clip;
+	}
 };
 
 function Player(cell, anim) {

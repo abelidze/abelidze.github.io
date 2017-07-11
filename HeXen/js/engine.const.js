@@ -57,6 +57,18 @@ const LevelObjects = {
     ENEMY: 4
 };
 
+const AnimationState = {
+    IDLE: 0,
+    MOVE: 1,
+    ATTACK: 2,
+    DIE: 3
+};
+
+const AnimatorModes = {
+    EASE: 0,
+    LINEAR: 1
+};
+
 const HexDirections = [
     [+1, 0], [+1, -1], [0, -1],
     [-1, 0], [-1, +1], [0, +1]

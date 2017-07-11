@@ -100,20 +100,32 @@ function Animator() {
 }
 Animator.prototype = Object.create(Drawable.prototype);
 
-Animator.prototype.AddMotion = function(start, end, speed) {
-	this.motion.push([speed, start, end]);
+Animator.prototype.AddMotion = function(object, target, speed, mode) {
+	if(object.anim) {
+		object.ChangeAnimationClip(AnimationState.MOVE);
+	}
+	let dir = object.position.GetVector(target);
+	this.motion.push([speed, object, target, mode, dir]);
 }
 
 Animator.prototype.ProcessMotions = function(dTime) {
 	let dir;
 	for(let i = 0; i < this.motion.length; ++i) {
-		dir = this.motion[i][1].GetVector(this.motion[i][2]);
-		this.motion[i][1].x += dir.x * dTime / 1000 * this.motion[i][0];
-		this.motion[i][1].y += dir.y * dTime / 1000 * this.motion[i][0];
+		switch(this.motion[i][3]) {
+			case AnimatorModes.EASE:
+				dir = this.motion[i][1].position.GetVector(this.motion[i][2]); break;
+			case AnimatorModes.LINEAR:
+				dir = this.motion[i][4]; break;
+		}
+		this.motion[i][1].position.x += dir.x * dTime / 1000 * this.motion[i][0];
+		this.motion[i][1].position.y += dir.y * dTime / 1000 * this.motion[i][0];
 
-		if(this.motion[i][1].Distance(this.motion[i][2]) < this.motion[i][0] / 5) {
-			this.motion[i][1].x = this.motion[i][2].x;
-			this.motion[i][1].y = this.motion[i][2].y;
+		if(this.motion[i][1].position.Distance(this.motion[i][2]) < this.motion[i][0] / 5) {
+			if(this.motion[i][1].anim) {
+				this.motion[i][1].ChangeAnimationClip(AnimationState.IDLE);
+			}
+			this.motion[i][1].position.x = this.motion[i][2].x;
+			this.motion[i][1].position.y = this.motion[i][2].y;
 			this.motion.splice(i, 1);
 			i--;
 		}

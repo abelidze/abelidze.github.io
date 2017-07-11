@@ -17,6 +17,7 @@ function GameManager() {
 	this.freeze = true;
 	this.gameState = GameState.PAUSE;
 	this.result = GameResult.NONE;
+	this.currentLevel = 0;
 	
 	this.objects = [];
 	this.players = [];
@@ -35,15 +36,9 @@ GameManager.prototype.Init = function() {
 GameManager.prototype.StartGame = function() {
 	this.freeze = false;
 	this.gameState = GameState.TURN;
-	this.grid.LoadLevel(GameLevels[0]);
+	this.NextLevel();
 	this.grid.Draw();
 	requestAnimationFrame(this.RenderEvent.bind(this));
-}
-
-GameManager.prototype.CreateObject = function(object, cell, args) {
-	let obj = cell.AddObject(function() { return new object(cell, ...args) });
-	if(obj !== undefined)
-		this.objects.push(obj);
 }
 
 GameManager.prototype.StopGame = function() {
@@ -60,8 +55,20 @@ GameManager.prototype.Pause = function() {
 	this.freeze = true;
 }
 
-GameManager.prototype.Update = function() {
+GameManager.prototype.NextLevel = function() {
+	this.grid.LoadLevel(GameLevels[this.currentLevel]);
+	this.currentLevel++;
+}
 
+GameManager.prototype.CreateObject = function(object, cell, args) {
+	let obj = cell.AddObject(function() { return new object(cell, ...args) });
+	if(obj !== undefined)
+		this.objects.push(obj);
+}
+
+GameManager.prototype.ClearObjects = function() {
+	this.objects = [];
+	this.players = [];
 }
 
 GameManager.prototype.RenderEvent = function() {
