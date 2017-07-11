@@ -7,6 +7,7 @@ function GameManager() {
 	GameObject.prototype.gm = this;
 	Drawable.prototype.gm = this;
 	Clickable.prototype.gm = this;
+	EventSystem.prototype.gm = this;
 
 	this.freeze = true;
 	this.render = null;

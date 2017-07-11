@@ -1,9 +1,14 @@
-const ObjectTypes = {
-    NONE: 0,
-    STATIC: 1,
-    DYNAMIC: 2,
-    PLAYER: 3,
-    ENEMY: 4
+const GameObjectTypes = {
+    NONE: -2,
+    INVISIBLE: -1,
+    STATIC: 0,
+    DYNAMIC: 1,
+    DOOR: 2,
+    WALL: 3,
+    CONTAINER: 4,
+    CUBE: 5,
+    PLAYER: 6,
+    ENEMY: 7
 };
 
 const CellState = {
@@ -16,7 +21,9 @@ const InteractResult = {
     NOTHING: 0,
     MOVED: 1,
     ATTACK: 2,
-    DIE: 3
+    DIE: 3,
+    OPEN: 4,
+    TAKE: 5
 };
 
 const GameState = {

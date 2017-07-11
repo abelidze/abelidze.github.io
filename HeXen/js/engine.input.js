@@ -2,8 +2,7 @@
 	Input Module
 */
 
-function Mouse(gmanager) {
-	this.gm = gmanager;
+function Mouse() {
 	this.posX = 0;
 	this.posY = 0;
 	this.isMoving = false;
@@ -16,34 +15,35 @@ function Mouse(gmanager) {
 	document.addEventListener('touchend',  this.UpTouch.bind(this),   false);
 	document.addEventListener('touchstart',this.DownTouch.bind(this), false);
 }
+Mouse.prototype = Object.create(EventSystem.prototype);
 
 Mouse.prototype.Move = function(event) {
 	this.UpdateCoords(event);
-}
+};
 
 Mouse.prototype.Up = function(event) {
 	this.isMoving = false;
-}
+};
 
 Mouse.prototype.Down = function(event) {
 	this.isMoving = true;
 	this.UpdateCoords(event);
 	this.gm.MouseEvent(event);
-}
+};
 
 Mouse.prototype.MoveTouch = function(event) {
 	this.UpdateCoordsTouch(event, true);
-}
+};
 
 Mouse.prototype.UpTouch = function(event) {
 	this.isMoving = false;
-}
+};
 
 Mouse.prototype.DownTouch = function(event) {
 	this.isMoving = true;
 	this.UpdateCoords(event, true);
 	this.gm.MouseEvent(event);
-}
+};
 
 
 Mouse.prototype.UpdateCoords = function(event, isTouch) {
@@ -62,4 +62,4 @@ Mouse.prototype.UpdateCoords = function(event, isTouch) {
 
 	if(this.posY > canvas.height - ClickRadius) this.posY = canvas.height - ClickRadius;
 	else if(this.posY < ClickRadius) this.posY = ClickRadius;
-}
+};
