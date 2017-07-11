@@ -8,12 +8,12 @@ function GameObject(cell) {
     this._type_ = ObjectTypes.NONE;
 }
 
-GameObject.prototype.GetType = function(object, callback) {
-    //do smth
+GameObject.prototype.GetType = function() {
+    return this._type_;
 };
 
 GameObject.prototype.Collide = function(object, callback) {
-  //do smth
+    callback(InteractResult.NOTHING);
 };
 
 GameObject.prototype.Destroy = function() {
@@ -28,12 +28,20 @@ function StaticObject(cell) {
 }
 StaticObject.prototype = Object.create(GameObject.prototype);
 
-function Trigger(cell) {
+function Trigger(cell, checker, action, repeat, radius) {
     StaticObject.call(this, cell);
-    this.action = null;
-
+    this.cheker = checker;
+    this.action = action;
+    this.repeat = repeat;
+    this.radius = radius;
 }
 Trigger.prototype = Object.create(StaticObject.prototype);
+
+Trigger.prototype.Activate = function () {
+    if((this.repeat > 0 ) || (this.repeat < 0))
+        this.repeat--;
+    this.action();
+};
 
 function Obstacle(cell, sprite) {
 	StaticObject.call(this, cell);
@@ -52,6 +60,14 @@ function Door(cell, sprite) {
 }
 Door.prototype = Object.create(Obstacle.prototype);
 
+Door.prototype.Collide = function (object, callback) {
+  if (this.status === CLOSED) {
+      callback(InteractResult.NOTHING);
+  } else {
+      if ()
+  }
+};
+
 function Container(cell, sprite, content) {
     Obstacle.call(this, cell, sprite, sprite);
     this.content = content;
@@ -61,6 +77,7 @@ Container.prototype = Object.create(Obstacle.prototype);
 /* DYNAMIC */
 function DynamicObject(cell) {
     GameObject.call(this, cell);
+    this._type_ = ObjectTypes.DYNAMIC;
 }
 DynamicObject.prototype = Object.create(GameObject.prototype);
 
@@ -79,7 +96,6 @@ function Actor(sprite, cell) {
 	this.sprite = sprite;
 	this.actionPoints = 0;
 	this.inventory = [];
-	// this.cell = cell;
 }
 Actor.prototype = Object.create(DynamicObject.prototype);
 
