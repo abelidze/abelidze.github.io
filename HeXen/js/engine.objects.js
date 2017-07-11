@@ -13,6 +13,7 @@ GameObject.prototype.Collide = function(object, callback) {
 };
 
 GameObject.prototype.Destroy = function() {
+<<<<<<< HEAD
 	this.cell.Clear();
 };
 

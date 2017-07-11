@@ -38,6 +38,7 @@ Cell.prototype.Interact = function(cell, callback) {
 	}
 };
 
+<<<<<<< HEAD
 Cell.prototype.CreateObject = function(object) {
 	if(this.state !== CellState.EMPTY) return;
 

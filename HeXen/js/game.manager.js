@@ -5,6 +5,7 @@
 function GameManager() {
 	/* BAD CODER */
 	GameObject.prototype.gm = this;
+	// Clickable.prototype.gm = this;
 
 	this.freeze = true;
 	this.render = null;
@@ -26,8 +27,12 @@ GameManager.prototype.Init = function() {
 GameManager.prototype.StartGame = function() {
 	this.freeze = false;
 	this.grid.Draw();
-	this.grid.map[0][0].CreateObject(function() { return new Player(null, that.grid.map[0][0]) });
+	this.CreateObject(Player, this.grid.map[0][0]);
 	// requestAnimationFrame(this.RenderEvent);
+}
+
+GameManager.prototype.CreateObject = function(object, cell) {
+	cell.AddObject(function() { return new object(null, cell) });
 }
 
 GameManager.prototype.StopGame = function() {
