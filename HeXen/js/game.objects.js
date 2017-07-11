@@ -5,8 +5,19 @@
 function GameObject(cell) {
 	this.cell = cell;
     this.rotation = 0;
+    this.triggers = [];
     this._type_ = GameObjectTypes.NONE;
 }
+
+GameObject.prototype.AddTrigger = function(trigger) {
+    this.triggers.push(trigger);
+};
+
+GameObject.prototype.ClearTrigger = function () {
+    for(let i = 0; i < this.triggers.length; ++i)
+        delete this.triggers[i];
+    this.triggers = [];
+};
 
 GameObject.prototype.GetType = function() {
     return this._type_;
@@ -17,7 +28,7 @@ GameObject.prototype.Collide = function(object, callback) {
 };
 
 GameObject.prototype.Draw = function() {
-
+    //do nothing
 };
 
 GameObject.prototype.Destroy = function() {
