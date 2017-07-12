@@ -54,7 +54,9 @@ const LevelObjects = {
     DOOR: 1,
     WALL: 2,
     PLAYER: 3,
-    ENEMY: 4
+    ENEMY: 4,
+    ENTRY: 5,
+    EXIT: 6
 };
 
 const AnimationState = {
@@ -75,3 +77,5 @@ const HexDirections = [
 ];
 
 const ClickRadius = 16;
+
+const EPS = Number.EPSILON;

@@ -20,10 +20,11 @@ function Level(size, arr) {
 
 const GameLevels =
     [
-        new Level(16, [
-            [LevelObjects.PLAYER, 0, 0, [ [anim_playerIdle, anim_playerMove] ]],
-            [LevelObjects.PLAYER, 5, 5, [ [anim_enemyIdle , anim_enemyMove]  ]],
-        ]),
+        // new Level(16, [
+        //     [LevelObjects.PLAYER, 0, 0, [ [anim_playerIdle, anim_playerMove] ]],
+        //     [LevelObjects.PLAYER, 5, 5, [ [anim_enemyIdle , anim_enemyMove]  ]],
+        // ]),
+
         new Level(11, [
             /*Sobstvenno map*/
             [LevelObjects.WALL, 5, 0, [null]],
@@ -52,7 +53,7 @@ const GameLevels =
             [LevelObjects.EXIT, 1, 5, [null]],
             [LevelObjects.EXIT, 2, 5, [null]],
             [LevelObjects.WALL, 3, 5, [null]],
-            [LevelObjects.ENTRY, 5, 5, [null]],
+            [LevelObjects.PLAYER, 5, 5, [null]],
             [LevelObjects.WALL, 10, 5, [null]],
 
             [LevelObjects.WALL, 0, 6, [null]],
@@ -109,6 +110,7 @@ const GameLevels =
             [LevelObjects.INVISIBLE, 7, 9, [null]],
             [LevelObjects.INVISIBLE, 8, 9, [null]],
             [LevelObjects.INVISIBLE, 9, 9, [null]],
+            [LevelObjects.INVISIBLE, 10, 9, [null]],
 
             [LevelObjects.INVISIBLE, 6, 10, [null]],
             [LevelObjects.INVISIBLE, 7, 10, [null]],

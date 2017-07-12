@@ -19,6 +19,10 @@ Point.prototype.PolarAngle = function() {
 	return Math.atan2(this.y, this.x) - Math.PI / 2;
 }
 
+Point.prototype.Sign = function() {
+	return Math.sign(this.x + this.y);
+}
+
 
 function Rect(x, y, w, h) {
 	this.x = x;
@@ -105,22 +109,16 @@ Animator.prototype.AddMotion = function(object, target, speed, mode) {
 		object.ChangeAnimationClip(AnimationState.MOVE);
 	}
 	let dir = object.position.GetVector(target);
-	this.motion.push([speed, object, target, mode, dir]);
+	let sgn = dir.Sign();
+	this.motion.push([speed, object, target, mode, dir, sgn]);
 }
 
 Animator.prototype.ProcessMotions = function(dTime) {
-	let dir;
+	let dir, cur_dir;
 	for(let i = 0; i < this.motion.length; ++i) {
-		switch(this.motion[i][3]) {
-			case AnimatorModes.EASE:
-				dir = this.motion[i][1].position.GetVector(this.motion[i][2]); break;
-			case AnimatorModes.LINEAR:
-				dir = this.motion[i][4]; break;
-		}
-		this.motion[i][1].position.x += dir.x * dTime / 1000 * this.motion[i][0];
-		this.motion[i][1].position.y += dir.y * dTime / 1000 * this.motion[i][0];
-
-		if(this.motion[i][1].position.Distance(this.motion[i][2]) < this.motion[i][0] / 5) {
+		cur_dir = this.motion[i][1].position.GetVector(this.motion[i][2]);
+		if(cur_dir.Sign() != this.motion[i][5])
+		{
 			if(this.motion[i][1].anim) {
 				this.motion[i][1].ChangeAnimationClip(AnimationState.IDLE);
 			}
@@ -128,7 +126,17 @@ Animator.prototype.ProcessMotions = function(dTime) {
 			this.motion[i][1].position.y = this.motion[i][2].y;
 			this.motion.splice(i, 1);
 			i--;
+			continue;
 		}
+
+		switch(this.motion[i][3]) {
+			case AnimatorModes.EASE:
+				dir = cur_dir; break;
+			case AnimatorModes.LINEAR:
+				dir = this.motion[i][4]; break;
+		}
+		this.motion[i][1].position.x += dir.x * dTime / 1000 * this.motion[i][0];
+		this.motion[i][1].position.y += dir.y * dTime / 1000 * this.motion[i][0];
 	}
 	if(this.motion.length == 0 && this.gm.gameState === GameState.ANIMATING) {
 		this.gm.gameState = GameState.TURN;
@@ -140,17 +148,16 @@ function Render() {
 	this.lastRender = 0;
 
 	this.fgcanvas = document.getElementById('game');
-	this.fgcanvas.width = window.innerWidth;// window.outerWidth;
-	this.fgcanvas.height = window.innerHeight;
 	this.cnt_fg = this.fgcanvas.getContext('2d');
 	// this.cnt_fg.fillStyle = 'rgba(0, 255, 0, 0.3)';
 
 	this.bgcanvas = document.createElement('canvas');
 	this.bgcanvas.id = 'field';
-	this.bgcanvas.width = window.innerWidth;
-	this.bgcanvas.height = window.innerHeight;
 	this.cnt_bg = this.bgcanvas.getContext('2d');
 	document.body.appendChild(this.bgcanvas);
+
+	this.ResizeCanvas(this.fgcanvas);
+	this.ResizeCanvas(this.bgcanvas);
 }
 
 Render.prototype.Clear = function() {
@@ -163,6 +170,14 @@ Render.prototype.ClearBack = function() {
 
 Render.prototype.GetCanvas = function() {
 	return this.fgcanvas;
+}
+
+Render.prototype.ResizeCanvas = function() {
+	this.fgcanvas.width = window.innerWidth;
+	this.fgcanvas.height = window.innerHeight;
+
+	this.bgcanvas.width = window.innerWidth;
+	this.bgcanvas.height = window.innerHeight;
 }
 
 Render.prototype.deltaTime = function() {

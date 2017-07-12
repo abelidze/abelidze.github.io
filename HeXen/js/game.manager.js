@@ -12,7 +12,7 @@ function GameManager() {
 	this.render = null;
 	this.mouse = null;
 	this.animator = new Animator();
-	this.grid = new Grid(this, 240, 240, 12, 36);
+	this.grid = new Grid(this, 64, 240, 12, 36);
 	
 	this.freeze = true;
 	this.gameState = GameState.PAUSE;
