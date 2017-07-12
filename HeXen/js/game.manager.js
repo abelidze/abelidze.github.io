@@ -124,7 +124,7 @@ GameManager.prototype.GridClicked = function (pos) {
 	switch(this.gameState) {
 		case GameState.TURN:
 			for(let i = 0; i < this.players.length; ++i) {
-				player = this.grid.PixelToHex(this.players[i].cell.center.x, this.players[i].cell.center.y);
+				player = this.players[i].cell.gridPosition;
 
 				if(cell.isNearbyXY(player, pos)) {
 					this.players[i].MoveTo(cell);
