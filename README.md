@@ -1,3 +1,3 @@
-# SkillMasters Library
+# [SkillMasters Library](https://skillmasters.github.io)
 ## HeXen
 ## Tic Tac Toe
