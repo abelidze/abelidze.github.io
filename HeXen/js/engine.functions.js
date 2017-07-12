@@ -1,6 +1,6 @@
 /*
-	Standart and engine specific functions
-*/
+ Standart and engine specific functions
+ */
 
 function dummyFunc() {
 	console.log(this);
@@ -11,3 +11,6 @@ function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 
+function PixelToHex(x, y) {
+
+}

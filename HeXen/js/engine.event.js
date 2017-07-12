@@ -36,6 +36,17 @@ function Trigger(cell, checker, action, repeat, radius) {
     this.action = action;
     this.repeat = repeat;
     this.radius = radius;
+
+EventSystem.prototype.MouseEvent = function (event, detail) {
+
+}
+
+function Trigger(handler, checker, action, repeat, radius) {
+	this.handler = handler;
+	this.cheker = checker;
+	this.action = action;
+	this.repeat = repeat;
+	this.radius = radius;
 }
 
 Trigger.prototype.Activate = function (event) {

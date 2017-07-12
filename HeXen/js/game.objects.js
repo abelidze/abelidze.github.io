@@ -1,6 +1,6 @@
 /*
-GameObjects Module 
-*/
+ GameObjects Module
+ */
 
 function GameObject(cell) {
 	this.cell = cell;
@@ -9,29 +9,29 @@ function GameObject(cell) {
 	this._type_ = GameObjectTypes.NONE;
 }
 
-GameObject.prototype.AddTrigger = function(trigger) {
+GameObject.prototype.AddTrigger = function (trigger) {
 	this.triggers.push(trigger);
 };
 
 GameObject.prototype.ClearTrigger = function () {
-	for(let i = 0; i < this.triggers.length; ++i)
+	for (let i = 0; i < this.triggers.length; ++i)
 		delete this.triggers[i];
 	this.triggers = [];
 };
 
-GameObject.prototype.GetType = function() {
+GameObject.prototype.GetType = function () {
 	return this._type_;
 };
 
-GameObject.prototype.Collide = function(object, callback) {
+GameObject.prototype.Collide = function (object, callback) {
 	callback(InteractResult.NOTHING);
 };
 
-GameObject.prototype.Draw = function() {
+GameObject.prototype.Draw = function () {
 	//do nothing
 };
 
-GameObject.prototype.Destroy = function() {
+GameObject.prototype.Destroy = function () {
 	this.cell.Clear();
 };
 
@@ -98,10 +98,10 @@ function DynamicObject(cell) {
 }
 DynamicObject.prototype = Object.create(GameObject.prototype);
 
-DynamicObject.prototype.MoveTo = function(cell) {
+DynamicObject.prototype.MoveTo = function (cell) {
 	let that = this;
-	cell.Interact(this.cell, function(result) {
-		switch(result) {
+	cell.Interact(this.cell, function (result) {
+		switch (result) {
 			case InteractResult.MOVED:
 				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
 				that.cell.Clear();
@@ -110,7 +110,7 @@ DynamicObject.prototype.MoveTo = function(cell) {
 				that.gm.gameState = GameState.ANIMATING;
 				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR);
 				that.cell = cell;
-			break;
+				break;
 		}
 	});
 };
@@ -138,7 +138,7 @@ function Actor(cell, anim) {
 	this.actionPoints = 0;
 	this.inventory = [];
 
-	if(this.anim) {
+	if (this.anim) {
 		this.anim[0].Play();
 	}
 }
@@ -146,18 +146,17 @@ Actor.prototype = Object.create(DynamicObject.prototype);
 
 Actor.prototype.Draw = function () {
 	// this.gm.render.DrawSprite(this.sprite, this.position.x, this.position.y, this.sprite.scale, false);
-	if(this.anim) {
+	if (this.anim) {
 		let ani = this.anim[this.animationClip];
 		ani.Draw(this.position.x, this.position.y, 1, this.rotation, true);
 	}
-	else
-	{
+	else {
 		this.gm.render.DrawCircle(this.position, 20, false, {fill: 'red', edge: 'rgba(255, 255, 255, 0)'});
 	}
 };
 
-Actor.prototype.ChangeAnimationClip = function(clip) {
-	if(this.anim) {
+Actor.prototype.ChangeAnimationClip = function (clip) {
+	if (this.anim) {
 		this.anim[this.animationClip].Stop();
 		this.anim[clip].Play();
 		this.animationClip = clip;
