@@ -21,10 +21,10 @@ function Level(size, objects, triggers) {
 
 const GameLevels =
     [
-        // new Level(16, [
-        //     [LevelObjects.PLAYER, 0, 0, [ [anim_playerIdle, anim_playerMove] ]],
-        //     [LevelObjects.PLAYER, 5, 5, [ [anim_enemyIdle , anim_enemyMove]  ]],
-        // ]),
+        new Level(16, [
+            [LevelObjects.PLAYER, 0, 0, [ [anim_playerIdle, anim_playerMove] ]],
+            [LevelObjects.PLAYER, 5, 5, [ [anim_enemyIdle , anim_enemyMove]  ]],
+        ]),
 
         new Level(11,
         [

@@ -32,7 +32,7 @@ EventSystem.prototype.ScoreEvent = function (event, score) {
 
 function Trigger(handler, checker, action, repeat, value, radius) {
 	this.handler = handler;
-	this.cheker = checker;
+	this.checker = checker;
 	this.action = action;
 	this.repeat = repeat;
 	this.value = value;
