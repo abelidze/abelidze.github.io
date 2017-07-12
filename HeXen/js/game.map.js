@@ -34,8 +34,15 @@ Cell.prototype.AddTrigger = function (trig) {
 	this.triggers.push(trig);
 }
 
-Cell.prototype.ActivateTriggers = function (object) {
-	for (let i = 0; i < this.triggers.length; ++i)
+Cell.prototype.ActivateTriggers = function (object, obj_only) {
+	if(this.object)
+		this.object.ActivateTriggers(object);
+	if(obj_only) return;
+
+	for(let i = 0; i < this.staticObjects.length; ++i)
+		this.staticObjects[i].ActivateTriggers(object);
+
+	for(let i = 0; i < this.triggers.length; ++i)
 		this.triggers[i].Activate(object);
 }
 
@@ -46,7 +53,7 @@ Cell.prototype.RemoveTrigger = function (id) {
 			this.triggers.splice(i, 1);
 			break;
 		}
-}
+};
 
 Cell.prototype.Clear = function () {
 	delete this.object;
@@ -57,23 +64,29 @@ Cell.prototype.Clear = function () {
 };
 
 Cell.prototype.Interact = function (cell, callback) {
+	let result = 0;
 	switch (this.state) {
 		case CellState.INVISIBLE:
 			callback(InteractResult.NOTHING);
 		break;
 
 		case CellState.EMPTY:
-			for (let i = 0; i < this.staticObjects.length; ++i)
-				this.staticObjects[i].ActivateTriggers(cell.object);
 			this.ActivateTriggers(cell.object);
 			callback(InteractResult.MOVED);
 		break;
 
 		default:
+			cell.ActivateTriggers(cell.object, true);
 			this.ActivateTriggers(cell.object);
-			this.object.ActivateTriggers();
-			cell.object.ActivateTriggers(cell.object);
-			this.object.Collide(cell.object, callback);
+			
+			for(let i = 0; i < this.staticObjects.length; ++i)
+				this.staticObjects[i].Collide(cell.object, function(res) { if(res > result) result = res; } );
+			
+			if(this.object)
+				this.object.Collide(cell.object, function(res) { if(res > result) result = res; } );
+
+			callback(result);
+		break;
 	}
 };
 
@@ -89,10 +102,14 @@ Cell.prototype.MoveObject = function (object) {
 Cell.prototype.AddObject = function (objectFunc) {
 	if (this.state !== CellState.EMPTY) return undefined;
 
-	this.object = objectFunc();
+	let obj = objectFunc();
+	if(obj.GetType() >= GameObjectTypes.DYNAMIC)
+		this.object = obj;
+	else
+		this.staticObjects.push(obj);
 	this.state = CellState.OBJECT;
 
-	return this.object;
+	return obj;
 };
 
 Cell.prototype.GetNearby = function () {
@@ -111,8 +128,7 @@ Cell.prototype.FillNearby = function(style) {
 	let nearby = this.GetNearby();
 	for (let i = 0; i < nearby.length; ++i)
 		nearby[i].SetStyle(style);
-	console.log(nearby);
-}
+};
 
 Cell.prototype.isNearbyXY = function (pos1, pos2) {
 	let x = pos1.x - pos2.x;

@@ -134,7 +134,7 @@ GameManager.prototype.GridClicked = function (pos) {
 					break;
 				}
 			}
-			break;
+		break;
 	}
 };
 

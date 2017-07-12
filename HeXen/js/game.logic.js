@@ -1,20 +1,25 @@
 /* Game Logic File */
 
 const isTouched = function (object) {
-    return true;
+	return true;
+}
+
+const isValid = function (object) {
+	return (object == this.options.key);
 }
 
 const ChangeColor = function (cell, style) {
     cell.SetStyle(style);
 }
 
-const OpenDoor = function (object, options) {
-    ChangeColor(this.handler, ActivatedStyle);
-    this.gm.grid.map[options.y][options.x].object.status = DoorState.OPENED;
+const DoorTrigger = function (object, options) {
+	ChangeColor(this.handler.cell, ActivatedStyle);
+	this.handler.status = DoorState.OPENED;
 }
 
-const NextTrigger = function (trig) {
-    trig.Activate();
+const OpenDoor = function (object, options) {
+	ChangeColor(this.handler, ActivatedStyle);
+	this.gm.grid.map[options.y][options.x].ActivateTriggers(options.key);
 }
 
 const ChangeLevel = function (object) {
@@ -25,8 +30,12 @@ const Pick = dummyFunc;
 
 //Triggers templates
 
-const DoorOpener = function (target_x, target_y, delay) {
-    return [isTouched, OpenDoor, 1, {delay: delay, x: target_x, y: target_y}];
+const TDoorOpener = function (this_x, this_y, key, delay) {
+	return [isValid, DoorTrigger, 1, {x: this_x, y: this_y, key: key, delay: delay}];
+}
+
+const TDoorKey = function (target_x, target_y, key, delay) {
+	return [isTouched, OpenDoor, 1, {key: key, delay: delay, x: target_x, y: target_y}];
 }
 
 //var DoorOpener = [isTouched, OpenDoor, 1, {delay: 200}];

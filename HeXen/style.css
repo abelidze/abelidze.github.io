@@ -69,7 +69,6 @@ img, canvas {
 
 #overlay {
 	position: fixed;
-	cursor: pointer;
 	display: none;
 	z-index: 3;
 	background-color: black;

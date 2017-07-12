@@ -65,7 +65,7 @@ const GameLevels =
             [LevelObjects.WALL, 9, 6, [null]],
 
             [LevelObjects.WALL, 0, 7, [null]],
-            [LevelObjects.DOOR, 1, 7, [null]],
+            [LevelObjects.DOOR, 1, 7, [null, [TDoorOpener(1, 7, 8800, 20)] ]],
             [LevelObjects.WALL, 8, 7, [null]],
 
             [LevelObjects.WALL, 0, 8, [null]],
@@ -123,7 +123,7 @@ const GameLevels =
             [LevelObjects.INVISIBLE, 10, 10, [null]]
         ],
         [
-            [DoorOpener(7, 1, 200), 5, 6]
+            [TDoorKey(7, 1, 8800, 200), 5, 6]
             // [[checker, action, repeat, {value: ...}], x, y]
         ])
     ];

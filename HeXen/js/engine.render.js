@@ -147,13 +147,13 @@ function Animator() {
 }
 Animator.prototype = Object.create(Drawable.prototype);
 
-Animator.prototype.AddMotion = function (object, target, speed, mode) {
+Animator.prototype.AddMotion = function (object, target, speed, mode, callback) {
 	if (object.sprite) {
 		object.ChangeAnimationClip(AnimationState.MOVE);
 	}
 	let dir = object.position.GetVector(target);
 	let sgn = dir.Sign();
-	this.motion.push([speed, object, target, mode, dir, sgn]);
+	this.motion.push([speed, object, target, mode, dir, sgn, callback]);
 }
 
 Animator.prototype.ProcessMotions = function(dTime) {
@@ -164,6 +164,10 @@ Animator.prototype.ProcessMotions = function(dTime) {
 			if(this.motion[i][1].sprite) {
 				this.motion[i][1].ChangeAnimationClip(AnimationState.IDLE);
 			}
+			// Callback
+			if(this.motion[i][6] !== undefined)
+				this.motion[i][6]();
+
 			this.motion[i][1].position.x = this.motion[i][2].x;
 			this.motion[i][1].position.y = this.motion[i][2].y;
 			this.motion.splice(i, 1);
