@@ -2,20 +2,20 @@
 	Input Module
 */
 
-function Mouse() {
+function Mouse(gm) {
+	this.gm = gm;
 	this.posX = 0;
 	this.posY = 0;
 	this.isMoving = false;
 
-	document.addEventListener('mousemove', this.Move.bind(this), false);
-	document.addEventListener('mouseup',   this.Up.bind(this),   false);
-	document.addEventListener('mousedown', this.Down.bind(this), false);
+	this.gm.event.AddEvent('mousemove', this.Move.bind(this));
+	this.gm.event.AddEvent('mouseup',   this.Up.bind(this));
+	this.gm.event.AddEvent('mousedown', this.Down.bind(this));
 
-	document.addEventListener('touchmove', this.MoveTouch.bind(this), false);
-	document.addEventListener('touchend',  this.UpTouch.bind(this),   false);
-	document.addEventListener('touchstart',this.DownTouch.bind(this), false);
+	this.gm.event.AddEvent('touchmove', this.MoveTouch.bind(this));
+	this.gm.event.AddEvent('touchend',  this.UpTouch.bind(this));
+	this.gm.event.AddEvent('touchstart', this.DownTouch.bind(this));
 }
-Mouse.prototype = Object.create(EventSystem.prototype);
 
 Mouse.prototype.Move = function(event) {
 	this.UpdateCoords(event);

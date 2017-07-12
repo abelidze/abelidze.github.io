@@ -9,6 +9,7 @@ function GameManager() {
 	Clickable.prototype.gm = this;
 	EventSystem.prototype.gm = this;
 
+	this.event = new EventSystem();
 	this.render = null;
 	this.mouse = null;
 	this.animator = new Animator();
@@ -17,6 +18,7 @@ function GameManager() {
 	this.freeze = true;
 	this.gameState = GameState.PAUSE;
 	this.result = GameResult.NONE;
+	this.score = 0;
 	this.currentLevel = 0;
 
 	this.objects = [];
@@ -29,7 +31,11 @@ function GameManager() {
 	});
 }
 
-GameManager.prototype.Init = function () {
+GameManager.prototype.AddScore = function (score) {
+    this.score += score;
+}
+
+GameManager.prototype.Init = function() {
 	this.render = new Render();
 	this.mouse = new Mouse(this);
 	this.StartGame();
