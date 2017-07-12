@@ -32,7 +32,7 @@ function GameManager() {
 GameManager.prototype.Init = function () {
 	this.event = new EventSystem();
 	this.render = new Render(this);
-	this.grid = new Grid(this, 64, 64, 11, 40);
+	this.grid = new Grid(this, 64, 64, 24, 48);
 	this.mouse = new Mouse(this);
 	this.animator = new Animator();
 	this.scoreBar = new ScoreWindow(DefaultScoreValue);
@@ -88,15 +88,15 @@ GameManager.prototype.ClearObjects = function () {
 GameManager.prototype.RenderEvent = function () {
 	let delta = this.render.deltaTime();
 
+	// this.render.ClearBack();
+	// this.grid.Draw();
+
 	this.animator.ProcessMotions(delta);
 
 	this.render.Clear();
 	for (let i = 0; i < this.objects.length; ++i) {
 		this.objects[i].Draw();
 	}
-
-	// this.render.ClearBack();
-	// this.grid.Draw();
 
 	requestAnimationFrame(this.RenderEvent.bind(this));
 };

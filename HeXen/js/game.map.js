@@ -148,24 +148,43 @@ Cell.prototype.isNearby = function (cell) {
 function Grid(gmanager, offset_X, offset_Y, size, radius) {
 	this.gm = gmanager;
 
-	if(this.gm.render.start_width > this.gm.render.start_height)
-		this.radius = Math.floor(0.95 * this.gm.render.start_height / (1.5 * size + size % 2));
-	else
-		this.radius = Math.floor(0.95 * this.gm.render.start_width / (Math.sqrt(3) * (1.5 * size - 0.5)));
+	this.radius = radius;
+	this.offset_x = 0;
+	this.offset_y = 0;
+	this.shift_x  = 0;
+	this.shift_y  = 0;
+	
+	this.size = 0;
+	this.map = [];
 
-	this.offset_x = Math.floor(this.gm.render.start_width * 0.1);
+	this.Calculate(size);
+	this.GenerateGrid(size);
+}
+
+Grid.prototype.Calculate = function(size) {
+	// if(this.gm.render.start_width > this.gm.render.start_height)
+	// 	this.radius = Math.floor(0.95 * this.gm.render.start_height / (1.5 * size + size % 2));
+	// else
+	// 	this.radius = Math.floor(0.95 * this.gm.render.start_width / (Math.sqrt(3) * (1.5 * size - 0.5)));
+	// this.gm.render.SetScale((this.gm.render.start_height / this.radius) / (size - 1));
+
+	// this.offset_x = Math.floor(this.gm.render.start_width * 0.1);
+	this.offset_x = Math.floor(this.gm.render.start_width * 0.008);
 	this.offset_y = Math.floor(this.gm.render.start_height * 0.1);
 
 	this.shift_x = this.radius * Math.cos(Math.PI / 180 * 30);
 	this.shift_y = this.radius * Math.sin(Math.PI / 180 * 30);
-
-	this.size = 0;
-	this.map = [];
-	this.GenerateGrid(size);
 }
 
 Grid.prototype.GenerateGrid = function(size) {
 	if(this.size == size) return;
+
+	// this.radius *= this.gm.render.scale;
+	if(this.size > 0)
+		this.gm.render.SetScale((this.gm.render.start_height / (2 * this.radius)) / size, true);
+	// 	this.gm.render.SetScale(this.size / size * 0.9, true);
+		// this.Calculate(size / this.size, true);
+
 	let hide = (this.size > size);
 	if(!hide) {
 		let foo = this.size;

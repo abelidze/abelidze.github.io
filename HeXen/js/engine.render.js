@@ -206,6 +206,8 @@ function Render(gmanager) {
 	this.scale = 1;
 	this.start_width = window.innerWidth;
 	this.start_height = window.innerHeight;
+	this.current_width = window.innerWidth;
+	this.current_height = window.innerHeight;
 	this.ResizeCanvas();
 	this.gm.event.AddEvent('resize', this.gm.ResizeEvent.bind(this.gm));
 }
@@ -239,7 +241,10 @@ Render.prototype.ResizeCanvas = function() {
 	this.bgcanvas.width = window.innerWidth;
 	this.bgcanvas.height = window.innerHeight;
 
-	this.SetScale(window.innerWidth / this.start_width);
+	if(window.innerWidth <= this.start_width)
+		this.SetScale(window.innerWidth / this.current_width, true);
+	this.current_width = window.innerWidth;
+	this.current_height = window.innerHeight;
 }
 
 Render.prototype.deltaTime = function() {
@@ -334,11 +339,15 @@ Render.prototype.DrawFrame = function (anim, x, y, scale, rotation, onCenter, on
 		y -= anim.h / 2 * Math.sin(rotation) + anim.h / 2.5 * Math.cos(rotation);
 	}
 
+	// context.scale(1 / this.scale, 1 / this.scale);
+	// context.translate(x * this.scale, y * this.scale);
 	context.translate(x, y);
 	context.rotate(rotation);
 	context.drawImage(anim.frames_img, sx, sy, anim.w, anim.h, 0, 0, anim.w * scale, anim.h * scale);
 	context.rotate(-rotation);
 	context.translate(-x, -y);
+	// context.translate(-x * this.scale, -y * this.scale);
+	// context.scale(this.scale, this.scale);
 }
 
 Render.prototype.DrawSprite = function (img, x, y, scale, onBack) {

@@ -229,7 +229,7 @@
   height: 1em;
   border-radius: 50%;
   float: right;
-  margin: 0 0.1em 0.1em 0;
+  margin: 0.25em 0.5em 0.1em 0;
   background-color: #1F282D;
 }
 .c100 *,
