@@ -1,6 +1,6 @@
 /*
- GameObjects Module
- */
+ 	GameObjects Module
+*/
 
 function GameObject(cell) {
 	this.cell = cell;

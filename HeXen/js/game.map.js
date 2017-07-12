@@ -112,7 +112,7 @@ function Grid(gmanager, offset_X, offset_Y, size, radius) {
 
 Grid.prototype.LoadLevel = function(level) {
 	for(let i = 0; i < level.map.length; ++i) {
-		this.size = level.size;
+		// this.size = level.size;
 		if(level.map[i][0] === LevelObjects.INVISIBLE) {
 			this.map[level.map[i][1]][level.map[i][2]].state = CellState.INVISIBLE;
 			continue;
@@ -146,12 +146,12 @@ Grid.prototype.PixelToHex = function (x, y) {
 
 	if (sx < 0 || sy < 0 || sx >= this.size || sy >= this.size) return undefined;
 
-	x = (x + this.shift_x * sy) * (this.radius + this.shift_y);
-	y = (y - this.radius + this.shift_y) * this.shift_x;
-	if ((x - y) < 0)
-		return new Point(sx, sy - 1);
-	if ((x + y) > 0)
-		return new Point(sx + 1, sy - 1);
+	// x = (x + this.shift_x * sy) * (this.radius + this.shift_y);
+	// y = (y - this.radius + this.shift_y) * this.shift_x;
+	// if ((x - y) < 0)
+	// 	return new Point(sx, sy - 1);
+	// if ((x + y) > 0)
+	// 	return new Point(sx + 1, sy - 1);
 	return new Point(sx, sy);
 };
 
