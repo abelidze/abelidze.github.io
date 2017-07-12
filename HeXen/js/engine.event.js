@@ -44,5 +44,5 @@ Trigger.prototype.Activate = function (object) {
         return;
     if((this.repeat > 0 ) || (this.repeat < 0))
         this.repeat--;
-    this.action(object);
+    this.action.apply(this, object);
 };

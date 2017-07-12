@@ -126,9 +126,14 @@ Grid.prototype.LoadLevel = function(level) {
 		let cell = this.map[level.map[i][1]][level.map[i][2]];
 		this.gm.CreateObject(LevelObjFunc[level.map[i][0]], cell, level.map[i][3]);
 	}
+
+	if(level.triggers === undefined)
+		return;
+
 	for(let i = 0; i < level.triggers.length; ++i){
-		let cell = this.map[this.triggers[i][1]][this.triggers[i][2]];
-		let trig = new Trigger(cell, level.triggers[i][0]);
+		console.log(level.triggers[i]);
+		let cell = this.map[level.triggers[i][1]][level.triggers[i][2]];
+		let trig = new Trigger(cell, level.triggers[i][0][0], level.triggers[i][0][1], level.triggers[i][0][2]);
 		cell.AddTrigger(trig);
 	}
 };

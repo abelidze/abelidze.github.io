@@ -9,8 +9,8 @@ const ChangeColor = function (cell, style) {
 }
 
 const OpenDoor = function (object) {
-    object.status = DoorState.OPENED;
-    ChangeColor(object, ActivatedStyle);
+    //cell.object.status = DoorState.OPENED;
+    ChangeColor(this.handler, ActivatedStyle);
 }
 
 const ChangeLevel = function (object) {
