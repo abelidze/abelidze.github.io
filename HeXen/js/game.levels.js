@@ -4,18 +4,18 @@
 
 /*Constructors of game objects*/
 const LevelObjFunc = [
-    Container,
-    Door,
-    Wall,
-    Player,
-    Enemy,
-    Entry,
-    Exit
+	Container,
+	Door,
+	Wall,
+	Player,
+	Enemy,
+	Entry,
+	Exit
 ];
 
 function Level(size, arr) {
-    this.size = size;
-    this.map = arr;
+	this.size = size;
+	this.map = arr;
 }
 
 const GameLevels =
