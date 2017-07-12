@@ -10,8 +10,13 @@ function GameObject(cell) {
 }
 
 GameObject.prototype.AddTrigger = function (trigger) {
-	this.triggers.push(trigger);
+    this.triggers.push(trigger);
 };
+
+GameObject.prototype.ActivateTriggers = function () {
+    for (let i = 0; i < this.triggers.length; ++i)
+        this.triggers[i].Activate(this);
+}
 
 GameObject.prototype.ClearTrigger = function () {
 	for (let i = 0; i < this.triggers.length; ++i)

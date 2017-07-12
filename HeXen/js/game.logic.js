@@ -8,12 +8,17 @@ const ChangeColor = function (cell, style) {
     cell.SetStyle(style);
 }
 
-const OpenDoor = function () {
-    this.object.status = DoorState.OPENED;
-    ChangeColor(this, ActivatedStyle);
-};
+const OpenDoor = function (object) {
+    object.status = DoorState.OPENED;
+    ChangeColor(object, ActivatedStyle);
+}
+
+const ChangeLevel = function (object) {
+    object.gm.NextLevel();
+}
+
 const Pick = dummyFunc;
 
 //Triggers templates
 
-var DoorOpener = [isTouched, OpenDoor];
+var DoorOpener = [isTouched, OpenDoor, 1, {}];

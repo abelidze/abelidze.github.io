@@ -24,6 +24,10 @@ Cell.prototype.SetStyle = function(style) {
 	this.Draw();
 }
 
+Cell.prototype.AddTrigger = function (trig) {
+	this.triggers.push(trig);
+}
+
 Cell.prototype.ActivateTriggers = function(object) {
 	for (let i = 0; i < this.triggers.length; ++i)
 		this.triggers[i].Activate(object);
@@ -49,6 +53,8 @@ Cell.prototype.Interact = function (cell, callback) {
 
 		default:
 			this.ActivateTriggers(cell.object);
+			this.object.ActivateTriggers();
+			cell.object.ActivateTriggers(cell.object);
 			this.object.Collide(cell.object, callback);
 	}
 };
@@ -119,6 +125,11 @@ Grid.prototype.LoadLevel = function(level) {
 		}
 		let cell = this.map[level.map[i][1]][level.map[i][2]];
 		this.gm.CreateObject(LevelObjFunc[level.map[i][0]], cell, level.map[i][3]);
+	}
+	for(let i = 0; i < level.triggers.length; ++i){
+		let cell = this.map[this.triggers[i][1]][this.triggers[i][2]];
+		let trig = new Trigger(cell, level.triggers[i][0]);
+		cell.AddTrigger(trig);
 	}
 };
 

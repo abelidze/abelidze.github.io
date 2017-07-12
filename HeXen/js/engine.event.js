@@ -30,11 +30,12 @@ EventSystem.prototype.ScoreEvent = function (event, score) {
     this.AddScore(score);
 }
 
-function Trigger(handler, checker, action, repeat, radius) {
+function Trigger(handler, checker, action, repeat, value, radius) {
 	this.handler = handler;
 	this.cheker = checker;
 	this.action = action;
 	this.repeat = repeat;
+	this.value = value;
 	this.radius = radius;
 }
 

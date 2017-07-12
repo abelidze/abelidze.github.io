@@ -13,9 +13,10 @@ const LevelObjFunc = [
 	Exit
 ];
 
-function Level(size, arr) {
+function Level(size, objects, triggers) {
 	this.size = size;
-	this.map = arr;
+	this.map = objects;
+	this.triggers = triggers;
 }
 
 const GameLevels =
@@ -25,10 +26,13 @@ const GameLevels =
         //     [LevelObjects.PLAYER, 5, 5, [ [anim_enemyIdle , anim_enemyMove]  ]],
         // ]),
 
-        new Level(11, [
+        new Level(11,
+        [
+            // [LevelObjects.TYPE, x, y, [ [anim1, anim2, anim3, ...], [trigger1, trigger2, ...] ]]
             /*Sobstvenno map*/
             [LevelObjects.WALL, 5, 0, [null]],
             [LevelObjects.WALL, 6, 0, [null]],
+            //[LevelObjects.WALL, 6, 0, [null]],
             [LevelObjects.WALL, 7, 0, [null]],
             [LevelObjects.WALL, 8, 0, [null]],
             [LevelObjects.WALL, 9, 0, [null]],
@@ -117,5 +121,9 @@ const GameLevels =
             [LevelObjects.INVISIBLE, 8, 10, [null]],
             [LevelObjects.INVISIBLE, 9, 10, [null]],
             [LevelObjects.INVISIBLE, 10, 10, [null]]
+        ],
+        [
+            [DoorOpener, 4, 2]
+            // [[checker, action, repeat, {value: ...}], x, y]
         ])
     ];
