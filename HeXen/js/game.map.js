@@ -10,6 +10,17 @@ function Cell(grid, center) {
 	this.object = null;
 	this.style = {edge: 'white', fill: 'black', width: 3};
 	this.id = getRandomInt(10000000, 99999999);
+	this.triggers = [];
+}
+
+Cell.prototype.SetStyle = function (style) {
+	this.style = style;
+	this.Draw();
+}
+
+Cell.prototype.ActivateTriggers = function (object) {
+	for (let i = 0; i < this.triggers.length; ++i)
+		this.triggers[i].Activate(object);
 }
 
 Cell.prototype.Draw = function (render) {
@@ -30,10 +41,12 @@ Cell.prototype.Interact = function (cell, callback) {
 			break;
 
 		case CellState.EMPTY:
+			this.ActivateTriggers(cell.object);
 			callback(InteractResult.MOVED);
 			break;
 
 		default:
+			this.ActivateTriggers(cell.object);
 			this.object.Collide(cell.object, callback);
 	}
 };

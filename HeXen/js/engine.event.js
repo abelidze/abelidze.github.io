@@ -30,17 +30,6 @@ EventSystem.prototype.ScoreEvent = function (event, score) {
     this.AddScore(score);
 }
 
-function Trigger(cell, checker, action, repeat, radius) {
-    this.cell = cell;
-    this.cheker = checker;
-    this.action = action;
-    this.repeat = repeat;
-    this.radius = radius;
-
-EventSystem.prototype.MouseEvent = function (event, detail) {
-
-}
-
 function Trigger(handler, checker, action, repeat, radius) {
 	this.handler = handler;
 	this.cheker = checker;
@@ -49,10 +38,10 @@ function Trigger(handler, checker, action, repeat, radius) {
 	this.radius = radius;
 }
 
-Trigger.prototype.Activate = function (event) {
-    if (!this.checker(event))
+Trigger.prototype.Activate = function (object) {
+    if (!this.checker(object))
         return;
     if((this.repeat > 0 ) || (this.repeat < 0))
         this.repeat--;
-    this.action(event);
+    this.action(object);
 };

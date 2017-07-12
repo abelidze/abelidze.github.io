@@ -73,7 +73,9 @@ const EventType = {
     LISTEN : 0,
     DRAW: 1,
     CUSTOM: 2
-}
+};
+
+const ActivatedStyle = {edge: '#4186D3', fill: '#5FD4B1', width: 3};
 
 const HexDirections = [
 	[+1, 0], [+1, -1], [0, -1],
