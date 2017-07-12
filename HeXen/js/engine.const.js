@@ -69,6 +69,12 @@ const AnimatorModes = {
     LINEAR: 1
 };
 
+const EventType = {
+    LISTEN : 0,
+    DRAW: 1,
+    CUSTOM: 2
+}
+
 const HexDirections = [
     [+1, 0], [+1, -1], [0, -1],
     [-1, 0], [-1, +1], [0, +1]

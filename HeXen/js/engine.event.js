@@ -30,10 +30,6 @@ EventSystem.prototype.ScoreEvent = function (event, score) {
     this.AddScore(score);
 }
 
-EventSystem.prototype.MouseEvent = function (event, detail) {
-
-}
-
 function Trigger(cell, checker, action, repeat, radius) {
     this.cell = cell;
     this.cheker = checker;
