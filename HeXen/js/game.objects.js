@@ -88,7 +88,10 @@ function Door(cell, drawable, status) {
 Door.prototype = Object.create(Obstacle.prototype);
 
 Door.prototype.Draw = function () {
-	this.cell.SetStyle(DoorStyle);
+	if (this.status == DoorState.CLOSED)
+		this.cell.SetStyle(DoorStyleClosed);
+	else
+		this.cell.SetStyle(DoorStyleOpened);
 }
 
 Door.prototype.Collide = function (object, callback) {
@@ -153,9 +156,11 @@ DynamicObject.prototype.MoveTo = function (cell) {
 				that.gm.gameState = GameState.ANIMATING;
 				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR);
 				that.cell = cell;
-				that.cell.FillNearby(NearbyCellStyle);
-				that.gm.render.ClearBack();
-				that.gm.grid.Draw();
+				setTimeout(function() {
+					that.cell.FillNearby(NearbyCellStyle);
+					that.gm.render.ClearBack();
+					that.gm.grid.Draw();
+				}, 250);
 				break;
             case InteractResult.EXIT:
                 let victory = new SplashWindow('<a href="http://niceme.me">TAP ME, SENPAI</a>');
