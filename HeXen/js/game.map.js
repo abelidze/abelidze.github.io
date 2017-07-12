@@ -83,6 +83,19 @@ Cell.prototype.GetNearby = function () {
 	return nearby;
 };
 
+Cell.prototype.isNearbyXY = function (pos1, pos2) {
+	let x = pos1.x - pos2.x;
+	let y = pos1.y - pos2.y;
+
+	return (Math.abs(x) <= 1 && Math.abs(y) <= 1 && x !== y);
+};
+
+Cell.prototype.isNearby = function (cell) {
+	let pos1 = this.grid.PixelToHex(this.center.x, this.center.y);
+	let pos2 = this.grid.PixelToHex(cell.center.x, cell.center.y);
+
+	return this.isNearby(pos1, pos2);
+};
 
 /* GRID */
 function Grid(gmanager, offset_X, offset_Y, size, radius) {
@@ -165,3 +178,23 @@ Grid.prototype.Select = function (x, y) {
 	// this.map[pos.y][pos.x].style = {edge: 'black', fill: '#1F282D', width: 1};
 	// this.map[pos.y][pos.x].Draw();
 };
+
+/*Path class*/
+function Path(points) {
+	this.points = points;
+	this.current = 0;
+}
+
+Path.prototype.NextTurn = function () {
+	return this.points[(++this.current) % this.points.length];
+};
+
+Path.prototype.PrevTurn = function () {
+	return this.points[(this.current - 1 + this.points.length) % this.points.length];
+};
+
+Path.prototype.PushTurn = function (point) {
+	this.points.push(point);
+};
+
+Path.prototype.IsCorrect()
