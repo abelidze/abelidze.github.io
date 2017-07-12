@@ -2,13 +2,16 @@
  	GameObjects Module
 */
 
-function GameObject(cell) {
+function GameObject(cell, drawable) {
+    this.sprite =
     this.position = new Point(cell.center.x, cell.center.y);
 	this.cell = cell;
 	this.rotation = 0;
 	this.triggers = [];
 	this._type_ = GameObjectTypes.NONE;
 }
+
+GameObject.prototype = Object.create(BaseModel.prototype);
 
 GameObject.prototype.AddTrigger = function (trigger) {
     this.triggers.push(trigger);
@@ -68,7 +71,7 @@ Wall.prototype.Draw = function () {
 
 function Door(cell, sprite, status) {
 	Obstacle.call(this, cell, sprite);
-	this.status = status;
+	this.status = status ? status : DoorState.CLOSED;
 	this._type_ = GameObjectTypes.DOOR;
 }
 Door.prototype = Object.create(Obstacle.prototype);
@@ -102,6 +105,13 @@ function Exit(cell, sprite) {
 }
 Exit.prototype = Object.create(StaticObject.prototype);
 
+Exit.prototype.Collide = function (object, callback) {
+    if (object.GetType() === GameObjectTypes.PLAYER)
+        callback(InteractResult.EXIT);
+    else
+        callback(InteractResult.MOVED);
+}
+
 /* DYNAMIC */
 function DynamicObject(cell) {
 	GameObject.call(this, cell);
@@ -122,6 +132,10 @@ DynamicObject.prototype.MoveTo = function (cell) {
 				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR);
 				that.cell = cell;
 				break;
+            case InteractResult.EXIT:
+                let victory = new SplashWindow('<a href="http://niceme.me">TAP ME, SENPAI</a>');
+                victory.Show();
+                break;
 		}
 	});
 };
@@ -141,24 +155,24 @@ Cube.prototype.Collide = function (object, callback) {
 	}
 };
 
-function Actor(cell, anim) {
+function Actor(cell, sprite) {
 	DynamicObject.call(this, cell);
-	this.anim = anim;
+	this.sprite = sprite;
 	this.animationClip = AnimationState.IDLE;
 	this.actionPoints = 0;
 	this.inventory = [];
 
-	if (this.anim) {
-		this.anim[0].Play();
+	if (this.sprite) {
+		this.sprite[0].Play();
 	}
 }
 Actor.prototype = Object.create(DynamicObject.prototype);
 
 Actor.prototype.Draw = function () {
 	// this.gm.render.DrawSprite(this.sprite, this.position.x, this.position.y, this.sprite.scale, false);
-	if (this.anim) {
-		let ani = this.anim[this.animationClip];
-		ani.Draw(this.position.x, this.position.y, 1, this.rotation, true);
+	if (this.sprite) {
+		let ani = this.sprite[this.animationClip];
+		ani.Draw(this.animationClip, this.position.x, this.position.y, this.rotation);
 	}
 	else {
 		this.gm.render.DrawCircle(this.position, 20, false, {fill: 'red', edge: 'rgba(255, 255, 255, 0)'});
@@ -166,15 +180,15 @@ Actor.prototype.Draw = function () {
 };
 
 Actor.prototype.ChangeAnimationClip = function (clip) {
-	if (this.anim) {
-		this.anim[this.animationClip].Stop();
-		this.anim[clip].Play();
+	if (this.sprite) {
+		this.sprite[this.animationClip].Stop();
+		this.sprite[clip].Play();
 		this.animationClip = clip;
 	}
 };
 
-function Player(cell, anim) {
-	Actor.call(this, cell, anim);
+function Player(cell, sprite) {
+	Actor.call(this, cell, sprite);
 	this._type_ = GameObjectTypes.PLAYER;
 	this.gm.AddPlayer(this);
 }
@@ -188,8 +202,8 @@ Player.prototype.Collide = function (object, callback) {
 	}
 };
 
-function Enemy(cell, anim) {
-	Actor.call(this, cell, anim);
+function Enemy(cell, sprite) {
+	Actor.call(this, cell, sprite);
 	this._type_ = GameObjectTypes.ENEMY;
 }
 Enemy.prototype = Object.create(Actor.prototype);

@@ -6,6 +6,8 @@ function Clickable(rect) {
 	this.rect = rect;
 }
 
+Clickable.prototype = Object.create(BaseModel.prototype);
+
 Clickable.prototype.isPressed = function(x, y) {
 	return this.isInArea(x, y) && this.mouse.isMoving;
 };
@@ -31,6 +33,8 @@ function SplashWindow(text) {
 	this.form = $(this.name);
 	$('.splash_close').click(this.Close.bind(this));
 }
+
+SplashWindow.prototype = Object.create(BaseModel.prototype);
 
 SplashWindow.prototype.FadeIn = function() {
 	let that = this;

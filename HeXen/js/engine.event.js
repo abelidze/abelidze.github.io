@@ -6,6 +6,8 @@ function EventSystem() {
     this.listeners = {};
 }
 
+EventSystem.prototype = Object.create(BaseModel.prototype);
+
 EventSystem.prototype.AddEvent = function (event, listener) {
     if (this.listeners[event] === undefined)
         this.listeners[event] = [];
@@ -25,19 +27,27 @@ EventSystem.prototype.DeleteEvent = function (event, listener) {
     }
 }
 
-function Trigger(handler, checker, action, repeat, value, radius) {
+function Trigger(handler, checker, action, repeat, options, radius) {
 	this.handler = handler;
 	this.checker = checker;
 	this.action = action;
 	this.repeat = repeat;
-	this.value = value;
+	this.options = options ? options : {};
 	this.radius = radius;
 }
+
+Trigger.prototype = Object.create(BaseModel.prototype);
 
 Trigger.prototype.Activate = function (object) {
     if (!this.checker(object))
         return;
     if((this.repeat > 0 ) || (this.repeat < 0))
         this.repeat--;
-    this.action.apply(this, object);
+    if (this.options.delay === undefined)
+        this.options.delay = 10;
+
+    let that = this;
+    setTimeout(function (){
+        that.action(object, that.options);
+    }, that.options.delay);
 };

@@ -67,19 +67,33 @@ Rect.prototype.isInArea = function (x, y) {
 }
 
 
-function Drawable(scale) {
+function Drawable(source, scale) {
 	if (scale === undefined) scale = 1;
 	this.scale = scale;
+	this.render_element = source;
+	this._type_ = DrawableType.IMAGE;
 }
 
-function Sprite(image, scale) {
-	Drawable.call(this, scale);
-	this.img = image;
+Drawable.prototype = Object.create(BaseModel.prototype);
+
+Drawable.prototype.Draw = function (x, y, onBack) {
+	this.gm.render.DrawSprite(this.render_element, x, y, this.scale, onBack);
+}
+
+function Sprite(source, scale) {
+	Drawable.call(this, source, scale);
+	this.onCenter = true;
+	this.animations = source.animations ? source.animations : null;
+	this.image = source.img ? source.img : null;
 }
 Sprite.prototype = Object.create(Drawable.prototype);
 
-Sprite.prototype.Draw = function (x, y, onBack) {
-	this.gm.render.DrawSprite(this.img, x, y, this.scale, onBack);
+Sprite.prototype.Draw = function (animation_clip, x, y,  rotation, onBack) {
+	if (this.image)
+		this.gm.render.DrawSprite(this.img, x, y, this.scale, onBack);
+	else if (this.animations){
+		this.animations[animation_clip].Draw(x, y, rotation, this.scale, this.onCenter, onBack);
+	}
 }
 
 function Animation(frames_img, frames_count, offsetX, offsetY, width, height, fps) {
@@ -97,7 +111,7 @@ function Animation(frames_img, frames_count, offsetX, offsetY, width, height, fp
 }
 Animation.prototype = Object.create(Drawable.prototype);
 
-Animation.prototype.Draw = function (x, y, scale, rotation, onCenter, onBack) {
+Animation.prototype.Draw = function (x, y, rotation, scale, onCenter, onBack) {
 	if (!this.isPlayed)
 		return;
 

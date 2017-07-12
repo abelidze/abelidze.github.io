@@ -39,6 +39,7 @@ Cell.prototype.Clear = function () {
 	delete this.object;
 	this.object = null;
 	this.state = CellState.EMPTY;
+	this.triggers = [];
 	// this.style
 };
 
@@ -62,7 +63,7 @@ Cell.prototype.Interact = function (cell, callback) {
 };
 
 Cell.prototype.MoveObject = function (object) {
-	if (this.state !== CellState.EMPTY) return undefined;
+	//if (this.state !== CellState.EMPTY) return undefined;
 
 	this.object = object;
 	this.state = CellState.OBJECT;
@@ -182,7 +183,10 @@ Grid.prototype.LoadLevel = function(level) {
 
 	for(let i = 0; i < level.triggers.length; ++i) {
 		let cell = this.map[level.triggers[i][1]][level.triggers[i][2]];
-		let trig = new Trigger(cell, level.triggers[i][0][0], level.triggers[i][0][1], level.triggers[i][0][2]);
+		let trig = new Trigger(cell, level.triggers[i][0][0],
+								     level.triggers[i][0][1],
+								     level.triggers[i][0][2],
+            						 level.triggers[i][0][3]);
 		cell.AddTrigger(trig);
 	}
 };

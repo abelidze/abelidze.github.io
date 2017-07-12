@@ -4,10 +4,7 @@
 
 function GameManager() {
 	/* BAD CODER */
-	GameObject.prototype.gm = this;
-	Drawable.prototype.gm = this;
-	Clickable.prototype.gm = this;
-	EventSystem.prototype.gm = this;
+	BaseModel.prototype.gm = this;
 
 	this.render = null;
 	this.mouse = null;

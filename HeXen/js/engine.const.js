@@ -25,7 +25,8 @@ const InteractResult = {
 	ATTACK: 2,
 	DIE: 3,
 	OPEN: 4,
-	TAKE: 5
+	TAKE: 5,
+	EXIT: 6
 };
 
 const GameState = {
@@ -57,6 +58,11 @@ const LevelObjects = {
 	ENEMY: 4,
 	ENTRY: 5,
 	EXIT: 6
+};
+
+const DrawableType = {
+	IMAGE: 0,
+	ANIMATION: 1
 };
 
 const AnimationState = {

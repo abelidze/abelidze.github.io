@@ -123,7 +123,7 @@ const GameLevels =
             [LevelObjects.INVISIBLE, 10, 10, [null]]
         ],
         [
-            [DoorOpener, 5, 6]
+            [DoorOpener(7, 1, 200), 5, 6]
             // [[checker, action, repeat, {value: ...}], x, y]
         ])
     ];
