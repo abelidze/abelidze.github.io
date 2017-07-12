@@ -29,7 +29,7 @@ const GameLevels =
         new Level(11,
         [
             // [LevelObjects.TYPE, x, y, [ [anim1, anim2, anim3, ...], [trigger1, trigger2, ...] ]]
-            [LevelObjects.PLAYER, 5, 5, [[anim_playerIdle, anim_playerMove]]],
+            [LevelObjects.PLAYER, 5, 5, [spr_player]],
 
             [LevelObjects.WALL, 5, 0, [null]],
             [LevelObjects.WALL, 6, 0, [null]],

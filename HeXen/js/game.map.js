@@ -98,14 +98,21 @@ Cell.prototype.AddObject = function (objectFunc) {
 Cell.prototype.GetNearby = function () {
 	let pos, nearby = [];
 	for (let i = 0; i < HexDirections.length; ++i) {
-		pos = this.grid.PixelToHex(this.center);
-		pos.x += HexDirections[i][0], pos.y += HexDirections[i][0];
+		pos = this.grid.PixelToHex(this.center.x, this.center.y);
+		pos.x += HexDirections[i][0], pos.y += HexDirections[i][1];
 		if (pos.x < 0 || pos.y < 0 || pos.x >= this.size || pos.y >= this.size) continue;
 
 		nearby.push(this.grid.map[pos.y][pos.x]);
 	}
 	return nearby;
 };
+
+Cell.prototype.FillNearby = function(style) {
+	let nearby = this.GetNearby();
+	for (let i = 0; i < nearby.length; ++i)
+		nearby[i].SetStyle(style);
+	console.log(nearby);
+}
 
 Cell.prototype.isNearbyXY = function (pos1, pos2) {
 	let x = pos1.x - pos2.x;

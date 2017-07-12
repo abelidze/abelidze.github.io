@@ -83,11 +83,19 @@ Drawable.prototype.Draw = function (x, y, onBack) {
 function Sprite(source, scale) {
 	Drawable.call(this, source, scale);
 	this.onCenter = true;
+	this.animation_clip = 0;
 }
+
 Sprite.prototype = Object.create(Drawable.prototype);
 
-Sprite.prototype.Draw = function (animation_clip, x, y,  rotation, onBack) {
-	this.render_element[animation_clip].Draw(x, y, rotation, this.scale, this.onCenter, onBack);
+Sprite.prototype.Draw = function (x, y,  rotation, onBack) {
+	this.render_element[this.animation_clip].Draw(x, y, rotation, this.scale, this.onCenter, onBack);
+}
+
+Sprite.prototype.Animate = function (animation_clip) {
+	this.render_element[this.animation_clip].Stop();
+	this.animation_clip = animation_clip;
+	this.render_element[this.animation_clip].Play();
 }
 
 function Animation(frames_img, frames_count, offsetX, offsetY, width, height, fps) {
@@ -140,7 +148,7 @@ function Animator() {
 Animator.prototype = Object.create(Drawable.prototype);
 
 Animator.prototype.AddMotion = function (object, target, speed, mode) {
-	if (object.anim) {
+	if (object.sprite) {
 		object.ChangeAnimationClip(AnimationState.MOVE);
 	}
 	let dir = object.position.GetVector(target);
@@ -153,7 +161,7 @@ Animator.prototype.ProcessMotions = function(dTime) {
 	for(let i = 0; i < this.motion.length; ++i) {
 		cur_dir = this.motion[i][1].position.GetVector(this.motion[i][2]);
 		if(cur_dir.Sign() != this.motion[i][5]) {
-			if(this.motion[i][1].anim) {
+			if(this.motion[i][1].sprite) {
 				this.motion[i][1].ChangeAnimationClip(AnimationState.IDLE);
 			}
 			this.motion[i][1].position.x = this.motion[i][2].x;

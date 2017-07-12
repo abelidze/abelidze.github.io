@@ -135,7 +135,9 @@ Exit.prototype.Collide = function (object, callback) {
 function DynamicObject(cell, drawable) {
 	GameObject.call(this, cell, drawable);
 	this._type_ = GameObjectTypes.DYNAMIC;
+	cell.FillNearby(NearbyCellStyle);
 }
+
 DynamicObject.prototype = Object.create(GameObject.prototype);
 
 DynamicObject.prototype.MoveTo = function (cell) {
@@ -143,6 +145,7 @@ DynamicObject.prototype.MoveTo = function (cell) {
 	cell.Interact(this.cell, function (result) {
 		switch (result) {
 			case InteractResult.MOVED:
+				that.cell.FillNearby(DefaultCellStyle);
 				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
 				that.cell.Clear();
 				cell.MoveObject(that);
@@ -150,6 +153,9 @@ DynamicObject.prototype.MoveTo = function (cell) {
 				that.gm.gameState = GameState.ANIMATING;
 				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR);
 				that.cell = cell;
+				that.cell.FillNearby(NearbyCellStyle);
+				that.gm.render.ClearBack();
+				that.gm.grid.Draw();
 				break;
             case InteractResult.EXIT:
                 let victory = new SplashWindow('<a href="http://niceme.me">TAP ME, SENPAI</a>');
@@ -175,12 +181,11 @@ Cube.prototype.Collide = function (object, callback) {
 
 function Actor(cell, drawable) {
 	DynamicObject.call(this, cell, drawable);
-	this.animationClip = AnimationState.IDLE;
 	this.actionPoints = 0;
 	this.inventory = [];
 
 	if (this.sprite) {
-		this.sprite[0].Play();
+		this.sprite.Animate(AnimationState.IDLE);
 	}
 }
 Actor.prototype = Object.create(DynamicObject.prototype);
@@ -188,8 +193,7 @@ Actor.prototype = Object.create(DynamicObject.prototype);
 Actor.prototype.Draw = function () {
 	// this.gm.render.DrawSprite(this.sprite, this.position.x, this.position.y, this.sprite.scale, false);
 	if (this.sprite) {
-		let ani = this.sprite[this.animationClip];
-		ani.Draw(this.animationClip, this.position.x, this.position.y, this.rotation);
+		this.sprite.Draw(this.position.x, this.position.y, this.rotation);
 	}
 	else {
 		this.gm.render.DrawCircle(this.position, 20, false, {fill: 'red', edge: 'rgba(255, 255, 255, 0)'});
@@ -198,9 +202,7 @@ Actor.prototype.Draw = function () {
 
 Actor.prototype.ChangeAnimationClip = function (clip) {
 	if (this.sprite) {
-		this.sprite[this.animationClip].Stop();
-		this.sprite[clip].Play();
-		this.animationClip = clip;
+		this.sprite.Animate(clip);
 	}
 };
 
