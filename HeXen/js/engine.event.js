@@ -1,7 +1,6 @@
-/**
- * Created by ADMIN on 11.07.2017.
- * Event module
- */
+/*
+    Event module
+*/
 
 function EventSystem() {
     this.listeners = {};

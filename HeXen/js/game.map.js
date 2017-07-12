@@ -116,6 +116,8 @@ function Grid(gmanager, offset_X, offset_Y, size, radius) {
 	this.shift_x = radius * Math.cos(Math.PI / 180 * 30);
 	this.shift_y = radius * Math.sin(Math.PI / 180 * 30);
 
+	this.GenerateGrid(size);
+
 	let x = 0, y = 0;
 	for (let i = 0; i < size; ++i) {
 		this.map[i] = [];
@@ -127,6 +129,10 @@ function Grid(gmanager, offset_X, offset_Y, size, radius) {
 	}
 
 	this.bounds = new Rect(offset_X - this.shift_x, offset_Y - radius, x + this.shift_x, y + radius);
+}
+
+Grid.prototype.GenerateGrid = function(size) {
+
 }
 
 Grid.prototype.LoadLevel = function(level) {
