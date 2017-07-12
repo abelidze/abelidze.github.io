@@ -11,6 +11,7 @@ function GameManager() {
 	this.event = null;
 	this.animator = null;
 	this.grid = null;
+	this.scoreBar = null;
 
 	this.freeze = true;
 	this.gameState = GameState.PAUSE;
@@ -34,6 +35,7 @@ GameManager.prototype.Init = function () {
 	this.grid = new Grid(this, 64, 64, 11, 40);
 	this.mouse = new Mouse(this);
 	this.animator = new Animator();
+	this.scoreBar = new ScoreWindow(DefaultScoreValue);
 	this.StartGame();
 };
 
@@ -67,6 +69,7 @@ GameManager.prototype.AddScore = function (score) {
 GameManager.prototype.NextLevel = function () {
 	this.grid.LoadLevel(GameLevels[this.currentLevel]);
 	this.currentLevel++;
+	this.score = 0;
 };
 
 GameManager.prototype.CreateObject = function (object, cell, args) {

@@ -38,7 +38,6 @@ Mouse.prototype.Select = function(event) {
 	event = event || window.event;
 	event.preventDefault ? event.preventDefault() : (event.returnValue=false);
 	if(event.which == 3) return;
-
 	this.isMoving = true;
 	this.UpdateCoords(event);
 };

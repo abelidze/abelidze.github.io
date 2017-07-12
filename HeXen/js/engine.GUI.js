@@ -79,6 +79,17 @@ QuestionWindow.prototype = Object.create(SplashWindow.prototype);
 
 function ScoreWindow(text) {
 	SplashWindow.call(this, text);
-	//properties
+	this.ChangeScore(text);
 }
 ScoreWindow.prototype = Object.create(SplashWindow.prototype);
+
+ScoreWindow.prototype.ChangeScore = function(value) {
+	/* DEBUG VERSION */
+	if (value > 100)
+		return;
+	prBar = $('#progress_bar');
+	prBar.removeClass();
+	prBar.addClass('c100 p' + value + ' big');
+	prBarVal = $('#progress_bar_value');
+	prBarVal.text(value + '%');
+}

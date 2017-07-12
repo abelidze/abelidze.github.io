@@ -155,6 +155,7 @@ DynamicObject.prototype.MoveTo = function (cell) {
 				// that.position = cell.center;
 				that.gm.gameState = GameState.ANIMATING;
 				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR);
+				that.gm.scoreBar.ChangeScore(++that.gm.score);
 				that.cell = cell;
 				setTimeout(function() {
 					that.cell.FillNearby(NearbyCellStyle);
