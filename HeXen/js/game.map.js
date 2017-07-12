@@ -3,14 +3,17 @@
 */
 
 /* CELLS */
-function Cell(grid, center) {
+function Cell(grid, center, gridPosition) {
 	this.grid = grid;
+	this.gridPosition = gridPosition;
 	this.center = center;
 	this.state = CellState.EMPTY;
 	this.object = null;
+	this.staticObjects = [];
 	this.style = DefaultCellStyle;//{edge: 'white', fill: 'black', width: 3};
 	this.id = getRandomInt(10000000, 99999999);
 	this.triggers = [];
+	this.triggersCounter = 0;
 }
 
 Cell.prototype.Draw = function(render) {
@@ -27,12 +30,22 @@ Cell.prototype.SetStyle = function(style) {
 }
 
 Cell.prototype.AddTrigger = function (trig) {
+	trig.id = ++this.triggersCounter;
 	this.triggers.push(trig);
 }
 
-Cell.prototype.ActivateTriggers = function(object) {
+Cell.prototype.ActivateTriggers = function (object) {
 	for (let i = 0; i < this.triggers.length; ++i)
 		this.triggers[i].Activate(object);
+}
+
+Cell.prototype.RemoveTrigger = function (id) {
+	for (let i = 0; i < this.triggers.length; ++i)
+		if (this.triggers[i] == id) {
+			delete this.triggers[i];
+			this.triggers.splice(i, 1);
+			break;
+		}
 }
 
 Cell.prototype.Clear = function () {
@@ -50,6 +63,8 @@ Cell.prototype.Interact = function (cell, callback) {
 		break;
 
 		case CellState.EMPTY:
+			for (let i = 0; i < this.staticObjects.length; ++i)
+				this.staticObjects[i].ActivateTriggers(cell.object);
 			this.ActivateTriggers(cell.object);
 			callback(InteractResult.MOVED);
 		break;
@@ -144,7 +159,7 @@ Grid.prototype.GenerateGrid = function(size) {
 				} else {
 					x = this.offset_x + this.shift_x * j * 2 + i * this.shift_x;
 					y = this.offset_y + this.shift_y * i * 3;
-					this.map[i][j] = new Cell(this, new Point(x, y));
+					this.map[i][j] = new Cell(this, new Point(x, y), new Point(i, j));
 				}
 			} 
 		} else {
@@ -156,7 +171,7 @@ Grid.prototype.GenerateGrid = function(size) {
 				} else {
 					x = this.offset_x + this.shift_x * j * 2 + i * this.shift_x;
 					y = this.offset_y + this.shift_y * i * 3;
-					this.map[i][j] = new Cell(this, new Point(x, y));
+					this.map[i][j] = new Cell(this, new Point(x, y), new Point(i, j));
 				}
 			}
 		}

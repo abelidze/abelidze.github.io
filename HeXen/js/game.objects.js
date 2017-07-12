@@ -8,14 +8,25 @@ function GameObject(cell, drawable) {
 	this.cell = cell;
 	this.rotation = 0;
 	this.triggers = [];
+	this.triggersCounter = 0;
 	this._type_ = GameObjectTypes.NONE;
 }
 
 GameObject.prototype = Object.create(BaseModel.prototype);
 
 GameObject.prototype.AddTrigger = function (trigger) {
+	trigger.id = ++this.triggersCounter;
     this.triggers.push(trigger);
 };
+
+GameObject.prototype.RemoveTrigger = function (id) {
+	for (let i = 0; i < this.triggers.length; ++i)
+		if (this.triggers[i] == id) {
+			delete this.triggers[i];
+			this.triggers.splice(i, 1);
+			break;
+		}
+}
 
 GameObject.prototype.ActivateTriggers = function () {
     for (let i = 0; i < this.triggers.length; ++i)
@@ -37,7 +48,7 @@ GameObject.prototype.Collide = function (object, callback) {
 };
 
 GameObject.prototype.Draw = function () {
-    if (this.drawable !== undefined)
+	if (this.drawable !== undefined)
 	    this.drawable.Draw(this.position.x, this.position.y);
 };
 
@@ -66,6 +77,7 @@ Wall.prototype = Object.create(Obstacle.prototype);
 
 Wall.prototype.Draw = function () {
     this.cell.SetStyle(WallStyle);
+    //this.gm.render.DrawCircle(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
 }
 
 function Door(cell, drawable, status) {
@@ -74,10 +86,6 @@ function Door(cell, drawable, status) {
 	this._type_ = GameObjectTypes.DOOR;
 }
 Door.prototype = Object.create(Obstacle.prototype);
-
-Door.prototype.Draw = function () {
-    this.cell.SetStyle(DoorStyle);
-}
 
 Door.prototype.Collide = function (object, callback) {
 	if (this.status === DoorState.CLOSED) {
@@ -107,10 +115,6 @@ function Exit(cell, drawable) {
 	this._type_ = GameObjectTypes.EXIT;
 }
 Exit.prototype = Object.create(StaticObject.prototype);
-
-Exit.prototype.Draw = function () {
-    this.cell.SetStyle(ExitStyle);
-}
 
 Exit.prototype.Collide = function (object, callback) {
     if (object.GetType() === GameObjectTypes.PLAYER)

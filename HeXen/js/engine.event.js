@@ -27,6 +27,10 @@ EventSystem.prototype.DeleteEvent = function (event, listener) {
     }
 }
 
+// checker == true / false;
+// true -> action(options); 
+// action()
+
 function Trigger(handler, checker, action, repeat, options, radius) {
 	this.handler = handler;
 	this.checker = checker;
@@ -34,6 +38,7 @@ function Trigger(handler, checker, action, repeat, options, radius) {
 	this.repeat = repeat;
 	this.options = options ? options : {};
 	this.radius = radius;
+    this.id = 0;
 }
 
 Trigger.prototype = Object.create(BaseModel.prototype);
@@ -41,7 +46,9 @@ Trigger.prototype = Object.create(BaseModel.prototype);
 Trigger.prototype.Activate = function (object) {
     if (!this.checker(object))
         return;
-    if((this.repeat > 0 ) || (this.repeat < 0))
+    if (!this.repeat)
+        handler.RemoveTrigger(this.id);
+    else if (this.repeat > 0)
         this.repeat--;
     if (this.options.delay === undefined)
         this.options.delay = 10;
