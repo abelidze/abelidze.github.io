@@ -24,6 +24,10 @@ Cell.prototype.SetStyle = function(style) {
 	this.Draw();
 }
 
+Cell.prototype.AddTrigger = function (trig) {
+	this.triggers.push(trig);
+}
+
 Cell.prototype.ActivateTriggers = function(object) {
 	for (let i = 0; i < this.triggers.length; ++i)
 		this.triggers[i].Activate(object);
@@ -49,6 +53,8 @@ Cell.prototype.Interact = function (cell, callback) {
 
 		default:
 			this.ActivateTriggers(cell.object);
+			this.object.ActivateTriggers();
+			cell.object.ActivateTriggers(cell.object);
 			this.object.Collide(cell.object, callback);
 	}
 };
@@ -125,13 +131,23 @@ function Grid(gmanager, offset_X, offset_Y, size, radius) {
 
 Grid.prototype.LoadLevel = function(level) {
 	for(let i = 0; i < level.map.length; ++i) {
-		//this.size = level.size;
+		// this.size = level.size;
 		if(level.map[i][0] === LevelObjects.INVISIBLE) {
 			this.map[level.map[i][1]][level.map[i][2]].state = CellState.INVISIBLE;
 			continue;
 		}
 		let cell = this.map[level.map[i][1]][level.map[i][2]];
 		this.gm.CreateObject(LevelObjFunc[level.map[i][0]], cell, level.map[i][3]);
+	}
+
+	if(level.triggers === undefined)
+		return;
+
+	for(let i = 0; i < level.triggers.length; ++i){
+		console.log(level.triggers[i]);
+		let cell = this.map[level.triggers[i][1]][level.triggers[i][2]];
+		let trig = new Trigger(cell, level.triggers[i][0][0], level.triggers[i][0][1], level.triggers[i][0][2]);
+		cell.AddTrigger(trig);
 	}
 };
 
@@ -165,6 +181,13 @@ Grid.prototype.PixelToHex = function (x, y) {
 		sx++;
 	}*/
 
+	// x = (x + this.shift_x * sy) * (this.radius + this.shift_y);
+	// y = (y - this.radius + this.shift_y) * this.shift_x;
+	// if ((x - y) < 0)
+	// 	return new Point(sx, sy - 1);
+	// if ((x + y) > 0)
+	// 	return new Point(sx + 1, sy - 1);
+	
 	if (sx < 0 || sy < 0 || sx >= this.size || sy >= this.size) return undefined;
 	return new Point(sx, sy);
 };

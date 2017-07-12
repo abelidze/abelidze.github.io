@@ -1,8 +1,9 @@
 /*
- GameObjects Module
- */
+ 	GameObjects Module
+*/
 
 function GameObject(cell) {
+    this.position = new Point(cell.center.x, cell.center.y);
 	this.cell = cell;
 	this.rotation = 0;
 	this.triggers = [];
@@ -10,8 +11,13 @@ function GameObject(cell) {
 }
 
 GameObject.prototype.AddTrigger = function (trigger) {
-	this.triggers.push(trigger);
+    this.triggers.push(trigger);
 };
+
+GameObject.prototype.ActivateTriggers = function () {
+    for (let i = 0; i < this.triggers.length; ++i)
+        this.triggers[i].Activate(this);
+}
 
 GameObject.prototype.ClearTrigger = function () {
 	for (let i = 0; i < this.triggers.length; ++i)
@@ -54,6 +60,11 @@ function Wall(cell, sprite) {
 	this._type_ = GameObjectTypes.WALL;
 }
 Wall.prototype = Object.create(Obstacle.prototype);
+
+Wall.prototype.Draw = function () {
+    this.cell.SetStyle(WallStyle);
+    //this.gm.render.DrawCircle(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
+}
 
 function Door(cell, sprite, status) {
 	Obstacle.call(this, cell, sprite);
@@ -132,7 +143,6 @@ Cube.prototype.Collide = function (object, callback) {
 
 function Actor(cell, anim) {
 	DynamicObject.call(this, cell);
-	this.position = new Point(cell.center.x, cell.center.y);
 	this.anim = anim;
 	this.animationClip = AnimationState.IDLE;
 	this.actionPoints = 0;

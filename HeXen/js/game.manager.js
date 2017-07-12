@@ -46,6 +46,7 @@ GameManager.prototype.StartGame = function () {
 	this.gameState = GameState.TURN;
 	this.NextLevel();
 	this.grid.Draw();
+	
 	requestAnimationFrame(this.RenderEvent.bind(this));
 };
 
