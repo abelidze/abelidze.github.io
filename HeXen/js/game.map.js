@@ -20,6 +20,8 @@ Cell.prototype.Draw = function(render) {
 };
 
 Cell.prototype.SetStyle = function(style) {
+	if(this.style == style) return;
+
 	this.style = style;
 	this.Draw();
 }
@@ -107,12 +109,16 @@ Cell.prototype.isNearby = function (cell) {
 function Grid(gmanager, offset_X, offset_Y, size, radius) {
 	this.gm = gmanager;
 
-	this.radius = radius;
-	this.offset_x = offset_X;
-	this.offset_y = offset_Y;
+	if(this.gm.render.start_width > this.gm.render.start_height)
+		this.radius = Math.floor(0.95 * this.gm.render.start_height / (1.5 * size + size % 2));
+	else
+		this.radius = Math.floor(0.95 * this.gm.render.start_width / (Math.sqrt(3) * (1.5 * size - 0.5)));
 
-	this.shift_x = radius * Math.cos(Math.PI / 180 * 30);
-	this.shift_y = radius * Math.sin(Math.PI / 180 * 30);
+	this.offset_x = Math.floor(this.gm.render.start_width * 0.1);
+	this.offset_y = Math.floor(this.gm.render.start_height * 0.1);
+
+	this.shift_x = this.radius * Math.cos(Math.PI / 180 * 30);
+	this.shift_y = this.radius * Math.sin(Math.PI / 180 * 30);
 
 	this.size = 0;
 	this.map = [];
@@ -174,8 +180,7 @@ Grid.prototype.LoadLevel = function(level) {
 	if(level.triggers === undefined)
 		return;
 
-	for(let i = 0; i < level.triggers.length; ++i){
-		console.log(level.triggers[i]);
+	for(let i = 0; i < level.triggers.length; ++i) {
 		let cell = this.map[level.triggers[i][1]][level.triggers[i][2]];
 		let trig = new Trigger(cell, level.triggers[i][0][0], level.triggers[i][0][1], level.triggers[i][0][2]);
 		cell.AddTrigger(trig);

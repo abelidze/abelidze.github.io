@@ -29,10 +29,10 @@ const GameLevels =
         new Level(11,
         [
             // [LevelObjects.TYPE, x, y, [ [anim1, anim2, anim3, ...], [trigger1, trigger2, ...] ]]
-            /*Sobstvenno map*/
+            [LevelObjects.PLAYER, 5, 5, [[anim_playerIdle, anim_playerMove]]],
+
             [LevelObjects.WALL, 5, 0, [null]],
             [LevelObjects.WALL, 6, 0, [null]],
-            //[LevelObjects.WALL, 6, 0, [null]],
             [LevelObjects.WALL, 7, 0, [null]],
             [LevelObjects.WALL, 8, 0, [null]],
             [LevelObjects.WALL, 9, 0, [null]],
@@ -57,7 +57,6 @@ const GameLevels =
             [LevelObjects.EXIT, 1, 5, [null]],
             [LevelObjects.EXIT, 2, 5, [null]],
             [LevelObjects.WALL, 3, 5, [null]],
-            [LevelObjects.PLAYER, 5, 5, [null]],
             [LevelObjects.WALL, 10, 5, [null]],
 
             [LevelObjects.WALL, 0, 6, [null]],
@@ -81,7 +80,8 @@ const GameLevels =
             [LevelObjects.WALL, 3, 10, [null]],
             [LevelObjects.WALL, 4, 10, [null]],
             [LevelObjects.WALL, 5, 10, [null]],
-            /*Empty cells*/
+
+            /* Empty cells */
             [LevelObjects.INVISIBLE, 0, 0, [null]],
             [LevelObjects.INVISIBLE, 1, 0, [null]],
             [LevelObjects.INVISIBLE, 2, 0, [null]],

@@ -77,9 +77,6 @@ const EventType = {
 	CUSTOM: 2
 };
 
-const ActivatedStyle = {edge: '#4186D3', fill: '#5FD4B1', width: 3};
-const WallStyle = {edge: 'white', fill: 'pink', width: 3};
-
 const HexDirections = [
 	[+1, 0], [+1, -1], [0, -1],
 	[-1, 0], [-1, +1], [0, +1]

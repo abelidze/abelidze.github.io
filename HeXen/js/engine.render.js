@@ -183,9 +183,9 @@ function Render(gmanager) {
 	this.cnt_bg = this.bgcanvas.getContext('2d');
 	document.body.appendChild(this.bgcanvas);
 
-	this.start_width = window.innerWidth;
-	console.log(this.start_width)
 	this.scale = 1;
+	this.start_width = window.innerWidth;
+	this.start_height = window.innerHeight;
 	this.ResizeCanvas();
 	this.gm.event.AddEvent('resize', this.gm.ResizeEvent.bind(this.gm));
 }
@@ -202,16 +202,24 @@ Render.prototype.GetCanvas = function () {
 	return this.fgcanvas;
 }
 
-Render.prototype.ResizeCanvas = function() {
-	this.scale = window.innerWidth / this.start_width;
+Render.prototype.SetScale = function (factor, multiply) {
+	if(multiply)
+		this.scale *= factor;
+	else
+		this.scale = factor;
 
+	this.cnt_fg.scale(this.scale, this.scale);
+	this.cnt_bg.scale(this.scale, this.scale);
+}
+
+Render.prototype.ResizeCanvas = function() {
 	this.fgcanvas.width = window.innerWidth;
 	this.fgcanvas.height = window.innerHeight;
-	this.cnt_fg.scale(this.scale, this.scale);
 
 	this.bgcanvas.width = window.innerWidth;
 	this.bgcanvas.height = window.innerHeight;
-	this.cnt_bg.scale(this.scale, this.scale);
+
+	this.SetScale(window.innerWidth / this.start_width);
 }
 
 Render.prototype.deltaTime = function() {

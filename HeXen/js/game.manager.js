@@ -32,9 +32,9 @@ function GameManager() {
 }
 
 GameManager.prototype.Init = function () {
-	this.grid = new Grid(this, 64, 64, 16, 32);
 	this.event = new EventSystem();
 	this.render = new Render(this);
+	this.grid = new Grid(this, 64, 64, 11, 40);
 	this.mouse = new Mouse(this);
 	this.animator = new Animator();
 	this.StartGame();
