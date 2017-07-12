@@ -83,17 +83,11 @@ Drawable.prototype.Draw = function (x, y, onBack) {
 function Sprite(source, scale) {
 	Drawable.call(this, source, scale);
 	this.onCenter = true;
-	this.animations = source.animations ? source.animations : null;
-	this.image = source.img ? source.img : null;
 }
 Sprite.prototype = Object.create(Drawable.prototype);
 
 Sprite.prototype.Draw = function (animation_clip, x, y,  rotation, onBack) {
-	if (this.image)
-		this.gm.render.DrawSprite(this.img, x, y, this.scale, onBack);
-	else if (this.animations){
-		this.animations[animation_clip].Draw(x, y, rotation, this.scale, this.onCenter, onBack);
-	}
+	this.render_element[animation_clip].Draw(x, y, rotation, this.scale, this.onCenter, onBack);
 }
 
 function Animation(frames_img, frames_count, offsetX, offsetY, width, height, fps) {

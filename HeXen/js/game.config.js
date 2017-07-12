@@ -2,5 +2,8 @@
 	Game Config File
 */
 
-const ActivatedStyle = {edge: '#4186D3', fill: '#5FD4B1', width: 3};
-const WallStyle = {edge: 'white', fill: '#FF67AA', width: 3};
+const ActivatedStyle = {edge: 'grey', fill: '#5FD4B1', width: 3};
+const WallStyle = {edge: 'white', fill: '#E63946', width: 3};
+const DoorStyle = {edge: 'white', fill: '#5FD4B1', width: 3};
+const ExitStyle = {edge: 'white', fill: '#9EC5AB', width: 3};
+const DefaultCellStyle = {edge: 'grey', fill: '#C0C0C0', width: 3};

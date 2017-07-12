@@ -8,7 +8,7 @@ function Cell(grid, center) {
 	this.center = center;
 	this.state = CellState.EMPTY;
 	this.object = null;
-	this.style = {edge: 'white', fill: 'black', width: 3};
+	this.style = DefaultCellStyle;//{edge: 'white', fill: 'black', width: 3};
 	this.id = getRandomInt(10000000, 99999999);
 	this.triggers = [];
 }
