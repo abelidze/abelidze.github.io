@@ -10,7 +10,7 @@ body {
 	background: #1F282D;
 }
 
-img {
+img, canvas {
 	-webkit-user-select: none;
 	-webkit-user-drag: none;
 	-moz-user-select: none;

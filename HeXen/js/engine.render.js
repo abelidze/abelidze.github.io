@@ -1,6 +1,6 @@
 /*
- All Draw Events and functions
- */
+	All Draw Events and functions
+*/
 
 function Point(x, y) {
 	this.x = x;
@@ -8,7 +8,7 @@ function Point(x, y) {
 }
 
 Point.prototype.Distance = function (point) {
-	return Math.sqrt(Math.pow((this.x - point.x), 2) + Math.pow((this.y - point.y), 2));
+	return Math.sqrt(sqr(this.x - point.x) + sqr(this.y - point.y));
 }
 
 Point.prototype.GetVector = function (point) {
@@ -19,8 +19,35 @@ Point.prototype.PolarAngle = function () {
 	return Math.atan2(this.y, this.x) - Math.PI / 2;
 }
 
-Point.prototype.Sign = function() {
+Point.prototype.Sign = function () {
 	return Math.sign(this.x + this.y);
+}
+
+Point.prototype.Length = function () {
+	return Math.sqrt(sqr(this.x) + sqr(this.y));
+}
+
+Point.prototype.Dot = function (point) {
+	return (this.x * point.x + this.y * point.y);
+}
+
+Point.prototype.Normalize = function () {
+	let len = this.Length();
+	this.x /= len;
+	this.y /= len;
+	return this;
+}
+
+Point.prototype.isInTriangle = function (p1, p2, p3) {
+	let vA = this.GetVector(p1).Normalize();
+	let vB = this.GetVector(p2).Normalize();
+	let vC = this.GetVector(p3).Normalize();
+
+	let a1 = vA.Dot(vB);
+	let a2 = vB.Dot(vC);
+	let a3 = vC.Dot(vA);
+
+	return (Math.abs((Math.acos(a1) + Math.acos(a2) + Math.acos(a3)) - 2 * Math.PI) < EPS);
 }
 
 

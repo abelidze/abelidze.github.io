@@ -174,27 +174,30 @@ Grid.prototype.Clear = function () {
 };
 
 Grid.prototype.PixelToHex = function (x, y) {
+	point = new Point(x, y);
+
 	y -= this.offset_y - this.radius;
 	let sy = Math.floor(y / this.shift_y / 3);
 	x -= this.offset_x + this.shift_x * sy - this.shift_x;
 	let sx = Math.floor(x / this.shift_x / 2);
 
-	/*if (inside_triangle(x, y, this.offset_x - this.shift_x, this.offset_y - this.shift_y, 0, 0, this.offset_x, 0) &&
-		(sy > 0)) {
+	if(sx < 0 || sy < 0 || sx >= this.size || sy >= this.size) return undefined;
+
+	let c = this.map[sy][sx].center;
+	let x1 = c.x - this.shift_x;
+	let x2 = c.x + this.shift_x;
+	let y1 = c.y - this.shift_y;
+	let y2 = c.y - this.radius;
+
+	if(point.isInTriangle(new Point(c.x, y2), new Point(x1, y1), new Point(x1, y2))) {
 		sy--;
-	} else if (inside_triangle(x, y, this.offset_x, 0, this.offset_x + this.shift_x, 0, this.offset_x + this.shift_x, this.offset_y - this.shift_y) && (sy > 0) && (sx < this.size)) {
+		if(sy < 0) return undefined;
+	}
+	else if(point.isInTriangle(new Point(c.x, y2), new Point(x2, y1), new Point(x2, y2))) {
 		sy--;
 		sx++;
-	}*/
-
-	// x = (x + this.shift_x * sy) * (this.radius + this.shift_y);
-	// y = (y - this.radius + this.shift_y) * this.shift_x;
-	// if ((x - y) < 0)
-	// 	return new Point(sx, sy - 1);
-	// if ((x + y) > 0)
-	// 	return new Point(sx + 1, sy - 1);
-	
-	if (sx < 0 || sy < 0 || sx >= this.size || sy >= this.size) return undefined;
+		if(sy < 0 || sx >= this.size) return undefined;
+	}
 	return new Point(sx, sy);
 };
 
@@ -208,7 +211,7 @@ Grid.prototype.Select = function (x, y) {
 	// this.map[pos.y][pos.x].Draw();
 };
 
-/*Path class*/
+/* Path Class */
 function Path(points) {
 	this.points = points;
 	this.current = 0;
@@ -226,4 +229,6 @@ Path.prototype.PushTurn = function (point) {
 	this.points.push(point);
 };
 
-Path.prototype.IsCorrect()
+Path.prototype.IsCorrect = function() {
+
+}

@@ -10,7 +10,7 @@ EventSystem.prototype.AddEvent = function (event, listener) {
     if (this.listeners[event] === undefined)
         this.listeners[event] = [];
     this.listeners[event].push(listener);
-    document.addEventListener(event, listener);
+    document.addEventListener(event, listener, false);
 }
 
 EventSystem.prototype.DeleteEvent = function (event, listener) {
@@ -23,10 +23,6 @@ EventSystem.prototype.DeleteEvent = function (event, listener) {
                 break;
             }
     }
-}
-
-EventSystem.prototype.ScoreEvent = function (event, score) {
-    this.AddScore(score);
 }
 
 function Trigger(handler, checker, action, repeat, value, radius) {

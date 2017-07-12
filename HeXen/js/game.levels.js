@@ -1,6 +1,6 @@
 /*
- Levels File
- */
+    Levels File
+*/
 
 /*Constructors of game objects*/
 const LevelObjFunc = [

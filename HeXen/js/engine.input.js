@@ -11,6 +11,7 @@ function Mouse(gm) {
 	this.gm.event.AddEvent('mousemove', this.Move.bind(this));
 	this.gm.event.AddEvent('mouseup',   this.Up.bind(this));
 	this.gm.event.AddEvent('mousedown', this.Down.bind(this));
+	this.gm.event.AddEvent('contextmenu', this.Select.bind(this));
 
 	this.gm.event.AddEvent('touchmove', this.MoveTouch.bind(this));
 	this.gm.event.AddEvent('touchend',  this.UpTouch.bind(this));
@@ -26,9 +27,20 @@ Mouse.prototype.Up = function(event) {
 };
 
 Mouse.prototype.Down = function(event) {
+	if(event.which == 3) return;
+
 	this.isMoving = true;
 	this.UpdateCoords(event);
 	this.gm.MouseEvent(event);
+};
+
+Mouse.prototype.Select = function(event) {
+	event = event || window.event;
+	event.preventDefault ? event.preventDefault() : (event.returnValue=false);
+	if(event.which == 3) return;
+
+	this.isMoving = true;
+	this.UpdateCoords(event);
 };
 
 Mouse.prototype.MoveTouch = function(event) {
