@@ -34,7 +34,7 @@ GameObject.prototype.ActivateTriggers = function () {
 }
 
 GameObject.prototype.ClearTrigger = function () {
-	for (let i = 0; i < this.triggers.length; ++i)
+	for(let i = 0; i < this.triggers.length; ++i)
 		delete this.triggers[i];
 	this.triggers = [];
 };
@@ -48,7 +48,7 @@ GameObject.prototype.Collide = function (object, callback) {
 };
 
 GameObject.prototype.Draw = function () {
-	if (this.drawable !== undefined)
+	if(this.drawable !== undefined)
 	    this.drawable.Draw(this.position.x, this.position.y);
 };
 
@@ -87,6 +87,10 @@ function Door(cell, drawable, status) {
 }
 Door.prototype = Object.create(Obstacle.prototype);
 
+Door.prototype.Draw = function () {
+	this.cell.SetStyle(DoorStyle);
+}
+
 Door.prototype.Collide = function (object, callback) {
 	if (this.status === DoorState.CLOSED) {
 		callback(InteractResult.NOTHING);
@@ -115,6 +119,10 @@ function Exit(cell, drawable) {
 	this._type_ = GameObjectTypes.EXIT;
 }
 Exit.prototype = Object.create(StaticObject.prototype);
+
+Exit.prototype.Draw = function () {
+	this.cell.SetStyle(ExitStyle);
+}
 
 Exit.prototype.Collide = function (object, callback) {
     if (object.GetType() === GameObjectTypes.PLAYER)
