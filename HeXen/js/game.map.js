@@ -144,7 +144,13 @@ Grid.prototype.PixelToHex = function (x, y) {
 	x -= this.offset_x + this.shift_x * sy - this.shift_x;
 	let sx = Math.floor(x / this.shift_x / 2);
 
-	if (sx < 0 || sy < 0 || sx >= this.size || sy >= this.size) return undefined;
+	/*if (inside_triangle(x, y, this.offset_x - this.shift_x, this.offset_y - this.shift_y, 0, 0, this.offset_x, 0) &&
+		(sy > 0)) {
+		sy--;
+	} else if (inside_triangle(x, y, this.offset_x, 0, this.offset_x + this.shift_x, 0, this.offset_x + this.shift_x, this.offset_y - this.shift_y) && (sy > 0) && (sx < this.size)) {
+		sy--;
+		sx++;
+	}*/
 
 	// x = (x + this.shift_x * sy) * (this.radius + this.shift_y);
 	// y = (y - this.radius + this.shift_y) * this.shift_x;
@@ -152,6 +158,8 @@ Grid.prototype.PixelToHex = function (x, y) {
 	// 	return new Point(sx, sy - 1);
 	// if ((x + y) > 0)
 	// 	return new Point(sx + 1, sy - 1);
+	
+	if (sx < 0 || sy < 0 || sx >= this.size || sy >= this.size) return undefined;
 	return new Point(sx, sy);
 };
 
