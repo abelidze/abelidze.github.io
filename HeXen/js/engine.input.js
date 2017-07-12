@@ -60,6 +60,7 @@ Mouse.prototype.DownTouch = function(event) {
 
 Mouse.prototype.UpdateCoords = function(event, isTouch) {
 	let canvas = this.gm.render.GetCanvas();
+
 	if(isTouch === true) {
 		this.posX = event.changedTouches[0].pageX - canvas.offsetLeft;
 		this.posY = event.changedTouches[0].pageY - canvas.offsetTop;
@@ -74,4 +75,7 @@ Mouse.prototype.UpdateCoords = function(event, isTouch) {
 
 	if(this.posY > canvas.height - ClickRadius) this.posY = canvas.height - ClickRadius;
 	else if(this.posY < ClickRadius) this.posY = ClickRadius;
+
+	this.posX /= this.gm.render.scale;
+	this.posY /= this.gm.render.scale;
 };

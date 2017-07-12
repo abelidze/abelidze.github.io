@@ -170,7 +170,8 @@ Animator.prototype.ProcessMotions = function(dTime) {
 }
 
 
-function Render() {
+function Render(gmanager) {
+	this.gm = gmanager;
 	this.lastRender = 0;
 
 	this.fgcanvas = document.getElementById('game');
@@ -182,8 +183,11 @@ function Render() {
 	this.cnt_bg = this.bgcanvas.getContext('2d');
 	document.body.appendChild(this.bgcanvas);
 
-	this.ResizeCanvas(this.fgcanvas);
-	this.ResizeCanvas(this.bgcanvas);
+	this.start_width = window.innerWidth;
+	console.log(this.start_width)
+	this.scale = 1;
+	this.ResizeCanvas();
+	this.gm.event.AddEvent('resize', this.gm.ResizeEvent.bind(this.gm));
 }
 
 Render.prototype.Clear = function () {
@@ -199,11 +203,15 @@ Render.prototype.GetCanvas = function () {
 }
 
 Render.prototype.ResizeCanvas = function() {
+	this.scale = window.innerWidth / this.start_width;
+
 	this.fgcanvas.width = window.innerWidth;
 	this.fgcanvas.height = window.innerHeight;
+	this.cnt_fg.scale(this.scale, this.scale);
 
 	this.bgcanvas.width = window.innerWidth;
 	this.bgcanvas.height = window.innerHeight;
+	this.cnt_bg.scale(this.scale, this.scale);
 }
 
 Render.prototype.deltaTime = function() {

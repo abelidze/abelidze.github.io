@@ -106,8 +106,6 @@ Cell.prototype.isNearby = function (cell) {
 /* GRID */
 function Grid(gmanager, offset_X, offset_Y, size, radius) {
 	this.gm = gmanager;
-	this.size = size;
-	this.map = [];
 
 	this.radius = radius;
 	this.offset_x = offset_X;
@@ -116,28 +114,55 @@ function Grid(gmanager, offset_X, offset_Y, size, radius) {
 	this.shift_x = radius * Math.cos(Math.PI / 180 * 30);
 	this.shift_y = radius * Math.sin(Math.PI / 180 * 30);
 
+	this.size = 0;
+	this.map = [];
 	this.GenerateGrid(size);
-
-	let x = 0, y = 0;
-	for (let i = 0; i < size; ++i) {
-		this.map[i] = [];
-		for (let j = 0; j < size; ++j) {
-			x = offset_X + this.shift_x * j * 2 + i * this.shift_x;
-			y = offset_Y + this.shift_y * i * 3;
-			this.map[i][j] = new Cell(this, new Point(x, y));
-		}
-	}
-
-	this.bounds = new Rect(offset_X - this.shift_x, offset_Y - radius, x + this.shift_x, y + radius);
 }
 
 Grid.prototype.GenerateGrid = function(size) {
+	if(this.size == size) return;
+	let hide = (this.size > size);
+	if(!hide) {
+		let foo = this.size;
+		this.size = size;
+		size = foo;
+	}
 
+	let x = 0, y = 0;
+	for(let i = 0; i < this.size; ++i) {
+		if(i < size) {
+			for(let j = size; j < this.size; ++j) {
+				if(hide) {
+					this.map[i][j].state = CellState.INVISIBLE;
+				} else {
+					x = this.offset_x + this.shift_x * j * 2 + i * this.shift_x;
+					y = this.offset_y + this.shift_y * i * 3;
+					this.map[i][j] = new Cell(this, new Point(x, y));
+				}
+			} 
+		} else {
+			if(!hide)
+				this.map[i] = [];
+			for(let j = 0; j < this.size; ++j) {
+				if(hide) {
+					this.map[i][j].state = CellState.INVISIBLE;
+				} else {
+					x = this.offset_x + this.shift_x * j * 2 + i * this.shift_x;
+					y = this.offset_y + this.shift_y * i * 3;
+					this.map[i][j] = new Cell(this, new Point(x, y));
+				}
+			}
+		}
+	}
+	if(!hide)
+		this.bounds = new Rect(this.offset_x - this.shift_x, this.offset_y - this.radius, x + this.shift_x, y + this.radius);
 }
 
 Grid.prototype.LoadLevel = function(level) {
+	this.Clear();
+	this.GenerateGrid(level.size);
+
 	for(let i = 0; i < level.map.length; ++i) {
-		// this.size = level.size;
 		if(level.map[i][0] === LevelObjects.INVISIBLE) {
 			this.map[level.map[i][1]][level.map[i][2]].state = CellState.INVISIBLE;
 			continue;
@@ -170,7 +195,6 @@ Grid.prototype.Clear = function () {
 		for (let j = 0; j < this.size; ++j)
 			this.map[i][j].Clear();
 	this.gm.ClearObjects();
-	this.Draw();
 };
 
 Grid.prototype.PixelToHex = function (x, y) {

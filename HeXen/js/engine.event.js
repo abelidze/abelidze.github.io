@@ -10,7 +10,7 @@ EventSystem.prototype.AddEvent = function (event, listener) {
     if (this.listeners[event] === undefined)
         this.listeners[event] = [];
     this.listeners[event].push(listener);
-    document.addEventListener(event, listener, false);
+    window.addEventListener(event, listener, false);
 }
 
 EventSystem.prototype.DeleteEvent = function (event, listener) {
@@ -18,7 +18,7 @@ EventSystem.prototype.DeleteEvent = function (event, listener) {
         var listeners = this.listeners[event];
         for (let i = 0; i < listeners.length; ++i)
             if (listeners[i] === listener){
-                document.removeEventListener(event, listener);
+                window.removeEventListener(event, listener);
                 listeners.splice(i, 1);
                 break;
             }

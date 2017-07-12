@@ -9,11 +9,11 @@ function GameManager() {
 	Clickable.prototype.gm = this;
 	EventSystem.prototype.gm = this;
 
-	this.event = new EventSystem();
 	this.render = null;
 	this.mouse = null;
-	this.animator = new Animator();
-	this.grid = new Grid(this, 64, 240, 12, 36);
+	this.event = null;
+	this.animator = null;
+	this.grid = null;
 
 	this.freeze = true;
 	this.gameState = GameState.PAUSE;
@@ -31,13 +31,12 @@ function GameManager() {
 	});
 }
 
-GameManager.prototype.AddScore = function (score) {
-	this.score += score;
-};
-
 GameManager.prototype.Init = function () {
-	this.render = new Render();
+	this.grid = new Grid(this, 64, 64, 16, 32);
+	this.event = new EventSystem();
+	this.render = new Render(this);
 	this.mouse = new Mouse(this);
+	this.animator = new Animator();
 	this.StartGame();
 };
 
@@ -62,6 +61,10 @@ GameManager.prototype.Restart = function () {
 
 GameManager.prototype.Pause = function () {
 	this.freeze = true;
+};
+
+GameManager.prototype.AddScore = function (score) {
+	this.score += score;
 };
 
 GameManager.prototype.NextLevel = function () {
@@ -97,6 +100,11 @@ GameManager.prototype.RenderEvent = function () {
 
 	requestAnimationFrame(this.RenderEvent.bind(this));
 };
+
+GameManager.prototype.ResizeEvent = function () {
+	this.render.ResizeCanvas();
+	this.grid.Draw();
+}
 
 GameManager.prototype.MouseEvent = function (event) {
 	if (this.grid.bounds.isInArea(this.mouse.posX, this.mouse.posY))
