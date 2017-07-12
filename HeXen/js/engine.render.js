@@ -7,12 +7,47 @@ function Point(x, y) {
 	this.y = y;
 }
 
-Point.prototype.Distance = function(point) {
-	return Math.sqrt( Math.pow((this.x - point.x), 2) + Math.pow((this.y - point.y), 2) );
+Point.prototype.Distance = function (point) {
+	return Math.sqrt(sqr(this.x - point.x) + sqr(this.y - point.y));
 }
 
-Point.prototype.GetVector = function(point) {
+Point.prototype.GetVector = function (point) {
 	return new Point(point.x - this.x, point.y - this.y);
+}
+
+Point.prototype.PolarAngle = function () {
+	return Math.atan2(this.y, this.x) - Math.PI / 2;
+}
+
+Point.prototype.Sign = function () {
+	return Math.sign(this.x + this.y);
+}
+
+Point.prototype.Length = function () {
+	return Math.sqrt(sqr(this.x) + sqr(this.y));
+}
+
+Point.prototype.Dot = function (point) {
+	return (this.x * point.x + this.y * point.y);
+}
+
+Point.prototype.Normalize = function () {
+	let len = this.Length();
+	this.x /= len;
+	this.y /= len;
+	return this;
+}
+
+Point.prototype.isInTriangle = function (p1, p2, p3) {
+	let vA = this.GetVector(p1).Normalize();
+	let vB = this.GetVector(p2).Normalize();
+	let vC = this.GetVector(p3).Normalize();
+
+	let a1 = vA.Dot(vB);
+	let a2 = vB.Dot(vC);
+	let a3 = vC.Dot(vA);
+
+	return (Math.abs((Math.acos(a1) + Math.acos(a2) + Math.acos(a3)) - 2 * Math.PI) < EPS);
 }
 
 
@@ -32,22 +67,38 @@ Rect.prototype.isInArea = function (x, y) {
 }
 
 
-function Drawable(scale) {
-	if(scale === undefined) scale = 1;
+function Drawable(source, scale) {
+	if (scale === undefined) scale = 1;
 	this.scale = scale;
+	this.render_element = source;
+	this._type_ = DrawableType.IMAGE;
 }
 
-function Sprite(image, scale) {
-	Drawable.call(this, scale);
-	this.img = image;
+Drawable.prototype = Object.create(BaseModel.prototype);
+
+Drawable.prototype.Draw = function (x, y, onBack) {
+	this.gm.render.DrawSprite(this.render_element, x, y, this.scale, onBack);
 }
+
+function Sprite(source, scale) {
+	Drawable.call(this, source, scale);
+	this.onCenter = true;
+	this.animation_clip = 0;
+}
+
 Sprite.prototype = Object.create(Drawable.prototype);
 
-Sprite.prototype.Draw = function(x, y, onBack) {
-	this.gm.render.DrawSprite(this.img, x, y, this.scale, onBack);
+Sprite.prototype.Draw = function (x, y,  rotation, onBack) {
+	this.render_element[this.animation_clip].Draw(x, y, rotation, this.scale, this.onCenter, onBack);
 }
 
-function Animation(frames_img, frames_count, offsetX, offsetY, width, height, speed) {
+Sprite.prototype.Animate = function (animation_clip) {
+	this.render_element[this.animation_clip].Stop();
+	this.animation_clip = animation_clip;
+	this.render_element[this.animation_clip].Play();
+}
+
+function Animation(frames_img, frames_count, offsetX, offsetY, width, height, fps) {
 	this.frames_img = frames_img;
 	this.frames_count = frames_count;
 	this.offset_x = offsetX;
@@ -55,106 +106,154 @@ function Animation(frames_img, frames_count, offsetX, offsetY, width, height, sp
 	this.w = width;
 	this.h = height;
 	this.cur_frame = 0;
-	this.speed = speed;
+	this.fps = fps;
+	this.timer = 0;
 	this.interval = null;
 	this.isPlayed = false;
 }
 Animation.prototype = Object.create(Drawable.prototype);
 
-Animation.prototype.Draw = function (x, y, scale, onBack) {
-	this.cur_frame++;
-	if (this.cur_frame >= this.frames_count)
-		this.cur_frame = 0;
-	this.gm.render.DrawFrame(this, x, y, scale, onBack);
+Animation.prototype.Draw = function (x, y, rotation, scale, onCenter, onBack) {
+	if (!this.isPlayed)
+		return;
+
+	this.timer++;
+	if (this.timer > this.fps) {
+		this.timer = 0;
+		this.cur_frame++;
+		if (this.cur_frame >= this.frames_count)
+			this.cur_frame = 0;
+	}
+	this.gm.render.DrawFrame(this, x, y, scale, rotation, onCenter, onBack);
 }
 
 Animation.prototype.Play = function () {
 	this.isPlayed = true;
-	this.interval = setInterval(this.UpdateFrame.bind(this), this.speed * 1000);
 }
 
 Animation.prototype.Stop = function () {
 	if (!this.isPlayed)
 		return;
 	this.isPlayed = false;
-	clearInterval(this.interval);
 }
+
+Animation.prototype.Toggle = function () {
+	this.isPlayed = !this.isPlayed;
+}
+
 
 function Animator() {
 	this.motion = [];
 }
 Animator.prototype = Object.create(Drawable.prototype);
 
-Animator.prototype.AddMotion = function(start, end, speed) {
-	console.log(start, end);
-	this.motion.push([speed, start, end]);
+Animator.prototype.AddMotion = function (object, target, speed, mode) {
+	if (object.sprite) {
+		object.ChangeAnimationClip(AnimationState.MOVE);
+	}
+	let dir = object.position.GetVector(target);
+	let sgn = dir.Sign();
+	this.motion.push([speed, object, target, mode, dir, sgn]);
 }
 
 Animator.prototype.ProcessMotions = function(dTime) {
-	let dir;
+	let dir, cur_dir;
 	for(let i = 0; i < this.motion.length; ++i) {
-		dir = this.motion[i][1].GetVector(this.motion[i][2]);
-		this.motion[i][1].x += dir.x * dTime / 1000 * this.motion[i][0];
-		this.motion[i][1].y += dir.y * dTime / 1000 * this.motion[i][0];
-
-		if(this.motion[i][1].Distance(this.motion[i][2]) < this.motion[i][0] / 5) {
-			this.motion[i][1].x = this.motion[i][2].x;
-			this.motion[i][1].y = this.motion[i][2].y;
+		cur_dir = this.motion[i][1].position.GetVector(this.motion[i][2]);
+		if(cur_dir.Sign() != this.motion[i][5]) {
+			if(this.motion[i][1].sprite) {
+				this.motion[i][1].ChangeAnimationClip(AnimationState.IDLE);
+			}
+			this.motion[i][1].position.x = this.motion[i][2].x;
+			this.motion[i][1].position.y = this.motion[i][2].y;
 			this.motion.splice(i, 1);
 			i--;
+			continue;
 		}
+
+		switch(this.motion[i][3]) {
+			case AnimatorModes.EASE:
+				dir = cur_dir; break;
+			case AnimatorModes.LINEAR:
+				dir = this.motion[i][4]; break;
+		}
+		this.motion[i][1].position.x += dir.x * dTime / 1000 * this.motion[i][0];
+		this.motion[i][1].position.y += dir.y * dTime / 1000 * this.motion[i][0];
 	}
-	if(this.motion.length == 0 && this.gm.gameState === GameState.ANIMATING) {
+	if (this.motion.length == 0 && this.gm.gameState === GameState.ANIMATING) {
 		this.gm.gameState = GameState.TURN;
 	}
 }
 
 
-function Render() {
+function Render(gmanager) {
+	this.gm = gmanager;
 	this.lastRender = 0;
 
 	this.fgcanvas = document.getElementById('game');
-	this.fgcanvas.width = window.innerWidth;// window.outerWidth;
-	this.fgcanvas.height = window.innerHeight;
 	this.cnt_fg = this.fgcanvas.getContext('2d');
 	// this.cnt_fg.fillStyle = 'rgba(0, 255, 0, 0.3)';
 
 	this.bgcanvas = document.createElement('canvas');
 	this.bgcanvas.id = 'field';
-	this.bgcanvas.width = window.innerWidth;
-	this.bgcanvas.height = window.innerHeight;
 	this.cnt_bg = this.bgcanvas.getContext('2d');
 	document.body.appendChild(this.bgcanvas);
+
+	this.scale = 1;
+	this.start_width = window.innerWidth;
+	this.start_height = window.innerHeight;
+	this.ResizeCanvas();
+	this.gm.event.AddEvent('resize', this.gm.ResizeEvent.bind(this.gm));
 }
 
-Render.prototype.Clear = function() {
+Render.prototype.Clear = function () {
 	this.cnt_fg.clearRect(0, 0, this.fgcanvas.width, this.fgcanvas.height);
 }
 
-Render.prototype.ClearBack = function() {
+Render.prototype.ClearBack = function () {
 	this.cnt_bg.clearRect(0, 0, this.bgcanvas.width, this.bgcanvas.height);
 }
 
-Render.prototype.GetCanvas = function() {
+Render.prototype.GetCanvas = function () {
 	return this.fgcanvas;
+}
+
+Render.prototype.SetScale = function (factor, multiply) {
+	if(multiply)
+		this.scale *= factor;
+	else
+		this.scale = factor;
+
+	this.cnt_fg.scale(this.scale, this.scale);
+	this.cnt_bg.scale(this.scale, this.scale);
+}
+
+Render.prototype.ResizeCanvas = function() {
+	this.fgcanvas.width = window.innerWidth;
+	this.fgcanvas.height = window.innerHeight;
+
+	this.bgcanvas.width = window.innerWidth;
+	this.bgcanvas.height = window.innerHeight;
+
+	this.SetScale(window.innerWidth / this.start_width);
 }
 
 Render.prototype.deltaTime = function() {
 	let currentDate = new Date();
 	let dTime = currentDate - this.lastRender;
-	if(this.lastRender === 0) dTime = 0;
+	if (this.lastRender === 0) dTime = 0;
 	this.lastRender = currentDate;
 	return dTime;
 }
 
-Render.prototype.DrawPath = function(points, onBack, effect) {
-	if(points.length <= 1)
+Render.prototype.DrawPath = function (points, onBack, effect) {
+	if (points.length <= 1)
 		return;
 	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
 	context.beginPath();
 	context.moveTo(Math.floor(points[0].x), Math.floor(points[0].y));
-	for(let i = 1; i < points.length; ++i) {
+	for (let i = 1; i < points.length; ++i) {
 		context.lineTo(Math.floor(points[i].x), Math.floor(points[i].y));
 	}
 	context.closePath();
@@ -163,30 +262,30 @@ Render.prototype.DrawPath = function(points, onBack, effect) {
 	context.strokeStyle = (effect.edge !== undefined ? effect.edge : 'black');
 	context.stroke();
 
-	if(effect.fill !== undefined) {
+	if (effect.fill !== undefined) {
 		context.fillStyle = effect.fill;
 		context.fill();
 	}
 }
 
-Render.prototype.DrawHex = function(center, radius, onBack, effect) {
+Render.prototype.DrawHex = function (center, radius, onBack, effect) {
 	let hexagon = [];
-	for(let i = 0; i < 6; ++i) {
-		let angle_deg = 60*i + 30;
+	for (let i = 0; i < 6; ++i) {
+		let angle_deg = 60 * i + 30;
 		let angle_rad = Math.PI / 180 * angle_deg;
 		hexagon.push({
-						x: center.x + radius * Math.cos(angle_rad),
-						y: center.y + radius * Math.sin(angle_rad)
-					 });
+			x: center.x + radius * Math.cos(angle_rad),
+			y: center.y + radius * Math.sin(angle_rad)
+		});
 	}
 	this.DrawPath(hexagon, effect, onBack);
 }
 
-Render.prototype.DrawLine = function(point1, point2, onBack, effect) {
+Render.prototype.DrawLine = function (point1, point2, onBack, effect) {
 	this.DrawPath([point1, point2], effect, onBack);
 }
 
-Render.prototype.DrawCircle = function(center, radius, onBack, effect) {
+Render.prototype.DrawCircle = function (center, radius, onBack, effect) {
 	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
 	context.beginPath();
@@ -196,13 +295,13 @@ Render.prototype.DrawCircle = function(center, radius, onBack, effect) {
 	context.strokeStyle = (effect.edge !== undefined ? effect.edge : 'black');
 	context.stroke();
 
-	if(effect.fill !== undefined) {
+	if (effect.fill !== undefined) {
 		context.fillStyle = effect.fill;
 		context.fill();
 	}
 }
 
-Render.prototype.DrawRectangle = function(rect, onBack, effect) {
+Render.prototype.DrawRectangle = function (rect, onBack, effect) {
 	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
 	context.beginPath();
@@ -212,24 +311,34 @@ Render.prototype.DrawRectangle = function(rect, onBack, effect) {
 	context.strokeStyle = (effect.edge !== undefined ? effect.edge : 'black');
 	context.stroke();
 
-	if(effect.fill !== undefined) {
+	if (effect.fill !== undefined) {
 		context.fillStyle = effect.fill;
 		context.fill();
 	}
 }
 
-Render.prototype.DrawFrame = function (anim, x, y, scale, onBack) {
-    let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
+Render.prototype.DrawFrame = function (anim, x, y, scale, rotation, onCenter, onBack) {
+	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
-    let dx = anim.offset_x + anim.cur_frame * anim.w;
-    let count = Math.floor(dx / anim.frames_img.width);
-    let sx = dx - anim.frames_img.width * count;
-    let sy = anim.offset_y + count * anim.h;
-    context.drawImage(anim.frames_img, sx, sy, anim.w, anim.h, x, y, anim.w * scale, anim.h * scale);
+	let dx = anim.offset_x + anim.cur_frame * anim.w;
+	let count = Math.floor(dx / anim.frames_img.width);
+	let sx = dx - anim.frames_img.width * count;
+	let sy = anim.offset_y + count * anim.h;
+
+	if (onCenter) {
+		x -= anim.w / 2 * Math.cos(rotation) - anim.w / 2.5 * Math.sin(rotation);
+		y -= anim.h / 2 * Math.sin(rotation) + anim.h / 2.5 * Math.cos(rotation);
+	}
+
+	context.translate(x, y);
+	context.rotate(rotation);
+	context.drawImage(anim.frames_img, sx, sy, anim.w, anim.h, 0, 0, anim.w * scale, anim.h * scale);
+	context.rotate(-rotation);
+	context.translate(-x, -y);
 }
 
 Render.prototype.DrawSprite = function (img, x, y, scale, onBack) {
-    let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
+	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
-    context.drawImage(img, 0, 0, img.width, img.height, x, y, img.width * scale, img.height * scale);
+	context.drawImage(img, 0, 0, img.width, img.height, x, y, img.width * scale, img.height * scale);
 }

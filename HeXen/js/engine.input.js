@@ -2,20 +2,21 @@
 	Input Module
 */
 
-function Mouse() {
+function Mouse(gm) {
+	this.gm = gm;
 	this.posX = 0;
 	this.posY = 0;
 	this.isMoving = false;
 
-	document.addEventListener('mousemove', this.Move.bind(this), false);
-	document.addEventListener('mouseup',   this.Up.bind(this),   false);
-	document.addEventListener('mousedown', this.Down.bind(this), false);
+	this.gm.event.AddEvent('mousemove', this.Move.bind(this));
+	this.gm.event.AddEvent('mouseup',   this.Up.bind(this));
+	this.gm.event.AddEvent('mousedown', this.Down.bind(this));
+	this.gm.event.AddEvent('contextmenu', this.Select.bind(this));
 
-	document.addEventListener('touchmove', this.MoveTouch.bind(this), false);
-	document.addEventListener('touchend',  this.UpTouch.bind(this),   false);
-	document.addEventListener('touchstart',this.DownTouch.bind(this), false);
+	this.gm.event.AddEvent('touchmove', this.MoveTouch.bind(this));
+	this.gm.event.AddEvent('touchend',  this.UpTouch.bind(this));
+	this.gm.event.AddEvent('touchstart', this.DownTouch.bind(this));
 }
-Mouse.prototype = Object.create(EventSystem.prototype);
 
 Mouse.prototype.Move = function(event) {
 	this.UpdateCoords(event);
@@ -26,9 +27,19 @@ Mouse.prototype.Up = function(event) {
 };
 
 Mouse.prototype.Down = function(event) {
+	if(event.which == 3) return;
+
 	this.isMoving = true;
 	this.UpdateCoords(event);
 	this.gm.MouseEvent(event);
+};
+
+Mouse.prototype.Select = function(event) {
+	event = event || window.event;
+	event.preventDefault ? event.preventDefault() : (event.returnValue=false);
+	if(event.which == 3) return;
+	this.isMoving = true;
+	this.UpdateCoords(event);
 };
 
 Mouse.prototype.MoveTouch = function(event) {
@@ -48,6 +59,7 @@ Mouse.prototype.DownTouch = function(event) {
 
 Mouse.prototype.UpdateCoords = function(event, isTouch) {
 	let canvas = this.gm.render.GetCanvas();
+
 	if(isTouch === true) {
 		this.posX = event.changedTouches[0].pageX - canvas.offsetLeft;
 		this.posY = event.changedTouches[0].pageY - canvas.offsetTop;
@@ -62,4 +74,7 @@ Mouse.prototype.UpdateCoords = function(event, isTouch) {
 
 	if(this.posY > canvas.height - ClickRadius) this.posY = canvas.height - ClickRadius;
 	else if(this.posY < ClickRadius) this.posY = ClickRadius;
+
+	this.posX /= this.gm.render.scale;
+	this.posY /= this.gm.render.scale;
 };

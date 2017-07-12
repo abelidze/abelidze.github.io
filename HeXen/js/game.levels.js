@@ -1,30 +1,36 @@
 /*
- Levels File
- */
+    Levels File
+*/
 
 /*Constructors of game objects*/
 const LevelObjFunc = [
-    Container,
-    Door,
-    Wall,
-    Player,
-    Enemy,
-    Entry,
-    Exit
+	Container,
+	Door,
+	Wall,
+	Player,
+	Enemy,
+	Entry,
+	Exit
 ];
 
-function Level(size, arr) {
-    this.size = size;
-    this.map = arr;
+function Level(size, objects, triggers) {
+	this.size = size;
+	this.map = objects;
+	this.triggers = triggers;
 }
 
 const GameLevels =
     [
-        new Level(16, [
-            [LevelObjects.PLAYER, 0, 0, [null]],
-        ]),
-        new Level(11, [
-            /*Sobstvenno map*/
+        /*new Level(11, [
+            [LevelObjects.PLAYER, 0, 0, [ [anim_playerIdle, anim_playerMove] ]],
+            [LevelObjects.PLAYER, 5, 5, [ [anim_enemyIdle , anim_enemyMove]  ]],
+        ]),*/
+
+        new Level(11,
+        [
+            // [LevelObjects.TYPE, x, y, [ [anim1, anim2, anim3, ...], [trigger1, trigger2, ...] ]]
+            [LevelObjects.PLAYER, 5, 5, [spr_player]],
+
             [LevelObjects.WALL, 5, 0, [null]],
             [LevelObjects.WALL, 6, 0, [null]],
             [LevelObjects.WALL, 7, 0, [null]],
@@ -51,7 +57,6 @@ const GameLevels =
             [LevelObjects.EXIT, 1, 5, [null]],
             [LevelObjects.EXIT, 2, 5, [null]],
             [LevelObjects.WALL, 3, 5, [null]],
-            [LevelObjects.ENTRY, 5, 5, [null]],
             [LevelObjects.WALL, 10, 5, [null]],
 
             [LevelObjects.WALL, 0, 6, [null]],
@@ -75,7 +80,8 @@ const GameLevels =
             [LevelObjects.WALL, 3, 10, [null]],
             [LevelObjects.WALL, 4, 10, [null]],
             [LevelObjects.WALL, 5, 10, [null]],
-            /*Empty cells*/
+
+            /* Empty cells */
             [LevelObjects.INVISIBLE, 0, 0, [null]],
             [LevelObjects.INVISIBLE, 1, 0, [null]],
             [LevelObjects.INVISIBLE, 2, 0, [null]],
@@ -108,11 +114,16 @@ const GameLevels =
             [LevelObjects.INVISIBLE, 7, 9, [null]],
             [LevelObjects.INVISIBLE, 8, 9, [null]],
             [LevelObjects.INVISIBLE, 9, 9, [null]],
+            [LevelObjects.INVISIBLE, 10, 9, [null]],
 
             [LevelObjects.INVISIBLE, 6, 10, [null]],
             [LevelObjects.INVISIBLE, 7, 10, [null]],
             [LevelObjects.INVISIBLE, 8, 10, [null]],
             [LevelObjects.INVISIBLE, 9, 10, [null]],
             [LevelObjects.INVISIBLE, 10, 10, [null]]
+        ],
+        [
+            [DoorOpener(7, 1, 200), 5, 6]
+            // [[checker, action, repeat, {value: ...}], x, y]
         ])
     ];

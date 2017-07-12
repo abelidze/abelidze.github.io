@@ -8,9 +8,10 @@ body {
 	width: 100%;
 	height: 100%;
 	background: #1F282D;
+	font-family: Reckoner Bold;
 }
 
-img {
+img, canvas {
 	-webkit-user-select: none;
 	-webkit-user-drag: none;
 	-moz-user-select: none;
@@ -78,3 +79,4 @@ img {
 	top: 0;
 	left: 0;
 }
+/* #C0C0C0 - светло-серый*/
