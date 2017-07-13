@@ -321,30 +321,36 @@ Grid.prototype.Select = function (x, y) {
 	let pos = this.PixelToHex(x, y);
 	if (pos === undefined) return;
 
-	if (this.gm.gameState != GameState.ANIMATING)
+	if (this.gm.gameState !== GameState.ANIMATING)
 		this.gm.GridClicked(pos);
 	// this.map[pos.y][pos.x].style = {edge: 'black', fill: '#1F282D', width: 1};
 	// this.map[pos.y][pos.x].Draw();
 };
 
 /* Path Class */
-function Path(points) {
-	this.points = points;
+function Path(cells = []) {
+	this.points = cells;
 	this.current = 0;
 }
 
 Path.prototype.NextTurn = function () {
-	return this.points[(++this.current) % this.points.length];
+	return this.points[(this.current++) % this.points.length];
 };
 
 Path.prototype.PrevTurn = function () {
 	return this.points[(this.current - 1 + this.points.length) % this.points.length];
 };
 
-Path.prototype.PushTurn = function (point) {
-	this.points.push(point);
+Path.prototype.PushTurn = function (cell) {
+	if (this.IsCorrect(cell))
+		this.points.push(cell);
 };
 
-Path.prototype.IsCorrect = function() {
+Path.prototype.ClearPath = function () {
+	this.points = [];
+	this.current = 0;
+};
 
-}
+Path.prototype.IsCorrect = function(cell) {
+	return (this.points[this.current].isNearby(cell));
+};

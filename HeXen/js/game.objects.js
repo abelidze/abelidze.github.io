@@ -249,6 +249,7 @@ Player.prototype.Collide = function (object, callback) {
 function Enemy(cell, drawable, triggers) {
 	Actor.call(this, cell, drawable, triggers);
 	this._type_ = GameObjectTypes.ENEMY;
+	this.path = new Path();
 }
 Enemy.prototype = Object.create(Actor.prototype);
 
