@@ -125,8 +125,8 @@ const GameLevels =
 
         new Level(8,
         [
-            [LevelObjects.PLAYER, 0, 0, [ [anim_playerIdle, anim_playerMove] ]],
-            [LevelObjects.PLAYER, 5, 5, [ [anim_enemyIdle , anim_enemyMove]  ]],
+            [LevelObjects.PLAYER, 0, 0, [ spr_player ]],
+            [LevelObjects.ENEMY, 5, 5, [ spr_enemy ]],
         ],
         [
             // [[checker, action, repeat, {value: ...}], x, y]

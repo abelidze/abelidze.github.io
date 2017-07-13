@@ -22,3 +22,4 @@ var anim_enemyMove = new Animation(img_enemyMove, 8, 0, 0, 48, 48, 2);
 
 /* Init sprites */
 var spr_player = new Sprite([anim_playerIdle, anim_playerMove]);
+var spr_enemy = new Sprite([anim_enemyIdle, anim_enemyMove]);
