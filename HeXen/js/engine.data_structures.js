@@ -24,11 +24,12 @@ Heap.prototype.SiftDown = function (i) {
 };
 
 Heap.prototype.SiftUp = function (i) {
-	if (this.isEmpty())
+	if(this.isEmpty())
 		return;
-	while (this.array[i].key < this.array[(i - 1) / 2].key) {
-		swap(this.array, i, (i - 1) / 2);
-		i = (i - 1) / 2;
+	while(this.array[i].key < this.array[Math.max(0, Math.floor((i - 1) / 2))].key) {
+		let x = Math.max(0, Math.floor((i - 1) / 2));
+		swap(this.array, i, x);
+		i = x;
 	}
 };
 
@@ -44,7 +45,7 @@ Heap.prototype.Pop = function () {
 	result = this.array[0];
 	this.array[0] = this.array[this.array.length - 1];
 	this.SiftDown(0);
-	return result;
+	return result.value;
 };
 
 Heap.prototype.GetMin = function () {

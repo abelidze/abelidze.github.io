@@ -37,9 +37,16 @@ Mouse.prototype.Down = function(event) {
 Mouse.prototype.Select = function(event) {
 	event = event || window.event;
 	event.preventDefault ? event.preventDefault() : (event.returnValue=false);
-	if(event.which == 3) return;
+
 	this.isMoving = true;
 	this.UpdateCoords(event);
+
+	// let pos = this.gm.grid.PixelToHex(this.posX, this.posY);
+	// let cell = this.gm.grid.map[pos.y][pos.x];
+
+	// let path = this.gm.players[0].cell.ShortestWay(cell);
+	// for(let i = 0; i < path.length; ++i)
+	// 	path[i].SetStyle(TestStyle, true);
 };
 
 Mouse.prototype.MoveTouch = function(event) {

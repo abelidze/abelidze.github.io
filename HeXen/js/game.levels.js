@@ -275,8 +275,13 @@ const GameLevels =
             [
                 [LevelObjects.PLAYER, 0, 0, [spr_player]],
                 [LevelObjects.ENEMY, 5, 5, [spr_enemy]],
+                [LevelObjects.WALL, 4, 5, [spr_enemy]],
+                [LevelObjects.WALL, 3, 5, [spr_enemy]],
+                [LevelObjects.WALL, 2, 5, [spr_enemy]],
+                [LevelObjects.WALL, 1, 5, [spr_enemy]],
             ],
             [
                 // [[checker, action, repeat, {value: ...}], x, y]
-            ])
+            ]
+        )
     ];

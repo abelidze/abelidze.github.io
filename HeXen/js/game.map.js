@@ -5,6 +5,7 @@
 /* CELLS */
 function Cell(grid, center, gridPosition) {
 	this.grid = grid;
+	this.id = getRandomInt(10000000, 99999999);
 	this.gridPosition = gridPosition;
 	this.center = center;
 	this.state = CellState.EMPTY;
@@ -175,7 +176,7 @@ Cell.prototype.isNearby = function (cell) {
 
 	return this.isNearbyXY(pos1, pos2);
 };
-/*Need to test correctness of map[curr.y][curr.x]*/
+
 Cell.prototype.GetRing = function (radius) {
 	let hexDir = HexDirections;
 	let pos = this.gridPosition;
@@ -184,15 +185,13 @@ Cell.prototype.GetRing = function (radius) {
 
 	for (let i = 0; i < hexDir.length; ++i) {
 		for (let j = 0; j < radius; ++j) {
-			curr.x = pos.x + radius * hexDir[i][0] + j * hexDir[(i + 1) % hexDir.length][0];
-			curr.y = pos.y + radius * hexDir[i][1] + j * hexDir[(i + 1) % hexDir.length][1];
+			curr.x = pos.x + radius * hexDir[i][0] + (j - radius + 1) * hexDir[(i + 1) % hexDir.length][0];
+			curr.y = pos.y + radius * hexDir[i][1] + (j - radius + 1) * hexDir[(i + 1) % hexDir.length][1];
 			ring.push(this.grid.map[curr.y][curr.x]);
 		}
 	}
 	return ring;
 };
-
-
 
 Cell.prototype.ShortestWay = function (cell) {
 	return bfs(this, cell);
@@ -363,6 +362,10 @@ Grid.prototype.Select = function (x, y) {
 		this.gm.GridClicked(pos);
 	// this.map[pos.y][pos.x].style = {edge: 'black', fill: '#1F282D', width: 1};
 	// this.map[pos.y][pos.x].Draw();
+};
+
+Grid.prototype.isInField = function (x, y) {
+	return (0 <= x && x < this.size && 0 <= y && y <= this.size);
 };
 
 /* Path Class */
