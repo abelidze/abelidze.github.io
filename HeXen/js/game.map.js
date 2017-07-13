@@ -192,6 +192,10 @@ Cell.prototype.GetRing = function (radius) {
 	return ring;
 };
 
+Cell.prototype.ShortestWay = function (cell) {
+
+};
+
 /* GRID */
 function Grid(offset_X, offset_Y, size, radius) {
 	this.radius = radius;
