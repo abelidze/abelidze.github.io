@@ -4,7 +4,7 @@ const GameObjectTypes = {
 	STATIC: 0,
 	DOOR: 1,
 	WALL: 2,
-	ENTRY: 3,
+	BONUS: 3,
 	EXIT: 4,
 	DYNAMIC: 5,
 	CONTAINER: 6,
@@ -56,8 +56,9 @@ const LevelObjects = {
 	WALL: 2,
 	PLAYER: 3,
 	ENEMY: 4,
-	ENTRY: 5,
-	EXIT: 6
+	BONUS: 5,
+	EXIT: 6,
+	STYLE: 7
 };
 
 const DrawableType = {

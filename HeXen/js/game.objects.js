@@ -81,7 +81,7 @@ Obstacle.prototype = Object.create(StaticObject.prototype);
 
 function Wall(cell, drawable, triggers) {
 	Obstacle.call(this, cell, drawable, triggers);
-	this.cell.SetStyle(WallStyle);
+	this.cell.SetStyle(WallStyle, true);
 	this._type_ = GameObjectTypes.WALL;
 }
 Wall.prototype = Object.create(Obstacle.prototype);
@@ -93,10 +93,11 @@ Wall.prototype.Draw = function () {
 function Door(cell, drawable, triggers, status) {
 	Obstacle.call(this, cell, drawable, triggers);
 	this.status = status ? status : DoorState.CLOSED;
-	if(this.status === DoorState.CLOSED)
-		this.cell.SetStyle(DoorStyleClosed);
+
+	if(this.status == DoorState.CLOSED)
+		this.cell.SetStyle(DoorStyleClosed, true);
 	else
-		this.cell.SetStyle(DoorStyleOpened);
+		this.cell.SetStyle(DoorStyleOpened, true);
 	this._type_ = GameObjectTypes.DOOR;
 }
 Door.prototype = Object.create(Obstacle.prototype);
@@ -109,7 +110,7 @@ Door.prototype.Draw = function () {
 };
 
 Door.prototype.Open = function () {
-	this.cell.SetStyle(DoorStyleOpened);
+	this.cell.SetStyle(DoorStyleOpened, true);
 	this.status = DoorState.OPENED;
 };
 
@@ -130,15 +131,15 @@ function Container(cell, drawable, triggers, content) {
 }
 Container.prototype = Object.create(Obstacle.prototype);
 
-function Entry(cell, drawable, triggers) {
+function Bonus(cell, drawable, triggers) {
 	StaticObject.call(this, cell, drawable, triggers);
-	this._type_ = GameObjectTypes.ENTRY;
+	this._type_ = GameObjectTypes.BONUS;
 }
-Entry.prototype = Object.create(StaticObject.prototype);
+Bonus.prototype = Object.create(StaticObject.prototype);
 
 function Exit(cell, drawable, triggers) {
 	StaticObject.call(this, cell, drawable, triggers);
-	this.cell.SetStyle(ExitStyle);
+	this.cell.SetStyle(ExitStyle, true);
 	this._type_ = GameObjectTypes.EXIT;
 }
 Exit.prototype = Object.create(StaticObject.prototype);
@@ -158,7 +159,6 @@ Exit.prototype.Collide = function (object, callback) {
 function DynamicObject(cell, drawable, triggers) {
 	GameObject.call(this, cell, drawable);
 	this._type_ = GameObjectTypes.DYNAMIC;
-	cell.FillNearby(NearbyCellStyle);
 }
 
 DynamicObject.prototype = Object.create(GameObject.prototype);
@@ -235,6 +235,7 @@ function Player(cell, drawable, triggers) {
 	Actor.call(this, cell, drawable, triggers);
 	this._type_ = GameObjectTypes.PLAYER;
 	this.gm.AddPlayer(this);
+	cell.FillNearby(NearbyCellStyle);
 }
 Player.prototype = Object.create(Actor.prototype);
 

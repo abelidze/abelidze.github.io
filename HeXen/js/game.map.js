@@ -10,7 +10,7 @@ function Cell(grid, center, gridPosition) {
 	this.state = CellState.EMPTY;
 	this.object = null;
 	this.staticObjects = [];
-	this.style = [{edge: 'white', fill: 'black', width: 3}]; //{edge: 'white', fill: 'black', width: 3};
+	this.style = [DefaultCellStyle]; //{edge: 'white', fill: 'black', width: 3};
 	this.id = getRandomInt(10000000, 99999999);
 	this.triggers = [];
 	this.triggersCounter = 0;
@@ -23,17 +23,23 @@ Cell.prototype.Draw = function(render) {
 };
 
 Cell.prototype.ClearStyle = function() {
-	if(this.style.length <= 1) return;
+	if(this.style.length <= 1) {
+		console.log('Nice!', this.style);
+		return;
+	}
 
 	this.style.pop();
 	this.Draw();
 };
 
-Cell.prototype.SetStyle = function(style) {
-	if(this.style[this.style.length-1] === style) {
-		this.ClearStyle();
-		return;
+Cell.prototype.SetStyle = function(style, force) {
+	if(force === true) {
+		this.style.length = 0;
 	}
+	// else if(this.style[this.style.length-1] == style) {
+	// 	this.ClearStyle();
+	// 	return;
+	// }
 
 	this.style.push(style);
 	this.Draw();
@@ -69,7 +75,7 @@ Cell.prototype.Clear = function () {
 	delete this.object;
 	this.object = null;
 	this.staticObjects = [];
-	this.style = [DefaultCellStyle];
+	this.style.length = 1;
 	this.state = CellState.EMPTY;
 	this.triggers = [];
 	// this.style
@@ -262,10 +268,13 @@ Grid.prototype.LoadLevel = function(level) {
 	this.GenerateGrid(level.size);
 
 	for(let i = 0; i < level.map.length; ++i) {
-		if(level.map[i][0] === LevelObjects.INVISIBLE) {
-			this.map[level.map[i][1]][level.map[i][2]].state = CellState.INVISIBLE;
-			continue;
-		}
+	    if (level.map[i][0] === LevelObjects.INVISIBLE){
+            this.map[level.map[i][1]][level.map[i][2]].state = CellState.INVISIBLE;
+            continue;
+        } else if (level.map[i][0] === LevelObjects.STYLE){
+            this.map[level.map[i][1]][level.map[i][2]].SetStyle(level.map[i][3][0], true);
+            continue;
+        }
 		let cell = this.map[level.map[i][1]][level.map[i][2]];
 		this.gm.CreateObject(LevelObjFunc[level.map[i][0]], cell, level.map[i][3]);
 	}

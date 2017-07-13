@@ -3,6 +3,7 @@
 */
 
 const ActivatedStyle = {edge: 'grey', fill: '#5FD4B1', width: 3};
+const SwitcherStyle = {edge: 'grey', fill: '#B0A5D7', width: 3};
 const WallStyle = {edge: 'white', fill: '#E63946', width: 3};
 const DoorStyleClosed = {edge: 'white', fill: '#F1A9A0', width: 3};
 const DoorStyleOpened = {edge: 'white', fill: '#5FD4B1', width: 3};
