@@ -84,10 +84,15 @@ const EventType = {
 };
 
 const HexDirections = [
-	[+1, 0], [+1, -1], [0, -1],
-	[-1, 0], [-1, +1], [0, +1]
+	[0, +1], [-1, +1], [-1, 0],
+	[0, -1], [+1, -1], [+1, 0]
 ];
 
 const ClickRadius = 16;
 
 const EPS = Number.EPSILON;
+
+const EnemyBehavior = {
+	GUARD: 0,
+	HAUNT: 1
+};

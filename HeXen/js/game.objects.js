@@ -31,7 +31,7 @@ GameObject.prototype.AddTrigger = function (trigger) {
 
 GameObject.prototype.RemoveTrigger = function (id) {
 	for(let i = 0; i < this.triggers.length; ++i)
-		if (this.triggers[i] == id) {
+		if (this.triggers[i] === id) {
 			delete this.triggers[i];
 			this.triggers.splice(i, 1);
 			break;
@@ -88,12 +88,12 @@ Wall.prototype = Object.create(Obstacle.prototype);
 
 Wall.prototype.Draw = function () {
     // this.gm.render.DrawHex(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
-}
+};
 
 function Door(cell, drawable, triggers, status) {
 	Obstacle.call(this, cell, drawable, triggers);
 	this.status = status ? status : DoorState.CLOSED;
-	if(this.status == DoorState.CLOSED)
+	if(this.status === DoorState.CLOSED)
 		this.cell.SetStyle(DoorStyleClosed);
 	else
 		this.cell.SetStyle(DoorStyleOpened);
@@ -106,12 +106,12 @@ Door.prototype.Draw = function () {
 	// 	this.cell.SetStyle(DoorStyleClosed);
 	// else
 	// 	this.cell.SetStyle(DoorStyleOpened);
-}
+};
 
 Door.prototype.Open = function () {
 	this.cell.SetStyle(DoorStyleOpened);
 	this.status = DoorState.OPENED;
-}
+};
 
 Door.prototype.Collide = function (object, callback) {
 	if (this.status === DoorState.CLOSED) {
@@ -145,14 +145,14 @@ Exit.prototype = Object.create(StaticObject.prototype);
 
 Exit.prototype.Draw = function () {
 	// this.cell.SetStyle(ExitStyle);
-}
+};
 
 Exit.prototype.Collide = function (object, callback) {
     if (object.GetType() === GameObjectTypes.PLAYER)
         callback(InteractResult.EXIT);
     else
         callback(InteractResult.MOVED);
-}
+};
 
 /* DYNAMIC */
 function DynamicObject(cell, drawable, triggers) {
@@ -246,10 +246,13 @@ Player.prototype.Collide = function (object, callback) {
 	}
 };
 
-function Enemy(cell, drawable, triggers) {
+function Enemy(cell, drawable, triggers, path, radius) {
 	Actor.call(this, cell, drawable, triggers);
 	this._type_ = GameObjectTypes.ENEMY;
-	this.path = new Path();
+	this.path_guard = path ? new Path(path) : null;
+	this.path_haunt = null;
+	this.status = EnemyBehavior.GUARD;
+	this.vision_radius = radius;
 }
 Enemy.prototype = Object.create(Actor.prototype);
 
@@ -260,3 +263,13 @@ Enemy.prototype.Collide = function (object, callback) {
 		callback(InteractResult.NOTHING);
 	}
 };
+
+Enemy.prototype.Patrol = function () {
+	if (!this.path_guard.isEmpty()) {
+		this.MoveTo(this.path_guard.NextTurn);
+	}
+};
+
+Enemy.prototype.Search = function (object = GameObjectTypes.PLAYER) {
+};
+
