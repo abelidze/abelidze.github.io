@@ -300,8 +300,7 @@ const GameLevels =
             // [[checker, action, repeat, {value: ...}], x, y]
         ])
 
-        /*new Level(8,
-        new Level(12,
+        /*new Level(12,
         [
             [LevelObjects.PLAYER, 0, 0, [ spr_player ]],
             [LevelObjects.ENEMY, 5, 5, [ spr_enemy ]],

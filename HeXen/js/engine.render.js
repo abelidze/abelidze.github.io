@@ -229,6 +229,7 @@ Render.prototype.SetScale = function (factor, multiply) {
 		this.scale *= factor;
 	else
 		this.scale = factor;
+	console.log(this.scale);
 
 	this.cnt_fg.scale(this.scale, this.scale);
 	this.cnt_bg.scale(this.scale, this.scale);
