@@ -277,7 +277,7 @@ Enemy.prototype.Collide = function (object, callback) {
 };
 
 Enemy.prototype.GetPathTo = function (cell) {
-	this.cell.ShortestWay(cell);
+	return this.cell.ShortestWay(cell);
 };
 
 Enemy.prototype.Live = function () {
@@ -285,6 +285,10 @@ Enemy.prototype.Live = function () {
 	if (target !== null) {
 		this.status = EnemyBehavior.HAUNT;
 	}
+
+	// switch (this.status) {
+
+	// }
 	
 	if (!this.path_guard.isEmpty()) {
 		this.MoveTo(this.path_guard.NextTurn);

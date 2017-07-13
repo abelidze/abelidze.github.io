@@ -177,22 +177,25 @@ Cell.prototype.isNearby = function (cell) {
 };
 /*Need to test correctness of map[curr.y][curr.x]*/
 Cell.prototype.GetRing = function (radius) {
-	let HexDir = HexDirections;
-	let pos = this.position();
+	let hexDir = HexDirections;
+	let pos = this.gridPosition;
 	let ring = [];
 	let curr = {x: 0, y: 0};
-	for (let i = 0; i < HexDir.length; ++i) {
+
+	for (let i = 0; i < hexDir.length; ++i) {
 		for (let j = 0; j < radius; ++j) {
-			curr.x = pos.x + radius * HexDir[i][0] + j * HexDir[(i + 1) % HexDir.length][0];
-			curr.y = pos.y + radius * HexDir[i][1] + j * HexDir[(i + 1) % HexDir.length][1];
+			curr.x = pos.x + radius * hexDir[i][0] + j * hexDir[(i + 1) % hexDir.length][0];
+			curr.y = pos.y + radius * hexDir[i][1] + j * hexDir[(i + 1) % hexDir.length][1];
 			ring.push(this.grid.map[curr.y][curr.x]);
 		}
 	}
 	return ring;
 };
 
-Cell.prototype.ShortestWay = function (cell) {
 
+
+Cell.prototype.ShortestWay = function (cell) {
+	return bfs(this, cell);
 };
 
 /* GRID */
