@@ -19,14 +19,13 @@ function Cell(grid, center, gridPosition) {
 Cell.prototype.Draw = function(render) {
 	if(this.state == CellState.INVISIBLE)
 		return;
-	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], true);
+	let onBack = true;//(this.style.length > 1);
+	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], onBack);
 };
 
 Cell.prototype.ClearStyle = function() {
-	if(this.style.length <= 1) {
-		console.log('Nice!', this.style);
+	if(this.style.length <= 1)
 		return;
-	}
 
 	this.style.pop();
 	this.Draw();
@@ -71,11 +70,14 @@ Cell.prototype.RemoveTrigger = function (id) {
 		}
 };
 
-Cell.prototype.Clear = function () {
+Cell.prototype.Clear = function (force) {
 	delete this.object;
 	this.object = null;
 	this.staticObjects = [];
-	this.style.length = 1;
+	if(force === true)
+		this.style = [DefaultCellStyle];
+	else
+		this.style.length = 1;
 	this.state = CellState.EMPTY;
 	this.triggers = [];
 	// this.style
@@ -207,8 +209,8 @@ Grid.prototype.GenerateGrid = function(size) {
 	if(this.size == size) return;
 
 	// this.radius *= this.gm.render.scale;
-	if(this.size > 0)
-		this.gm.render.SetScale((this.gm.render.start_height / (2 * this.radius)) / size, true);
+	// if(this.size > 0)
+	// 	this.gm.render.SetScale((this.gm.render.start_height / (2 * this.radius)) / size, true);
 	// 	this.gm.render.SetScale(this.size / size * 0.9, true);
 		// this.Calculate(size / this.size, true);
 
@@ -291,7 +293,7 @@ Grid.prototype.Clear = function () {
 	this.gm.render.ClearBack();
 	for (let i = 0; i < this.size; ++i)
 		for (let j = 0; j < this.size; ++j)
-			this.map[i][j].Clear();
+			this.map[i][j].Clear(true);
 	this.gm.ClearObjects();
 };
 

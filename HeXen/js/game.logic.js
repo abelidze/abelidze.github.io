@@ -27,8 +27,7 @@ const ChangeLevel = function (object) {
 }
 
 const ShowInfo = function (object) {
-	let info = new SplashWindow('Find switcher to open a door');
-	info.Show();
+	(new SplashWindow('Find switcher to open a door')).Show();
 }
 
 const Pick = dummyFunc;

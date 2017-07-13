@@ -11,12 +11,11 @@ function GameManager() {
 	this.event = null;
 	this.animator = null;
 	this.grid = null;
-	this.scoreBar = null;
+	this.scoreManager = null;
 
 	this.freeze = true;
 	this.gameState = GameState.PAUSE;
 	this.result = GameResult.NONE;
-	this.score = 0;
 	this.currentLevel = 0;
 
 	this.objects = [];
@@ -35,13 +34,12 @@ GameManager.prototype.Init = function () {
 	this.grid = new Grid(this, 64, 64, 24, 48);
 	this.mouse = new Mouse(this);
 	this.animator = new Animator();
-	this.scoreBar = new ScoreWindow(DefaultScoreValue);
+	this.scoreManager = new ScoreManager();
 	this.StartGame();
 };
 
 GameManager.prototype.StartGame = function () {
 	this.freeze = false;
-	this.gameState = GameState.TURN;
 	this.NextLevel();
 	// this.grid.Draw();
 	
@@ -62,14 +60,15 @@ GameManager.prototype.Pause = function () {
 	this.freeze = true;
 };
 
-GameManager.prototype.AddScore = function (score) {
-	this.score += score;
+GameManager.prototype.ChangeScore = function (score) {
+	this.scoreManager.UpdateScore(score);
 };
 
 GameManager.prototype.NextLevel = function () {
 	this.grid.LoadLevel(GameLevels[this.currentLevel]);
+	this.scoreManager.Reset();
+	this.gameState = GameState.TURN;
 	this.currentLevel++;
-	this.score = 0;
 };
 
 GameManager.prototype.CreateObject = function (object, cell, args) {
@@ -139,7 +138,10 @@ GameManager.prototype.GridClicked = function (pos) {
 	}
 };
 
+GameManager.prototype.SetMode = function (mode) {
+	this.state = mode;
+}
+
 GameManager.prototype.GameOver = dummyFunc;
 GameManager.prototype.ShowGameResult = dummyFunc;
-GameManager.prototype.SetMode = dummyFunc;
 GameManager.prototype.CheckObjects = dummyFunc;

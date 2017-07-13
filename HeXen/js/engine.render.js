@@ -242,8 +242,8 @@ Render.prototype.ResizeCanvas = function() {
 	this.bgcanvas.width = window.innerWidth;
 	this.bgcanvas.height = window.innerHeight;
 
-	if(window.innerWidth <= this.start_width)
-		this.SetScale(window.innerWidth / this.current_width, true);
+	// if(window.innerWidth <= this.start_width)
+	// 	this.SetScale(window.innerWidth / this.current_width, true);
 	this.current_width = window.innerWidth;
 	this.current_height = window.innerHeight;
 }

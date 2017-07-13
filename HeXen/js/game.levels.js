@@ -124,16 +124,6 @@ const GameLevels =
             // [[checker, action, repeat, {value: ...}], x, y]
         ]),
 
-
-        new Level(12,
-        [
-            [LevelObjects.PLAYER, 0, 0, [ spr_player ]],
-            [LevelObjects.ENEMY, 5, 5, [ spr_enemy ]],
-        ],
-        [
-            // [[checker, action, repeat, {value: ...}], x, y]
-        ]),
-
         new Level(15,
             [
                 [LevelObjects.WALL, 0, 7, [null]],
@@ -227,5 +217,14 @@ const GameLevels =
             [
                 //...
             ]
-        )
+        ),
+
+        new Level(12,
+        [
+            [LevelObjects.PLAYER, 0, 0, [ spr_player ]],
+            [LevelObjects.ENEMY, 5, 5, [ spr_enemy ]],
+        ],
+        [
+            // [[checker, action, repeat, {value: ...}], x, y]
+        ])
     ];
