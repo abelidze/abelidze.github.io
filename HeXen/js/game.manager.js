@@ -30,7 +30,7 @@ function GameManager() {
 
 GameManager.prototype.Init = function () {
 	this.event = new EventSystem();
-	this.render = new Render();
+	this.render = new Render(2);
 	this.grid = new Grid(64, 64, 24, 48);
 	this.mouse = new Mouse(this);
 	this.animator = new Animator();
@@ -90,7 +90,6 @@ GameManager.prototype.RenderEvent = function () {
 	this.animator.ProcessMotions(delta);
 
 	this.render.Clear();
-	// this.render.ClearBack();
 	// this.grid.Draw();
 	for (let i = 0; i < this.objects.length; ++i) {
 		this.objects[i].Draw();

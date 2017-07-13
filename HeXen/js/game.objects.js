@@ -166,10 +166,10 @@ DynamicObject.prototype = Object.create(GameObject.prototype);
 DynamicObject.prototype.MoveTo = function (cell) {
 	let that = this;
 	cell.Interact(this.cell, function (result) {
+		that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
 		switch (result) {
 			case InteractResult.MOVED:
-				that.cell.ClearNearby();
-				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
+				that.cell.ClearNearby(NearbyCellStyle);
 				that.cell.Clear();
 				cell.MoveObject(that);
 				// that.position = cell.center;
@@ -182,13 +182,13 @@ DynamicObject.prototype.MoveTo = function (cell) {
 				that.cell = cell;
 				setTimeout(function () {
 					that.cell.FillNearby(NearbyCellStyle);
-					that.gm.render.ClearBack();
+					that.gm.render.Clear(0);
 					that.gm.grid.Draw();
 				}, 250);
 			break;
 
             case InteractResult.EXIT:
-				that.cell.ClearNearby();
+				that.cell.ClearNearby(NearbyCellStyle);
 				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
 				that.gm.SetMode(GameState.ANIMATING);
 				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function ()

@@ -1,6 +1,6 @@
 /*
- Data structures used in this project
- */
+	Data structures used in this project
+*/
 
 function Heap() {
 	this.array = [];

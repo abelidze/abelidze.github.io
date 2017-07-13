@@ -16,15 +16,17 @@ function Cell(grid, center, gridPosition) {
 	this.triggersCounter = 0;
 }
 
-Cell.prototype.Draw = function(onBack) {
+Cell.prototype.Draw = function(layer = 0) {
 	if(this.state === CellState.INVISIBLE)
 		return;
-	onBack = onBack ? onBack : true;
-	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], onBack);
+	layer = layer ? layer : 0;
+	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], layer);
 };
 
-Cell.prototype.ClearStyle = function() {
+Cell.prototype.ClearStyle = function(style) {
 	if(this.style.length <= 1)
+		return;
+	if(style !== undefined && style != this.style[this.style.length - 1])
 		return;
 
 	this.style.pop();
@@ -35,11 +37,14 @@ Cell.prototype.SetStyle = function(style, force) {
 	if(force === true) {
 		this.style.length = 0;
 	}
-	// else if(this.style[this.style.length-1] == style) {
-	// 	this.ClearStyle();
-	// 	return;
-	// }
+	else if(style.prior !== undefined
+		 && this.style[this.style.length-1].prior !== undefined
+		 && this.style[this.style.length-1].prior > style.prior)
+	{
+		return;
+	}
 
+	this.ClearStyle(style);
 	this.style.push(style);
 	this.Draw();
 };
@@ -136,7 +141,24 @@ Cell.prototype.isEmpty = function () {
 	return (this.state === CellState.EMPTY);
 };
 
+Cell.prototype.GetRing = function (radius) {
+	let hexDir = HexDirections;
+	let pos = this.gridPosition;
+	let ring = [];
+	let curr = {x: 0, y: 0};
+
+	for (let i = 0; i < hexDir.length; ++i) {
+		for (let j = 0; j < radius; ++j) {
+			curr.x = pos.x + radius * hexDir[i][0] + (j - radius + 1) * hexDir[(i + 1) % hexDir.length][0];
+			curr.y = pos.y + radius * hexDir[i][1] + (j - radius + 1) * hexDir[(i + 1) % hexDir.length][1];
+			ring.push(this.grid.map[curr.y][curr.x]);
+		}
+	}
+	return ring;
+};
+
 Cell.prototype.GetNearby = function () {
+	// return this.GetRing(1);
 	let pos, nearby = [];
 	for (let i = 0; i < HexDirections.length; ++i) {
 		pos = this.grid.PixelToHex(this.center.x, this.center.y);
@@ -175,22 +197,6 @@ Cell.prototype.isNearby = function (cell) {
 	let pos2 = this.grid.PixelToHex(cell.center.x, cell.center.y);
 
 	return this.isNearbyXY(pos1, pos2);
-};
-
-Cell.prototype.GetRing = function (radius) {
-	let hexDir = HexDirections;
-	let pos = this.gridPosition;
-	let ring = [];
-	let curr = {x: 0, y: 0};
-
-	for (let i = 0; i < hexDir.length; ++i) {
-		for (let j = 0; j < radius; ++j) {
-			curr.x = pos.x + radius * hexDir[i][0] + (j - radius + 1) * hexDir[(i + 1) % hexDir.length][0];
-			curr.y = pos.y + radius * hexDir[i][1] + (j - radius + 1) * hexDir[(i + 1) % hexDir.length][1];
-			ring.push(this.grid.map[curr.y][curr.x]);
-		}
-	}
-	return ring;
 };
 
 Cell.prototype.ShortestWay = function (cell) {
@@ -311,15 +317,14 @@ Grid.prototype.LoadLevel = function(level) {
 	this.Draw();
 };
 
-Grid.prototype.Draw = function(onBack) {
+Grid.prototype.Draw = function(layer = 0) {
 	for(let i = 0; i < this.size; ++i)
 		for(let j = 0; j < this.size; ++j)
-			this.map[i][j].Draw(onBack);
+			this.map[i][j].Draw(layer);
 };
 
 Grid.prototype.Clear = function () {
-	this.gm.render.Clear();
-	this.gm.render.ClearBack();
+	this.gm.render.ClearAll();
 	for (let i = 0; i < this.size; ++i)
 		for (let j = 0; j < this.size; ++j)
 			this.map[i][j].Clear(true);

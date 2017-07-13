@@ -32,12 +32,12 @@ canvas  {
 	height: 50vw;*/
 }
 
-#layer1 {
-	z-index: -1;
+#layer0 {
+	z-index: -2;
 }
 
-#layer2 {
-	z-index: -2;
+#layer1 {
+	z-index: -1;
 }
 
 .splash {

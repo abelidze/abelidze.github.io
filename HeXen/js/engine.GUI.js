@@ -20,8 +20,8 @@ function Button(onClick, rect, options) {
 }
 Button.prototype = Object.create(Clickable.prototype);
 
-Button.prototype.Draw = function(onBack) {
-	this.gm.render.DrawRectangle(this.rect, onBack, this.options);
+Button.prototype.Draw = function(layer) {
+	this.gm.render.DrawRectangle(this.rect, this.options, layer);
 };
 
 

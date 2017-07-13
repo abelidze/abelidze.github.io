@@ -107,7 +107,7 @@ function Animation(frames_img, frames_count, offsetX, offsetY, width, height, fp
 }
 Animation.prototype = Object.create(Drawable.prototype);
 
-Animation.prototype.Draw = function (x, y, rotation, scale, onCenter, onBack) {
+Animation.prototype.Draw = function (x, y, rotation, scale, onCenter, layer) {
 	if (!this.isPlayed)
 		return;
 
@@ -118,7 +118,7 @@ Animation.prototype.Draw = function (x, y, rotation, scale, onCenter, onBack) {
 		if (this.cur_frame >= this.frames_count)
 			this.cur_frame = 0;
 	}
-	this.gm.render.DrawFrame(this, x, y, scale, rotation, onCenter, onBack);
+	this.gm.render.DrawFrame(this, x, y, scale, rotation, onCenter, layer);
 };
 
 Animation.prototype.Play = function () {
@@ -184,18 +184,17 @@ Animator.prototype.ProcessMotions = function(dTime) {
 };
 
 
-function Render() {
+function Render(layer_count) {
 	this.lastRender = 0;
 
-	this.fgcanvas = document.createElement('canvas');
-	this.fgcanvas.id = 'layer1';
-	this.cnt_fg = this.fgcanvas.getContext('2d');
-	document.body.appendChild(this.fgcanvas);
-
-	this.bgcanvas = document.createElement('canvas');
-	this.bgcanvas.id = 'layer2';
-	this.cnt_bg = this.bgcanvas.getContext('2d');
-	document.body.appendChild(this.bgcanvas);
+	this.layers = [];
+	for(let i = 0; i < layer_count; ++i) {
+		this.layers[i] = {};
+		this.layers[i].canvas = document.createElement('canvas');
+		this.layers[i].canvas.id = 'layer' + i;
+		this.layers[i].context = this.layers[i].canvas.getContext('2d');
+		document.body.appendChild(this.layers[i].canvas);
+	}
 
 	this.scale = 1;
 	this.content_width = window.innerWidth;
@@ -205,51 +204,52 @@ function Render() {
 }
 Render.prototype = Object.create(BaseModel.prototype);
 
-Render.prototype.Clear = function () {
-	this.cnt_fg.clearRect(0, 0, this.fgcanvas.width, this.fgcanvas.height);
+Render.prototype.Clear = function (layer = 1) {
+	this.layers[layer].context.clearRect(0, 0, this.layers[layer].canvas.width, this.layers[layer].canvas.height);
 };
 
-Render.prototype.ClearBack = function () {
-	this.cnt_bg.clearRect(0, 0, this.bgcanvas.width, this.bgcanvas.height);
+Render.prototype.ClearAll = function () {
+	for(let i = 0; i < this.layers.length; ++i)
+		this.Clear(i);
 };
 
-Render.prototype.GetCanvas = function () {
-	return this.fgcanvas;
+Render.prototype.GetCanvas = function (layer = 1) {
+	return this.layers[layer].canvas;
+};
+
+Render.prototype.GetContext = function (layer = 1) {
+	return this.layers[layer].context;
 };
 
 Render.prototype.UpdateScale = function () {
 	if(this.content_width > this.content_height)
-		this.scale = this.fgcanvas.height / this.content_height;
+		this.scale = this.layers[0].canvas.height / this.content_height;
 	else
-		this.scale = this.fgcanvas.width / this.content_width;
-}
+		this.scale = this.layers[0].canvas.width / this.content_width;
+};
 
 Render.prototype.ToggleScale = function (toggle) {
-	if(toggle) {
-		this.cnt_fg.scale(this.scale,this.scale);
-		this.cnt_bg.scale(this.scale,this.scale);
-	}
-	else {
-		this.cnt_fg.scale(1 / this.scale, 1 / this.scale);
-		this.cnt_bg.scale(1 / this.scale, 1 / this.scale);
-	}
-}
+	let scale = this.scale
+	if(!toggle)
+		scale = 1 / this.scale;
+
+	for(let i = 0; i < this.layers.length; ++i)
+		this.layers[i].context.scale(scale, scale);
+};
 
 Render.prototype.SetSize = function (width, height) {
 	this.content_width = width;
 	this.content_height = height;
 	this.UpdateScale();
-}
+};
 
 Render.prototype.ResizeCanvas = function() {
-	this.fgcanvas.width = window.innerWidth;
-	this.fgcanvas.height = window.innerHeight;
-
-	this.bgcanvas.width = window.innerWidth;
-	this.bgcanvas.height = window.innerHeight;
-
+	for(let i = 0; i < this.layers.length; ++i) {
+		this.layers[i].canvas.width = window.innerWidth;
+		this.layers[i].canvas.height = window.innerHeight;
+	}
 	this.UpdateScale();
-}
+};
 
 Render.prototype.deltaTime = function() {
 	let currentDate = new Date();
@@ -259,10 +259,10 @@ Render.prototype.deltaTime = function() {
 	return dTime;
 };
 
-Render.prototype.DrawPath = function (points, onBack, effect) {
+Render.prototype.DrawPath = function (points, effect, layer = 1) {
 	if (points.length <= 1)
 		return;
-	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
+	let context = this.layers[layer].context;
 
 	this.ToggleScale(true);
 	context.beginPath();
@@ -283,7 +283,7 @@ Render.prototype.DrawPath = function (points, onBack, effect) {
 	this.ToggleScale(false);
 }
 
-Render.prototype.DrawHex = function (center, radius, onBack, effect) {
+Render.prototype.DrawHex = function (center, radius, effect, layer = 1) {
 	let hexagon = [];
 	for (let i = 0; i < 6; ++i) {
 		let angle_deg = 60 * i + 30;
@@ -293,15 +293,15 @@ Render.prototype.DrawHex = function (center, radius, onBack, effect) {
 			y: center.y + radius * Math.sin(angle_rad)
 		});
 	}
-	this.DrawPath(hexagon, effect, onBack);
+	this.DrawPath(hexagon, effect, layer);
 };
 
-Render.prototype.DrawLine = function (point1, point2, onBack, effect) {
-	this.DrawPath([point1, point2], effect, onBack);
+Render.prototype.DrawLine = function (point1, point2, effect, layer = 1) {
+	this.DrawPath([point1, point2], effect, layer);
 };
 
-Render.prototype.DrawCircle = function (center, radius, onBack, effect) {
-	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
+Render.prototype.DrawCircle = function (center, radius, effect, layer = 1) {
+	let context = this.layers[layer].context;
 
 	this.ToggleScale(true);
 	context.beginPath();
@@ -318,8 +318,8 @@ Render.prototype.DrawCircle = function (center, radius, onBack, effect) {
 	this.ToggleScale(false);
 }
 
-Render.prototype.DrawRectangle = function (rect, onBack, effect) {
-	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
+Render.prototype.DrawRectangle = function (rect, effect, layer = 1) {
+	let context = this.layers[layer].context;
 
 	this.ToggleScale(true);
 	context.beginPath();
@@ -336,8 +336,8 @@ Render.prototype.DrawRectangle = function (rect, onBack, effect) {
 	this.ToggleScale(false);
 }
 
-Render.prototype.DrawFrame = function (anim, x, y, scale, rotation, onCenter, onBack) {
-	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
+Render.prototype.DrawFrame = function (anim, x, y, scale, rotation, onCenter, layer = 1) {
+	let context = this.layers[layer].context;
 
 	let dx = anim.offset_x + anim.cur_frame * anim.w;
 	let count = Math.floor(dx / anim.frames_img.width);
@@ -358,8 +358,8 @@ Render.prototype.DrawFrame = function (anim, x, y, scale, rotation, onCenter, on
 	this.ToggleScale(false);
 };
 
-Render.prototype.DrawSprite = function (img, x, y, scale, onBack) {
-	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
+Render.prototype.DrawSprite = function (img, x, y, scale, layer = 1) {
+	let context = this.layers[layer].context;
 
 	context.drawImage(img, 0, 0, img.width, img.height, x, y, img.width * scale, img.height * scale);
 };

@@ -32,7 +32,7 @@ const ShowInfo = function (object) {
 
 const Pick = dummyFunc;
 
-//Triggers templates
+// Triggers templates
 
 const TInfoCell = function (this_x, this_y, delay) {
 	return [isTouched, ShowInfo, {x: this_x, y: this_y, delay: delay}];
