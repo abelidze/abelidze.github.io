@@ -25,33 +25,40 @@ Button.prototype.Draw = function(onBack) {
 };
 
 
-function SplashWindow(text) {
+function SplashWindow(text, once = true) {
+	this.id = getRandomInt(10000000, 99999999);
 	this.text = text;
-	this.name = '.splash';
 	this.overlay = $('#overlay');
-	this.close = $('.splash, #overlay')
-	this.form = $(this.name);
-	$('.splash_close').click(this.Close.bind(this));
-}
+	this.name = 'splash';
+	this.once = once;
 
+	var div = $('<div>').addClass(this.name).attr('id', this.id).appendTo('body');
+	div.append('<form action="" method="post"><h3></h3></form>');
+
+	var splash = $('<span>').addClass(this.name + '_close').text('X').appendTo(div);
+	splash.unbind();
+	splash.click(this.Close.bind(this));
+}
 SplashWindow.prototype = Object.create(BaseModel.prototype);
 
 SplashWindow.prototype.FadeIn = function() {
 	let that = this;
 	this.overlay.fadeIn(400, function()
 	{
-		$(that.name)
+		$('#' + that.id)
 		.css('display', 'block')
-		.animate({opacity: 1, top: '50%'}, 200);
+		.animate({opacity: 1, top: '30vh'}, 200);
 	});
 };
 
 SplashWindow.prototype.FadeOut = function() {
 	let that = this;
-	this.form.animate({opacity: 0, top: '45%'}, 200, function()
+	$('#' + that.id).animate({opacity: 0, top: '20vh'}, 200, function()
 	{
-		$(that.name).css('display', 'none');
+		$('#' + that.id).css('display', 'none');
 		that.overlay.fadeOut(400);
+		if(that.once)
+			that.Destroy();
 	});
 };
 
@@ -62,12 +69,59 @@ SplashWindow.prototype.SetText = function(text) {
 SplashWindow.prototype.Show = function() {
 	this.FadeIn();
 	$('h3').html(this.text);
+	this.gm.SetMode(GameState.PAUSE);
 };
 
 SplashWindow.prototype.Close = function() {
 	$('h3').text('');
 	this.FadeOut();
+	this.gm.SetMode(GameState.TURN);
 };
+
+SplashWindow.prototype.Destroy = function() {
+	$('#' + this.id).remove();
+};
+
+
+function ScoreWindow(text, once) {
+	SplashWindow.call(this, text, once);
+}
+ScoreWindow.prototype = Object.create(SplashWindow.prototype);
+
+ScoreWindow.prototype.Close = function() {
+	$('h3').text('');
+	this.FadeOut();
+	this.gm.NextLevel();
+};
+
+function ScoreManager() {
+	this.scoreBar = $('#progress_bar');
+	this.scoreWin = new ScoreWindow('No content', false);
+	this.score = 0;
+
+	this.maxLevelScore = 100;
+}
+ScoreManager.prototype = Object.create(BaseModel.prototype);
+
+ScoreManager.prototype.UpdateScore = function (value) {
+	this.score += value;
+
+	let barScore = Math.max(0, Math.min(100, Math.floor(this.score / this.maxLevelScore * 100)));
+	this.scoreBar.removeClass().addClass('c100 p' + barScore + ' big');
+	$('#progress_bar_value').text(barScore + '%');
+}
+
+ScoreManager.prototype.ShowScore = function (text) {
+	if(text !== undefined) {
+		this.scoreWin.SetText(text);
+	}
+	this.scoreWin.Show(this.score);
+}
+
+ScoreManager.prototype.Reset = function () {
+	this.score = 0;
+	this.UpdateScore(0);
+}
 
 
 function QuestionWindow(text) {
@@ -77,19 +131,7 @@ function QuestionWindow(text) {
 QuestionWindow.prototype = Object.create(SplashWindow.prototype);
 
 
-function ScoreWindow(text) {
-	SplashWindow.call(this, text);
-	this.ChangeScore(text);
-}
-ScoreWindow.prototype = Object.create(SplashWindow.prototype);
+function ScoreBar() {
 
-ScoreWindow.prototype.ChangeScore = function(value) {
-	/* DEBUG VERSION */
-	if (value > 100)
-		return;
-	prBar = $('#progress_bar');
-	prBar.removeClass();
-	prBar.addClass('c100 p' + value + ' big');
-	prBarVal = $('#progress_bar_value');
-	prBarVal.text(value + '%');
 }
+ScoreBar.prototype = Object.create(Clickable.prototype);

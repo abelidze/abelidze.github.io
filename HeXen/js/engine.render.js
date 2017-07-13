@@ -9,34 +9,34 @@ function Point(x, y) {
 
 Point.prototype.Distance = function (point) {
 	return Math.sqrt(sqr(this.x - point.x) + sqr(this.y - point.y));
-}
+};
 
 Point.prototype.GetVector = function (point) {
 	return new Point(point.x - this.x, point.y - this.y);
-}
+};
 
 Point.prototype.PolarAngle = function () {
 	return Math.atan2(this.y, this.x) - Math.PI / 2;
-}
+};
 
 Point.prototype.Sign = function () {
 	return Math.sign(this.x + this.y);
-}
+};
 
 Point.prototype.Length = function () {
 	return Math.sqrt(sqr(this.x) + sqr(this.y));
-}
+};
 
 Point.prototype.Dot = function (point) {
 	return (this.x * point.x + this.y * point.y);
-}
+};
 
 Point.prototype.Normalize = function () {
 	let len = this.Length();
 	this.x /= len;
 	this.y /= len;
 	return this;
-}
+};
 
 Point.prototype.isInTriangle = function (p1, p2, p3) {
 	let vA = this.GetVector(p1).Normalize();
@@ -48,8 +48,7 @@ Point.prototype.isInTriangle = function (p1, p2, p3) {
 	let a3 = vC.Dot(vA);
 
 	return (Math.abs((Math.acos(a1) + Math.acos(a2) + Math.acos(a3)) - 2 * Math.PI) < EPS);
-}
-
+};
 
 function Rect(x, y, w, h) {
 	this.x = x;
@@ -59,13 +58,8 @@ function Rect(x, y, w, h) {
 }
 
 Rect.prototype.isInArea = function (x, y) {
-	if (this.x < x && x < (this.x + this.w) &&
-		this.y < y && y < (this.y + this.h))
-		return true;
-	else
-		return false;
-}
-
+	return (this.x < x && x < (this.x + this.w) && this.y < y && y < (this.y + this.h));
+};
 
 function Drawable(source, scale) {
 	if (scale === undefined) scale = 1;
@@ -78,7 +72,7 @@ Drawable.prototype = Object.create(BaseModel.prototype);
 
 Drawable.prototype.Draw = function (x, y, onBack) {
 	this.gm.render.DrawSprite(this.render_element, x, y, this.scale, onBack);
-}
+};
 
 function Sprite(source, scale) {
 	Drawable.call(this, source, scale);
@@ -90,13 +84,13 @@ Sprite.prototype = Object.create(Drawable.prototype);
 
 Sprite.prototype.Draw = function (x, y,  rotation, onBack) {
 	this.render_element[this.animation_clip].Draw(x, y, rotation, this.scale, this.onCenter, onBack);
-}
+};
 
 Sprite.prototype.Animate = function (animation_clip) {
 	this.render_element[this.animation_clip].Stop();
 	this.animation_clip = animation_clip;
 	this.render_element[this.animation_clip].Play();
-}
+};
 
 function Animation(frames_img, frames_count, offsetX, offsetY, width, height, fps) {
 	this.frames_img = frames_img;
@@ -125,21 +119,21 @@ Animation.prototype.Draw = function (x, y, rotation, scale, onCenter, onBack) {
 			this.cur_frame = 0;
 	}
 	this.gm.render.DrawFrame(this, x, y, scale, rotation, onCenter, onBack);
-}
+};
 
 Animation.prototype.Play = function () {
 	this.isPlayed = true;
-}
+};
 
 Animation.prototype.Stop = function () {
 	if (!this.isPlayed)
 		return;
 	this.isPlayed = false;
-}
+};
 
 Animation.prototype.Toggle = function () {
 	this.isPlayed = !this.isPlayed;
-}
+};
 
 
 function Animator() {
@@ -147,14 +141,14 @@ function Animator() {
 }
 Animator.prototype = Object.create(Drawable.prototype);
 
-Animator.prototype.AddMotion = function (object, target, speed, mode) {
+Animator.prototype.AddMotion = function (object, target, speed, mode, callback) {
 	if (object.sprite) {
 		object.ChangeAnimationClip(AnimationState.MOVE);
 	}
 	let dir = object.position.GetVector(target);
 	let sgn = dir.Sign();
-	this.motion.push([speed, object, target, mode, dir, sgn]);
-}
+	this.motion.push([speed, object, target, mode, dir, sgn, callback]);
+};
 
 Animator.prototype.ProcessMotions = function(dTime) {
 	let dir, cur_dir;
@@ -164,6 +158,10 @@ Animator.prototype.ProcessMotions = function(dTime) {
 			if(this.motion[i][1].sprite) {
 				this.motion[i][1].ChangeAnimationClip(AnimationState.IDLE);
 			}
+			// Callback
+			if(this.motion[i][6] !== undefined)
+				this.motion[i][6]();
+
 			this.motion[i][1].position.x = this.motion[i][2].x;
 			this.motion[i][1].position.y = this.motion[i][2].y;
 			this.motion.splice(i, 1);
@@ -183,49 +181,64 @@ Animator.prototype.ProcessMotions = function(dTime) {
 	if (this.motion.length == 0 && this.gm.gameState === GameState.ANIMATING) {
 		this.gm.gameState = GameState.TURN;
 	}
-}
+};
 
 
-function Render(gmanager) {
-	this.gm = gmanager;
+function Render() {
 	this.lastRender = 0;
 
-	this.fgcanvas = document.getElementById('game');
+	this.fgcanvas = document.createElement('canvas');
+	this.fgcanvas.id = 'layer1';
 	this.cnt_fg = this.fgcanvas.getContext('2d');
-	// this.cnt_fg.fillStyle = 'rgba(0, 255, 0, 0.3)';
+	document.body.appendChild(this.fgcanvas);
 
 	this.bgcanvas = document.createElement('canvas');
-	this.bgcanvas.id = 'field';
+	this.bgcanvas.id = 'layer2';
 	this.cnt_bg = this.bgcanvas.getContext('2d');
 	document.body.appendChild(this.bgcanvas);
 
 	this.scale = 1;
-	this.start_width = window.innerWidth;
-	this.start_height = window.innerHeight;
+	this.content_width = window.innerWidth;
+	this.content_height = window.innerHeight;
 	this.ResizeCanvas();
 	this.gm.event.AddEvent('resize', this.gm.ResizeEvent.bind(this.gm));
 }
+Render.prototype = Object.create(BaseModel.prototype);
 
 Render.prototype.Clear = function () {
 	this.cnt_fg.clearRect(0, 0, this.fgcanvas.width, this.fgcanvas.height);
-}
+};
 
 Render.prototype.ClearBack = function () {
 	this.cnt_bg.clearRect(0, 0, this.bgcanvas.width, this.bgcanvas.height);
-}
+};
 
 Render.prototype.GetCanvas = function () {
 	return this.fgcanvas;
+};
+
+Render.prototype.UpdateScale = function () {
+	if(this.content_width > this.content_height)
+		this.scale = this.fgcanvas.height / this.content_height;
+	else
+		this.scale = this.fgcanvas.width / this.content_width;
 }
 
-Render.prototype.SetScale = function (factor, multiply) {
-	if(multiply)
-		this.scale *= factor;
-	else
-		this.scale = factor;
+Render.prototype.ToggleScale = function (toggle) {
+	if(toggle) {
+		this.cnt_fg.scale(this.scale,this.scale);
+		this.cnt_bg.scale(this.scale,this.scale);
+	}
+	else {
+		this.cnt_fg.scale(1 / this.scale, 1 / this.scale);
+		this.cnt_bg.scale(1 / this.scale, 1 / this.scale);
+	}
+}
 
-	this.cnt_fg.scale(this.scale, this.scale);
-	this.cnt_bg.scale(this.scale, this.scale);
+Render.prototype.SetSize = function (width, height) {
+	this.content_width = width;
+	this.content_height = height;
+	this.UpdateScale();
 }
 
 Render.prototype.ResizeCanvas = function() {
@@ -235,7 +248,7 @@ Render.prototype.ResizeCanvas = function() {
 	this.bgcanvas.width = window.innerWidth;
 	this.bgcanvas.height = window.innerHeight;
 
-	this.SetScale(window.innerWidth / this.start_width);
+	this.UpdateScale();
 }
 
 Render.prototype.deltaTime = function() {
@@ -244,13 +257,14 @@ Render.prototype.deltaTime = function() {
 	if (this.lastRender === 0) dTime = 0;
 	this.lastRender = currentDate;
 	return dTime;
-}
+};
 
 Render.prototype.DrawPath = function (points, onBack, effect) {
 	if (points.length <= 1)
 		return;
 	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
+	this.ToggleScale(true);
 	context.beginPath();
 	context.moveTo(Math.floor(points[0].x), Math.floor(points[0].y));
 	for (let i = 1; i < points.length; ++i) {
@@ -266,6 +280,7 @@ Render.prototype.DrawPath = function (points, onBack, effect) {
 		context.fillStyle = effect.fill;
 		context.fill();
 	}
+	this.ToggleScale(false);
 }
 
 Render.prototype.DrawHex = function (center, radius, onBack, effect) {
@@ -279,15 +294,16 @@ Render.prototype.DrawHex = function (center, radius, onBack, effect) {
 		});
 	}
 	this.DrawPath(hexagon, effect, onBack);
-}
+};
 
 Render.prototype.DrawLine = function (point1, point2, onBack, effect) {
 	this.DrawPath([point1, point2], effect, onBack);
-}
+};
 
 Render.prototype.DrawCircle = function (center, radius, onBack, effect) {
 	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
+	this.ToggleScale(true);
 	context.beginPath();
 	context.arc(center.x, center.y, radius, 0, 2 * Math.PI, false);
 
@@ -299,11 +315,13 @@ Render.prototype.DrawCircle = function (center, radius, onBack, effect) {
 		context.fillStyle = effect.fill;
 		context.fill();
 	}
+	this.ToggleScale(false);
 }
 
 Render.prototype.DrawRectangle = function (rect, onBack, effect) {
 	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
+	this.ToggleScale(true);
 	context.beginPath();
 	context.rect(rect.x, rect.y, rect.w, rect.h);
 
@@ -315,6 +333,7 @@ Render.prototype.DrawRectangle = function (rect, onBack, effect) {
 		context.fillStyle = effect.fill;
 		context.fill();
 	}
+	this.ToggleScale(false);
 }
 
 Render.prototype.DrawFrame = function (anim, x, y, scale, rotation, onCenter, onBack) {
@@ -330,15 +349,17 @@ Render.prototype.DrawFrame = function (anim, x, y, scale, rotation, onCenter, on
 		y -= anim.h / 2 * Math.sin(rotation) + anim.h / 2.5 * Math.cos(rotation);
 	}
 
+	this.ToggleScale(true);
 	context.translate(x, y);
 	context.rotate(rotation);
 	context.drawImage(anim.frames_img, sx, sy, anim.w, anim.h, 0, 0, anim.w * scale, anim.h * scale);
 	context.rotate(-rotation);
 	context.translate(-x, -y);
-}
+	this.ToggleScale(false);
+};
 
 Render.prototype.DrawSprite = function (img, x, y, scale, onBack) {
 	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
 	context.drawImage(img, 0, 0, img.width, img.height, x, y, img.width * scale, img.height * scale);
-}
+};

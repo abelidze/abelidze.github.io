@@ -229,8 +229,13 @@
   height: 1em;
   border-radius: 50%;
   float: right;
-  margin: 0 0.1em 0.1em 0;
+  margin: 0.25em 0.5em 0.1em 0;
   background-color: #1F282D;
+  user-select: none;
+  -webkit-user-select: none
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
 }
 .c100 *,
 .c100 *:before,

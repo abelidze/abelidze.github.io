@@ -75,6 +75,6 @@ Mouse.prototype.UpdateCoords = function(event, isTouch) {
 	if(this.posY > canvas.height - ClickRadius) this.posY = canvas.height - ClickRadius;
 	else if(this.posY < ClickRadius) this.posY = ClickRadius;
 
-	this.posX /= this.gm.render.scale;
-	this.posY /= this.gm.render.scale;
+	this.posX = Math.floor(this.posX / this.gm.render.scale);
+	this.posY = Math.floor(this.posY / this.gm.render.scale);
 };
