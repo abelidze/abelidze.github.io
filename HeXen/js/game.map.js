@@ -17,7 +17,7 @@ function Cell(grid, center, gridPosition) {
 }
 
 Cell.prototype.Draw = function(render) {
-	if(this.state == CellState.INVISIBLE)
+	if(this.state === CellState.INVISIBLE)
 		return;
 	let onBack = true;//(this.style.length > 1);
 	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], onBack);
@@ -47,7 +47,7 @@ Cell.prototype.SetStyle = function(style, force) {
 Cell.prototype.AddTrigger = function (trig) {
 	trig.id = ++this.triggersCounter;
 	this.triggers.push(trig);
-}
+};
 
 Cell.prototype.ActivateTriggers = function (object, obj_only) {
 	if(this.object)
@@ -59,7 +59,7 @@ Cell.prototype.ActivateTriggers = function (object, obj_only) {
 
 	for(let i = 0; i < this.triggers.length; ++i)
 		this.triggers[i].Activate(object);
-}
+};
 
 Cell.prototype.RemoveTrigger = function (id) {
 	for (let i = 0; i < this.triggers.length; ++i)
@@ -111,7 +111,7 @@ Cell.prototype.Interact = function (cell, callback) {
 };
 
 Cell.prototype.MoveObject = function (object) {
-	//if (this.state !== CellState.EMPTY) return undefined;
+	//if (!this.isEmpty()) return undefined;
 
 	this.object = object;
 	this.state = CellState.OBJECT;
@@ -120,7 +120,7 @@ Cell.prototype.MoveObject = function (object) {
 };
 
 Cell.prototype.AddObject = function (objectFunc) {
-	if (this.state !== CellState.EMPTY) return undefined;
+	if (!this.isEmpty()) return undefined;
 
 	let obj = objectFunc();
 	if(obj.GetType() >= GameObjectTypes.DYNAMIC)
@@ -130,6 +130,10 @@ Cell.prototype.AddObject = function (objectFunc) {
 	this.state = CellState.OBJECT;
 
 	return obj;
+};
+
+Cell.prototype.isEmpty = function () {
+	return (this.state === CellState.EMPTY);
 };
 
 Cell.prototype.GetNearby = function () {
@@ -170,7 +174,22 @@ Cell.prototype.isNearby = function (cell) {
 	let pos1 = this.grid.PixelToHex(this.center.x, this.center.y);
 	let pos2 = this.grid.PixelToHex(cell.center.x, cell.center.y);
 
-	return this.isNearby(pos1, pos2);
+	return this.isNearbyXY(pos1, pos2);
+};
+/*Need to test correctness of map[curr.y][curr.x]*/
+Cell.prototype.GetRing = function (radius) {
+	let HexDir = HexDirections;
+	let pos = this.position();
+	let ring = [];
+	let curr = {x: 0, y: 0};
+	for (let i = 0; i < HexDir.length; ++i) {
+		for (let j = 0; j < radius; ++j) {
+			curr.x = pos.x + radius * HexDir[i][0] + j * HexDir[(i + 1) % HexDir.length][0];
+			curr.y = pos.y + radius * HexDir[i][1] + j * HexDir[(i + 1) % HexDir.length][1];
+			ring.push(this.grid.map[curr.y][curr.x]);
+		}
+	}
+	return ring;
 };
 
 /* GRID */
@@ -249,7 +268,7 @@ Grid.prototype.GenerateGrid = function(size) {
 	}
 	if(!hide)
 		this.bounds = new Rect(this.offset_x - this.shift_x, this.offset_y - this.radius, x + this.shift_x, y + this.radius);
-}
+};
 
 Grid.prototype.LoadLevel = function(level) {
 	this.Clear();
@@ -342,7 +361,7 @@ function Path(cells = []) {
 }
 
 Path.prototype.NextTurn = function () {
-	return this.points[(this.current++) % this.points.length];
+	return this.points[(++this.current) % this.points.length];
 };
 
 Path.prototype.PrevTurn = function () {
@@ -350,7 +369,7 @@ Path.prototype.PrevTurn = function () {
 };
 
 Path.prototype.PushTurn = function (cell) {
-	if (this.IsCorrect(cell))
+	if (this.isCorrect(cell))
 		this.points.push(cell);
 };
 
@@ -359,6 +378,10 @@ Path.prototype.ClearPath = function () {
 	this.current = 0;
 };
 
-Path.prototype.IsCorrect = function(cell) {
+Path.prototype.isCorrect = function(cell) {
 	return (this.points[this.current].isNearby(cell));
+};
+
+Path.prototype.isEmpty = function () {
+	return (this.points.length === 0);
 };

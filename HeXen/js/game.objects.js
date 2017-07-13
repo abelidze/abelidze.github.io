@@ -1,10 +1,10 @@
 /*
- 	GameObjects Module
+	GameObjects Module
 */
 
 function GameObject(cell, drawable, triggers) {
-    this.sprite = drawable;
-    this.position = new Point(cell.center.x, cell.center.y);
+	this.sprite = drawable;
+	this.position = new Point(cell.center.x, cell.center.y);
 	this.cell = cell;
 	this.rotation = 0;
 	this.triggers = [];
@@ -16,12 +16,12 @@ function GameObject(cell, drawable, triggers) {
 GameObject.prototype = Object.create(BaseModel.prototype);
 
 GameObject.prototype.CreateTriggers = function (triggers) {
-	if(triggers === undefined) return;
-	for(let i = 0; i < triggers.length; ++i)
+	if (triggers === undefined) return;
+	for (let i = 0; i < triggers.length; ++i)
 		this.AddTrigger(new Trigger(this, triggers[i][0],
-										  triggers[i][1],
-										  triggers[i][2],
-										  triggers[i][3]));
+			triggers[i][1],
+			triggers[i][2],
+			triggers[i][3]));
 };
 
 GameObject.prototype.AddTrigger = function (trigger) {
@@ -30,8 +30,8 @@ GameObject.prototype.AddTrigger = function (trigger) {
 };
 
 GameObject.prototype.RemoveTrigger = function (id) {
-	for(let i = 0; i < this.triggers.length; ++i)
-		if (this.triggers[i] == id) {
+	for (let i = 0; i < this.triggers.length; ++i)
+		if (this.triggers[i] === id) {
 			delete this.triggers[i];
 			this.triggers.splice(i, 1);
 			break;
@@ -39,12 +39,12 @@ GameObject.prototype.RemoveTrigger = function (id) {
 };
 
 GameObject.prototype.ActivateTriggers = function (object) {
-    for(let i = 0; i < this.triggers.length; ++i)
-        this.triggers[i].Activate(object);
+	for (let i = 0; i < this.triggers.length; ++i)
+		this.triggers[i].Activate(object);
 };
 
 GameObject.prototype.ClearTrigger = function () {
-	for(let i = 0; i < this.triggers.length; ++i)
+	for (let i = 0; i < this.triggers.length; ++i)
 		delete this.triggers[i];
 	this.triggers = [];
 };
@@ -58,8 +58,8 @@ GameObject.prototype.Collide = function (object, callback) {
 };
 
 GameObject.prototype.Draw = function () {
-	if(this.drawable !== undefined)
-	    this.drawable.Draw(this.position.x, this.position.y);
+	if (this.drawable !== undefined)
+		this.drawable.Draw(this.position.x, this.position.y);
 };
 
 GameObject.prototype.Destroy = function () {
@@ -87,13 +87,14 @@ function Wall(cell, drawable, triggers) {
 Wall.prototype = Object.create(Obstacle.prototype);
 
 Wall.prototype.Draw = function () {
-    // this.gm.render.DrawHex(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
-}
+	// this.gm.render.DrawHex(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
+};
 
 function Door(cell, drawable, triggers, status) {
 	Obstacle.call(this, cell, drawable, triggers);
 	this.status = status ? status : DoorState.CLOSED;
-	if(this.status == DoorState.CLOSED)
+
+	if (this.status == DoorState.CLOSED)
 		this.cell.SetStyle(DoorStyleClosed, true);
 	else
 		this.cell.SetStyle(DoorStyleOpened, true);
@@ -106,12 +107,12 @@ Door.prototype.Draw = function () {
 	// 	this.cell.SetStyle(DoorStyleClosed);
 	// else
 	// 	this.cell.SetStyle(DoorStyleOpened);
-}
+};
 
 Door.prototype.Open = function () {
 	this.cell.SetStyle(DoorStyleOpened, true);
 	this.status = DoorState.OPENED;
-}
+};
 
 Door.prototype.Collide = function (object, callback) {
 	if (this.status === DoorState.CLOSED) {
@@ -145,14 +146,14 @@ Exit.prototype = Object.create(StaticObject.prototype);
 
 Exit.prototype.Draw = function () {
 	// this.cell.SetStyle(ExitStyle);
-}
+};
 
 Exit.prototype.Collide = function (object, callback) {
-    if (object.GetType() === GameObjectTypes.PLAYER)
-        callback(InteractResult.EXIT);
-    else
-        callback(InteractResult.MOVED);
-}
+	if (object.GetType() === GameObjectTypes.PLAYER)
+		callback(InteractResult.EXIT);
+	else
+		callback(InteractResult.MOVED);
+};
 
 /* DYNAMIC */
 function DynamicObject(cell, drawable, triggers) {
@@ -179,7 +180,7 @@ DynamicObject.prototype.MoveTo = function (cell) {
 					});
 
 				that.cell = cell;
-				setTimeout(function() {
+				setTimeout(function () {
 					that.cell.FillNearby(NearbyCellStyle);
 					that.gm.render.ClearBack();
 					that.gm.grid.Draw();
@@ -257,10 +258,13 @@ Player.prototype.Collide = function (object, callback) {
 	}
 };
 
-function Enemy(cell, drawable, triggers) {
+function Enemy(cell, drawable, triggers, path, radius) {
 	Actor.call(this, cell, drawable, triggers);
 	this._type_ = GameObjectTypes.ENEMY;
-	this.path = new Path();
+	this.path_guard = path ? new Path(path) : null;
+	this.path_haunt = null;
+	this.status = EnemyBehavior.GUARD;
+	this.vision_radius = radius;
 }
 Enemy.prototype = Object.create(Actor.prototype);
 
@@ -271,3 +275,21 @@ Enemy.prototype.Collide = function (object, callback) {
 		callback(InteractResult.NOTHING);
 	}
 };
+
+Enemy.prototype.Patrol = function () {
+	if (!this.path_guard.isEmpty()) {
+		this.MoveTo(this.path_guard.NextTurn);
+	}
+};
+
+Enemy.prototype.Search = function (target = GameObjectTypes.PLAYER) {
+	let area = [];
+	for (let i = 1; i <= this.vision_radius; ++i) {
+		area = this.cell.GetRing(i);
+		for (let j = 0; j < area.length; ++j)
+			if (!area[j].isEmpty())
+				if (area[j].object.GetType() === target)
+					return area[j];
+		}
+};
+
