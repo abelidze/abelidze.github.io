@@ -197,6 +197,7 @@ function Render(layer_count) {
 	}
 
 	this.scale = 1;
+	this.scaled = false;
 	this.content_width = window.innerWidth;
 	this.content_height = window.innerHeight;
 	this.ResizeCanvas();
@@ -229,6 +230,9 @@ Render.prototype.UpdateScale = function () {
 };
 
 Render.prototype.ToggleScale = function (toggle) {
+	if(this.scaled == toggle) return;
+
+	this.scaled = toggle;
 	let scale = this.scale
 	if(!toggle)
 		scale = 1 / this.scale;
@@ -300,23 +304,43 @@ Render.prototype.DrawLine = function (point1, point2, effect, layer = 1) {
 	this.DrawPath([point1, point2], effect, layer);
 };
 
-Render.prototype.DrawCircle = function (center, radius, effect, layer = 1) {
+Render.prototype.DrawSector = function (center, radius, start, angle, effect = {}, layer = 1, clockwise = false) {
 	let context = this.layers[layer].context;
+	let end = start + angle;
+	if(Math.abs(end) > 2 * Math.PI)
+		end = end % (2 * Math.PI);
 
 	this.ToggleScale(true);
 	context.beginPath();
-	context.arc(center.x, center.y, radius, 0, 2 * Math.PI, false);
+	context.moveTo(center.x, center.y);
+	context.arc(center.x, center.y, radius, start, end, clockwise);
+	context.lineTo(center.x, center.y);
 
 	context.lineWidth = (effect.width !== undefined ? effect.width : 1);
 	context.strokeStyle = (effect.edge !== undefined ? effect.edge : 'black');
 	context.stroke();
 
-	if (effect.fill !== undefined) {
+	if(effect.fill !== undefined) {
 		context.fillStyle = effect.fill;
 		context.fill();
 	}
 	this.ToggleScale(false);
 }
+
+Render.prototype.DrawCircle = function (center, radius, effect, layer = 1) {
+	this.DrawSector(center, radius, 0, 2 * Math.PI, effect, layer);
+};
+
+Render.prototype.DrawCircleBar = function (center, radius_in, radius_out, start, value, effect_out, effect_in, clockwise = false, layer = 1) {
+	if(value > 100) value = 100;
+
+	start = (start + Math.PI * 1.5) % (Math.PI * 2);
+	if(Math.abs(start) > 2 * Math.PI)
+		start = start % (2 * Math.PI);
+
+	this.DrawSector(center, radius_out, start, Math.PI * value / 50, effect_out, layer, clockwise);
+	this.DrawCircle(center, radius_in, effect_in, layer);
+};
 
 Render.prototype.DrawRectangle = function (rect, effect, layer = 1) {
 	let context = this.layers[layer].context;
@@ -334,7 +358,7 @@ Render.prototype.DrawRectangle = function (rect, effect, layer = 1) {
 		context.fill();
 	}
 	this.ToggleScale(false);
-}
+};
 
 Render.prototype.DrawFrame = function (anim, x, y, scale, rotation, onCenter, layer = 1) {
 	let context = this.layers[layer].context;

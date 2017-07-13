@@ -1,4 +1,6 @@
-/* Game Logic File */
+/*
+	Game Logic File [Triggers]
+*/
 
 const isTouched = function (object) {
 	return true;
@@ -26,16 +28,19 @@ const ChangeLevel = function (object) {
     object.gm.NextLevel();
 }
 
-const ShowInfo = function (object) {
-	(new SplashWindow('Find switcher to open a door')).Show();
+const ShowInfo = function (object, options) {
+	(new SplashWindow(options.text)).Show();
 }
 
 const Pick = dummyFunc;
 
-// Triggers templates
 
-const TInfoCell = function (this_x, this_y, delay) {
-	return [isTouched, ShowInfo, {x: this_x, y: this_y, delay: delay}];
+///                    ///
+/// Triggers templates ///
+///                    ///
+
+const TInfoCell = function (this_x, this_y, delay, info) {
+	return [isTouched, ShowInfo, {x: this_x, y: this_y, delay: delay, text: info}];
 }
 
 const TDoorOpener = function (this_x, this_y, key, delay) {

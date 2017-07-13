@@ -291,13 +291,16 @@ Grid.prototype.LoadLevel = function(level) {
 	this.GenerateGrid(level.size);
 
 	for(let i = 0; i < level.map.length; ++i) {
-	    if (level.map[i][0] === LevelObjects.INVISIBLE){
-            this.map[level.map[i][1]][level.map[i][2]].state = CellState.INVISIBLE;
-            continue;
-        } else if (level.map[i][0] === LevelObjects.STYLE){
-            this.map[level.map[i][1]][level.map[i][2]].SetStyle(level.map[i][3][0], true);
-            continue;
-        }
+		switch(level.map[i][0]) {
+			case LevelObjects.INVISIBLE:
+				this.map[level.map[i][1]][level.map[i][2]].state = CellState.INVISIBLE;
+			continue;
+
+			case LevelObjects.STYLE:
+				this.map[level.map[i][1]][level.map[i][2]].SetStyle(level.map[i][3], true);
+			continue;
+		}
+
 		let cell = this.map[level.map[i][1]][level.map[i][2]];
 		this.gm.CreateObject(LevelObjFunc[level.map[i][0]], cell, level.map[i][3]);
 	}
