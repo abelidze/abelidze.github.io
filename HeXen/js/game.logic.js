@@ -44,7 +44,7 @@ const TDoorOpener = function (this_x, this_y, key, delay) {
 }
 
 const TDoorKey = function (target_x, target_y, key, delay) {
-	return [isTouched, OpenDoor, 1, {key: key, delay: delay, x: target_x, y: target_y}];
+	return [isTouched, OpenDoor, 1, {key: key, delay: delay, x: target_y, y: target_x}];
 }
 
 //var DoorOpener = [isTouched, OpenDoor, 1, {delay: 200}];
