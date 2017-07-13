@@ -16,10 +16,10 @@ function Cell(grid, center, gridPosition) {
 	this.triggersCounter = 0;
 }
 
-Cell.prototype.Draw = function(render) {
+Cell.prototype.Draw = function(onBack) {
 	if(this.state === CellState.INVISIBLE)
 		return;
-	let onBack = true;//(this.style.length > 1);
+	onBack = onBack ? onBack : true;
 	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], onBack);
 };
 
@@ -200,9 +200,7 @@ Cell.prototype.ShortestWay = function (cell) {
 };
 
 /* GRID */
-function Grid(gmanager, offset_X, offset_Y, size, radius) {
-	this.gm = gmanager;
-
+function Grid(offset_X, offset_Y, size, radius) {
 	this.radius = radius;
 	this.offset_x = 0;
 	this.offset_y = 0;
@@ -215,6 +213,7 @@ function Grid(gmanager, offset_X, offset_Y, size, radius) {
 	this.Calculate(size);
 	this.GenerateGrid(size);
 }
+Grid.prototype = Object.create(BaseModel.prototype);
 
 Grid.prototype.Calculate = function(size) {
 	// if(this.gm.render.start_width > this.gm.render.start_height)
@@ -224,8 +223,8 @@ Grid.prototype.Calculate = function(size) {
 	// this.gm.render.SetScale((this.gm.render.start_height / this.radius) / (size - 1));
 
 	// this.offset_x = Math.floor(this.gm.render.start_width * 0.1);
-	this.offset_x = Math.floor(this.gm.render.start_width * 0.05);
-	this.offset_y = Math.floor(this.gm.render.start_height * 0.1);
+	this.offset_x = Math.floor(this.gm.render.GetCanvas().width * 0.05);
+	this.offset_y = Math.floor(this.gm.render.GetCanvas().height * 0.1);
 
 	this.shift_x = this.radius * Math.cos(Math.PI / 180 * 30);
 	this.shift_y = this.radius * Math.sin(Math.PI / 180 * 30);
@@ -245,6 +244,11 @@ Grid.prototype.GenerateGrid = function(size) {
 		let foo = this.size;
 		this.size = size;
 		size = foo;
+	}	
+
+	if(size > 0) {
+		this.gm.render.SetSize(size * 2 * this.shift_x + (size-1) * this.shift_x + this.offset_x,
+							   size * this.radius + size * this.shift_y + this.offset_y);
 	}
 
 	let x = 0, y = 0;
@@ -273,6 +277,7 @@ Grid.prototype.GenerateGrid = function(size) {
 			}
 		}
 	}
+
 	if(!hide)
 		this.bounds = new Rect(this.offset_x - this.shift_x, this.offset_y - this.radius, x + this.shift_x, y + this.radius);
 };
@@ -308,10 +313,10 @@ Grid.prototype.LoadLevel = function(level) {
 	this.Draw();
 };
 
-Grid.prototype.Draw = function() {
+Grid.prototype.Draw = function(onBack) {
 	for(let i = 0; i < this.size; ++i)
 		for(let j = 0; j < this.size; ++j)
-			this.map[i][j].Draw();
+			this.map[i][j].Draw(onBack);
 };
 
 Grid.prototype.Clear = function () {

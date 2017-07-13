@@ -44,13 +44,13 @@ SplashWindow.prototype.FadeIn = function() {
 	{
 		$(that.name)
 		.css('display', 'block')
-		.animate({opacity: 1, top: '50%'}, 200);
+		.animate({opacity: 1, top: '30vh'}, 200);
 	});
 };
 
 SplashWindow.prototype.FadeOut = function() {
 	let that = this;
-	this.form.animate({opacity: 0, top: '45%'}, 200, function()
+	this.form.animate({opacity: 0, top: '20vh'}, 200, function()
 	{
 		$(that.name).css('display', 'none');
 		that.overlay.fadeOut(400);
@@ -90,6 +90,7 @@ function ScoreManager() {
 	this.scoreBar = $('#progress_bar');
 	this.scoreWin = new ScoreWindow('No content');
 	this.score = 0;
+
 	this.maxLevelScore = 100;
 }
 ScoreManager.prototype = Object.create(BaseModel.prototype);

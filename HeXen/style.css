@@ -21,7 +21,7 @@ img, canvas {
 	user-drag: none;
 }
 
-#game, #field {
+canvas  {
 	position: absolute;
 	border: none;
 	top: 0;
@@ -32,26 +32,24 @@ img, canvas {
 	height: 50vw;*/
 }
 
-#game {
+#layer1 {
 	z-index: -1;
 }
 
-#field {
+#layer2 {
 	z-index: -2;
 }
 
 .splash {
 	position: fixed;
 	display: none;
-	width: 300px;
-	height: 300px;
+	width: 20vw;
+	height: 15vw;
 	border-radius: 5px;
 	border: 3px #000 solid;
 	background: white;
-	top: 45%;
-	left: 50%;
-	margin-top: -150px;
-	margin-left: -150px;
+	top: 20vh;
+	left: 38vw;
 	opacity: 0;
 	z-index: 5;
 	padding: 20px 10px;

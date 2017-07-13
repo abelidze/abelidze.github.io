@@ -184,27 +184,26 @@ Animator.prototype.ProcessMotions = function(dTime) {
 };
 
 
-function Render(gmanager) {
-	this.gm = gmanager;
+function Render() {
 	this.lastRender = 0;
 
-	this.fgcanvas = document.getElementById('game');
+	this.fgcanvas = document.createElement('canvas');
+	this.fgcanvas.id = 'layer1';
 	this.cnt_fg = this.fgcanvas.getContext('2d');
-	// this.cnt_fg.fillStyle = 'rgba(0, 255, 0, 0.3)';
+	document.body.appendChild(this.fgcanvas);
 
 	this.bgcanvas = document.createElement('canvas');
-	this.bgcanvas.id = 'field';
+	this.bgcanvas.id = 'layer2';
 	this.cnt_bg = this.bgcanvas.getContext('2d');
 	document.body.appendChild(this.bgcanvas);
 
 	this.scale = 1;
-	this.start_width = window.innerWidth;
-	this.start_height = window.innerHeight;
-	this.current_width = window.innerWidth;
-	this.current_height = window.innerHeight;
+	this.content_width = window.innerWidth;
+	this.content_height = window.innerHeight;
 	this.ResizeCanvas();
 	this.gm.event.AddEvent('resize', this.gm.ResizeEvent.bind(this.gm));
 }
+Render.prototype = Object.create(BaseModel.prototype);
 
 Render.prototype.Clear = function () {
 	this.cnt_fg.clearRect(0, 0, this.fgcanvas.width, this.fgcanvas.height);
@@ -218,16 +217,29 @@ Render.prototype.GetCanvas = function () {
 	return this.fgcanvas;
 };
 
-Render.prototype.SetScale = function (factor, multiply) {
-	if(multiply)
-		this.scale *= factor;
+Render.prototype.UpdateScale = function () {
+	if(this.content_width > this.content_height)
+		this.scale = this.fgcanvas.height / this.content_height;
 	else
-		this.scale = factor;
-	console.log(this.scale);
+		this.scale = this.fgcanvas.width / this.content_width;
+}
 
-	this.cnt_fg.scale(this.scale, this.scale);
-	this.cnt_bg.scale(this.scale, this.scale);
-};
+Render.prototype.ToggleScale = function (toggle) {
+	if(toggle) {
+		this.cnt_fg.scale(this.scale,this.scale);
+		this.cnt_bg.scale(this.scale,this.scale);
+	}
+	else {
+		this.cnt_fg.scale(1 / this.scale, 1 / this.scale);
+		this.cnt_bg.scale(1 / this.scale, 1 / this.scale);
+	}
+}
+
+Render.prototype.SetSize = function (width, height) {
+	this.content_width = width;
+	this.content_height = height;
+	this.UpdateScale();
+}
 
 Render.prototype.ResizeCanvas = function() {
 	this.fgcanvas.width = window.innerWidth;
@@ -236,11 +248,8 @@ Render.prototype.ResizeCanvas = function() {
 	this.bgcanvas.width = window.innerWidth;
 	this.bgcanvas.height = window.innerHeight;
 
-	// if(window.innerWidth <= this.start_width)
-	// 	this.SetScale(window.innerWidth / this.current_width, true);
-	this.current_width = window.innerWidth;
-	this.current_height = window.innerHeight;
-};
+	this.UpdateScale();
+}
 
 Render.prototype.deltaTime = function() {
 	let currentDate = new Date();
@@ -255,6 +264,7 @@ Render.prototype.DrawPath = function (points, onBack, effect) {
 		return;
 	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
+	this.ToggleScale(true);
 	context.beginPath();
 	context.moveTo(Math.floor(points[0].x), Math.floor(points[0].y));
 	for (let i = 1; i < points.length; ++i) {
@@ -270,7 +280,8 @@ Render.prototype.DrawPath = function (points, onBack, effect) {
 		context.fillStyle = effect.fill;
 		context.fill();
 	}
-};
+	this.ToggleScale(false);
+}
 
 Render.prototype.DrawHex = function (center, radius, onBack, effect) {
 	let hexagon = [];
@@ -292,6 +303,7 @@ Render.prototype.DrawLine = function (point1, point2, onBack, effect) {
 Render.prototype.DrawCircle = function (center, radius, onBack, effect) {
 	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
+	this.ToggleScale(true);
 	context.beginPath();
 	context.arc(center.x, center.y, radius, 0, 2 * Math.PI, false);
 
@@ -303,11 +315,13 @@ Render.prototype.DrawCircle = function (center, radius, onBack, effect) {
 		context.fillStyle = effect.fill;
 		context.fill();
 	}
-};
+	this.ToggleScale(false);
+}
 
 Render.prototype.DrawRectangle = function (rect, onBack, effect) {
 	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
 
+	this.ToggleScale(true);
 	context.beginPath();
 	context.rect(rect.x, rect.y, rect.w, rect.h);
 
@@ -319,7 +333,8 @@ Render.prototype.DrawRectangle = function (rect, onBack, effect) {
 		context.fillStyle = effect.fill;
 		context.fill();
 	}
-};
+	this.ToggleScale(false);
+}
 
 Render.prototype.DrawFrame = function (anim, x, y, scale, rotation, onCenter, onBack) {
 	let context = (onBack === true ? this.cnt_bg : this.cnt_fg);
@@ -334,15 +349,13 @@ Render.prototype.DrawFrame = function (anim, x, y, scale, rotation, onCenter, on
 		y -= anim.h / 2 * Math.sin(rotation) + anim.h / 2.5 * Math.cos(rotation);
 	}
 
-	// context.scale(1 / this.scale, 1 / this.scale);
-	// context.translate(x * this.scale, y * this.scale);
+	this.ToggleScale(true);
 	context.translate(x, y);
 	context.rotate(rotation);
 	context.drawImage(anim.frames_img, sx, sy, anim.w, anim.h, 0, 0, anim.w * scale, anim.h * scale);
 	context.rotate(-rotation);
 	context.translate(-x, -y);
-	// context.translate(-x * this.scale, -y * this.scale);
-	// context.scale(this.scale, this.scale);
+	this.ToggleScale(false);
 };
 
 Render.prototype.DrawSprite = function (img, x, y, scale, onBack) {
