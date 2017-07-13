@@ -5,7 +5,6 @@
 function EventSystem() {
     this.listeners = {};
 }
-
 EventSystem.prototype = Object.create(BaseModel.prototype);
 
 EventSystem.prototype.AddEvent = function (event, listener) {
@@ -13,7 +12,7 @@ EventSystem.prototype.AddEvent = function (event, listener) {
         this.listeners[event] = [];
     this.listeners[event].push(listener);
     window.addEventListener(event, listener, false);
-}
+};
 
 EventSystem.prototype.DeleteEvent = function (event, listener) {
     if (this.listeners[event] !== undefined){
@@ -25,10 +24,10 @@ EventSystem.prototype.DeleteEvent = function (event, listener) {
                 break;
             }
     }
-}
+};
 
 // checker == true / false;
-// true -> action(options); 
+// true -> action(initiation_object, options);
 // action()
 
 function Trigger(handler, checker, action, repeat, options, radius) {
@@ -40,7 +39,6 @@ function Trigger(handler, checker, action, repeat, options, radius) {
 	this.radius = radius;
     this.id = 0;
 }
-
 Trigger.prototype = Object.create(BaseModel.prototype);
 
 Trigger.prototype.Activate = function (object) {
@@ -54,7 +52,7 @@ Trigger.prototype.Activate = function (object) {
         this.options.delay = 10;
 
     let that = this;
-    setTimeout(function (){
+    setTimeout(function () {
         that.action(object, that.options);
     }, that.options.delay);
 };

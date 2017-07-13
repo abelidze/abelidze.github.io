@@ -1,6 +1,6 @@
 /*
- Game Manager
- */
+	Game Manager
+*/
 
 function GameManager() {
 	/* BAD CODER */
@@ -11,6 +11,7 @@ function GameManager() {
 	this.event = null;
 	this.animator = null;
 	this.grid = null;
+	this.gui = null;
 	this.scoreManager = null;
 
 	this.freeze = true;
@@ -20,7 +21,6 @@ function GameManager() {
 
 	this.objects = [];
 	this.players = [];
-	this.GUIElements = [];
 
 	that = this;
 	$(document).ready(function () {
@@ -30,11 +30,12 @@ function GameManager() {
 
 GameManager.prototype.Init = function () {
 	this.event = new EventSystem();
-	this.render = new Render();
+	this.render = new Render(2);
 	this.grid = new Grid(64, 64, 24, 48);
 	this.mouse = new Mouse(this);
 	this.animator = new Animator();
-	this.scoreManager = new ScoreManager();
+	this.gui = new GameGUI();
+	this.scoreManager = new ScoreManager(this.gui);
 	this.StartGame();
 };
 
@@ -73,7 +74,7 @@ GameManager.prototype.NextLevel = function () {
 
 GameManager.prototype.CreateObject = function (object, cell, args) {
 	let obj = cell.AddObject(function () {
-		return new object(cell, ...args)
+		return new object(cell, args);
 	});
 	if (obj !== undefined)
 		this.objects.push(obj);
@@ -90,11 +91,12 @@ GameManager.prototype.RenderEvent = function () {
 	this.animator.ProcessMotions(delta);
 
 	this.render.Clear();
-	// this.render.ClearBack();
 	// this.grid.Draw();
 	for (let i = 0; i < this.objects.length; ++i) {
 		this.objects[i].Draw();
 	}
+
+	this.gui.DrawGUI();
 
 	requestAnimationFrame(this.RenderEvent.bind(this));
 };
@@ -125,7 +127,7 @@ GameManager.prototype.GridClicked = function (pos) {
 	switch(this.gameState) {
 		case GameState.TURN:
 			for(let i = 0; i < this.players.length; ++i) {
-				//this.grid.PixelToHex(this.players[i].cell.center.x, this.players[i].cell.center.y);//
+				//this.grid.PixelToHex(this.players[i].cell.center.x, this.players[i].cell.center.y);
 				player = this.players[i].cell.gridPosition;
 
 				if(cell.isNearbyXY(player, pos)) {
