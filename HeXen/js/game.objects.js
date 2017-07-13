@@ -81,27 +81,36 @@ Obstacle.prototype = Object.create(StaticObject.prototype);
 
 function Wall(cell, drawable, triggers) {
 	Obstacle.call(this, cell, drawable, triggers);
+	this.cell.SetStyle(WallStyle);
 	this._type_ = GameObjectTypes.WALL;
 }
 Wall.prototype = Object.create(Obstacle.prototype);
 
 Wall.prototype.Draw = function () {
-    this.cell.SetStyle(WallStyle);
-    //this.gm.render.DrawCircle(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
+    // this.gm.render.DrawHex(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
 }
 
 function Door(cell, drawable, triggers, status) {
 	Obstacle.call(this, cell, drawable, triggers);
 	this.status = status ? status : DoorState.CLOSED;
+	if(this.status == DoorState.CLOSED)
+		this.cell.SetStyle(DoorStyleClosed);
+	else
+		this.cell.SetStyle(DoorStyleOpened);
 	this._type_ = GameObjectTypes.DOOR;
 }
 Door.prototype = Object.create(Obstacle.prototype);
 
 Door.prototype.Draw = function () {
-	if (this.status == DoorState.CLOSED)
-		this.cell.SetStyle(DoorStyleClosed);
-	else
-		this.cell.SetStyle(DoorStyleOpened);
+	// if (this.status == DoorState.CLOSED)
+	// 	this.cell.SetStyle(DoorStyleClosed);
+	// else
+	// 	this.cell.SetStyle(DoorStyleOpened);
+}
+
+Door.prototype.Open = function () {
+	this.cell.SetStyle(DoorStyleOpened);
+	this.status = DoorState.OPENED;
 }
 
 Door.prototype.Collide = function (object, callback) {
@@ -129,12 +138,13 @@ Entry.prototype = Object.create(StaticObject.prototype);
 
 function Exit(cell, drawable, triggers) {
 	StaticObject.call(this, cell, drawable, triggers);
+	this.cell.SetStyle(ExitStyle);
 	this._type_ = GameObjectTypes.EXIT;
 }
 Exit.prototype = Object.create(StaticObject.prototype);
 
 Exit.prototype.Draw = function () {
-	this.cell.SetStyle(ExitStyle);
+	// this.cell.SetStyle(ExitStyle);
 }
 
 Exit.prototype.Collide = function (object, callback) {
@@ -158,7 +168,7 @@ DynamicObject.prototype.MoveTo = function (cell) {
 	cell.Interact(this.cell, function (result) {
 		switch (result) {
 			case InteractResult.MOVED:
-				that.cell.FillNearby(DefaultCellStyle);
+				that.cell.ClearNearby();
 				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
 				that.cell.Clear();
 				cell.MoveObject(that);
@@ -174,9 +184,8 @@ DynamicObject.prototype.MoveTo = function (cell) {
 				}, 250);
 				break;
             case InteractResult.EXIT:
-                let victory = new SplashWindow('<a href="http://niceme.me">TAP ME, SENPAI</a>');
-                victory.Show();
-                break;
+            	that.gm.NextLevel();
+            break;
 		}
 	});
 };

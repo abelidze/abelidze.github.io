@@ -10,7 +10,7 @@ function Cell(grid, center, gridPosition) {
 	this.state = CellState.EMPTY;
 	this.object = null;
 	this.staticObjects = [];
-	this.style = DefaultCellStyle;//{edge: 'white', fill: 'black', width: 3};
+	this.style = [{edge: 'white', fill: 'black', width: 3}]; //{edge: 'white', fill: 'black', width: 3};
 	this.id = getRandomInt(10000000, 99999999);
 	this.triggers = [];
 	this.triggersCounter = 0;
@@ -19,15 +19,25 @@ function Cell(grid, center, gridPosition) {
 Cell.prototype.Draw = function(render) {
 	if(this.state == CellState.INVISIBLE)
 		return;
-	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style, true);
+	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], true);
+};
+
+Cell.prototype.ClearStyle = function() {
+	if(this.style.length <= 1) return;
+
+	this.style.pop();
+	this.Draw();
 };
 
 Cell.prototype.SetStyle = function(style) {
-	if(this.style == style) return;
+	if(this.style[this.style.length-1] == style) {
+		this.ClearStyle();
+		return;
+	}
 
-	this.style = style;
+	this.style.push(style);
 	this.Draw();
-}
+};
 
 Cell.prototype.AddTrigger = function (trig) {
 	trig.id = ++this.triggersCounter;
@@ -58,6 +68,8 @@ Cell.prototype.RemoveTrigger = function (id) {
 Cell.prototype.Clear = function () {
 	delete this.object;
 	this.object = null;
+	this.staticObjects = [];
+	this.style = [DefaultCellStyle];
 	this.state = CellState.EMPTY;
 	this.triggers = [];
 	// this.style
@@ -117,7 +129,9 @@ Cell.prototype.GetNearby = function () {
 	for (let i = 0; i < HexDirections.length; ++i) {
 		pos = this.grid.PixelToHex(this.center.x, this.center.y);
 		pos.x += HexDirections[i][0], pos.y += HexDirections[i][1];
-		if (pos.x < 0 || pos.y < 0 || pos.x >= this.size || pos.y >= this.size) continue;
+
+		if(pos.x < 0 || pos.y < 0 || pos.x >= this.size || pos.y >= this.size
+		|| this.grid.map[pos.y][pos.x].state != CellState.EMPTY) continue;
 
 		nearby.push(this.grid.map[pos.y][pos.x]);
 	}
@@ -126,8 +140,15 @@ Cell.prototype.GetNearby = function () {
 
 Cell.prototype.FillNearby = function(style) {
 	let nearby = this.GetNearby();
-	for (let i = 0; i < nearby.length; ++i)
+	for(let i = 0; i < nearby.length; ++i) {
 		nearby[i].SetStyle(style);
+	}
+};
+
+Cell.prototype.ClearNearby = function() {
+	let nearby = this.GetNearby();
+	for(let i = 0; i < nearby.length; ++i)
+		nearby[i].ClearStyle();
 };
 
 Cell.prototype.isNearbyXY = function (pos1, pos2) {
@@ -169,7 +190,7 @@ Grid.prototype.Calculate = function(size) {
 	// this.gm.render.SetScale((this.gm.render.start_height / this.radius) / (size - 1));
 
 	// this.offset_x = Math.floor(this.gm.render.start_width * 0.1);
-	this.offset_x = Math.floor(this.gm.render.start_width * 0.008);
+	this.offset_x = Math.floor(this.gm.render.start_width * 0.05);
 	this.offset_y = Math.floor(this.gm.render.start_height * 0.1);
 
 	this.shift_x = this.radius * Math.cos(Math.PI / 180 * 30);
@@ -201,7 +222,7 @@ Grid.prototype.GenerateGrid = function(size) {
 				} else {
 					x = this.offset_x + this.shift_x * j * 2 + i * this.shift_x;
 					y = this.offset_y + this.shift_y * i * 3;
-					this.map[i][j] = new Cell(this, new Point(x, y), new Point(i, j));
+					this.map[i][j] = new Cell(this, new Point(x, y), new Point(j, i));
 				}
 			} 
 		} else {
@@ -213,7 +234,7 @@ Grid.prototype.GenerateGrid = function(size) {
 				} else {
 					x = this.offset_x + this.shift_x * j * 2 + i * this.shift_x;
 					y = this.offset_y + this.shift_y * i * 3;
-					this.map[i][j] = new Cell(this, new Point(x, y), new Point(i, j));
+					this.map[i][j] = new Cell(this, new Point(x, y), new Point(j, i));
 				}
 			}
 		}
@@ -246,6 +267,8 @@ Grid.prototype.LoadLevel = function(level) {
             						 level.triggers[i][0][3]);
 		cell.AddTrigger(trig);
 	}
+
+	this.Draw();
 };
 
 Grid.prototype.Draw = function() {

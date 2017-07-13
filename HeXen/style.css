@@ -78,4 +78,9 @@ img, canvas {
 	top: 0;
 	left: 0;
 }
+
+#progress_bar {
+	z-index: -5;
+}
+
 /* #C0C0C0 - светло-серый*/

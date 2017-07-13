@@ -14,7 +14,7 @@ const ChangeColor = function (cell, style) {
 
 const DoorTrigger = function (object, options) {
 	ChangeColor(this.handler.cell, ActivatedStyle);
-	this.handler.status = DoorState.OPENED;
+	this.handler.Open();
 }
 
 const OpenDoor = function (object, options) {
