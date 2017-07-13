@@ -9,7 +9,7 @@ const isValid = function (object) {
 }
 
 const ChangeColor = function (cell, style) {
-    cell.SetStyle(style);
+    cell.SetStyle(style, true);
 }
 
 const DoorTrigger = function (object, options) {
