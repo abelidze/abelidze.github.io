@@ -67,7 +67,7 @@ GameManager.prototype.ChangeScore = function (score) {
 GameManager.prototype.NextLevel = function () {
 	this.grid.LoadLevel(GameLevels[this.currentLevel]);
 	this.scoreManager.Reset();
-	this.gameState = GameState.TURN;
+	this.SetMode(GameState.TURN);
 	this.currentLevel++;
 };
 
@@ -123,6 +123,7 @@ GameManager.prototype.AddPlayer = function (player) {
 
 GameManager.prototype.GridClicked = function (pos) {
 	let player, cell = this.grid.map[pos.y][pos.x];
+    console.log('CLICKED', pos)
 	switch(this.gameState) {
 		case GameState.TURN:
 			for(let i = 0; i < this.players.length; ++i) {
@@ -139,7 +140,7 @@ GameManager.prototype.GridClicked = function (pos) {
 };
 
 GameManager.prototype.SetMode = function (mode) {
-	this.state = mode;
+	this.gameState = mode;
 }
 
 GameManager.prototype.GameOver = dummyFunc;

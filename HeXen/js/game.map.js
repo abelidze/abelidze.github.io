@@ -348,7 +348,8 @@ Grid.prototype.Select = function (x, y) {
 	let pos = this.PixelToHex(x, y);
 	if (pos === undefined) return;
 
-	if (this.gm.gameState !== GameState.ANIMATING)
+    console.log('CLICKED', this.gm.gameState)
+	if (this.gm.gameState == GameState.TURN)
 		this.gm.GridClicked(pos);
 	// this.map[pos.y][pos.x].style = {edge: 'black', fill: '#1F282D', width: 1};
 	// this.map[pos.y][pos.x].Draw();
