@@ -26,9 +26,18 @@ const ChangeLevel = function (object) {
     object.gm.NextLevel();
 }
 
+const ShowInfo = function (object) {
+	let info = new SplashWindow('Find switcher to open a door');
+	info.Show();
+}
+
 const Pick = dummyFunc;
 
 //Triggers templates
+
+const TInfoCell = function (this_x, this_y, delay) {
+	return [isTouched, ShowInfo, {x: this_x, y: this_y, delay: delay}];
+}
 
 const TDoorOpener = function (this_x, this_y, key, delay) {
 	return [isValid, DoorTrigger, 1, {x: this_x, y: this_y, key: key, delay: delay}];

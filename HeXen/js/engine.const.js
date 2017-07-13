@@ -57,7 +57,8 @@ const LevelObjects = {
 	PLAYER: 3,
 	ENEMY: 4,
 	BONUS: 5,
-	EXIT: 6
+	EXIT: 6,
+	STYLE: 7
 };
 
 const DrawableType = {
