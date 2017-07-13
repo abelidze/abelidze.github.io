@@ -247,10 +247,10 @@ Player.prototype.Collide = function (object, callback) {
 	}
 };
 
-function Enemy(cell, drawable, triggers, path, radius) {
+function Enemy(cell, drawable, triggers, radius) {
 	Actor.call(this, cell, drawable, triggers);
 	this._type_ = GameObjectTypes.ENEMY;
-	this.path_guard = path ? new Path(path) : null;
+	this.path_guard = [];
 	this.path_haunt = null;
 	this.status = EnemyBehavior.GUARD;
 	this.vision_radius = radius;
@@ -265,7 +265,20 @@ Enemy.prototype.Collide = function (object, callback) {
 	}
 };
 
-Enemy.prototype.Patrol = function () {
+Enemy.prototype.GetPathTo = function (cell) {
+	this.cell.ShortestWay(cell);
+};
+
+Enemy.prototype.Live = function () {
+	let target = this.Search();
+	if (target !== null) {
+		this.status = EnemyBehavior.HAUNT;
+		this.path_haunt =
+	}
+
+	switch (this.status) {
+		case EnemyBehavior.HAUNT
+	}
 	if (!this.path_guard.isEmpty()) {
 		this.MoveTo(this.path_guard.NextTurn);
 	}
@@ -273,12 +286,15 @@ Enemy.prototype.Patrol = function () {
 
 Enemy.prototype.Search = function (target = GameObjectTypes.PLAYER) {
 	let area = [];
+
 	for (let i = 1; i <= this.vision_radius; ++i) {
 		area = this.cell.GetRing(i);
 		for (let j = 0; j < area.length; ++j)
 			if (!area[j].isEmpty())
 				if (area[j].object.GetType() === target)
 					return area[j];
-		}
+	}
+	return null;
 };
+
 

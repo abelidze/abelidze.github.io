@@ -190,6 +190,10 @@ Cell.prototype.GetRing = function (radius) {
 	return ring;
 };
 
+Cell.prototype.ShortestWay = function (cell) {
+
+};
+
 /* GRID */
 function Grid(gmanager, offset_X, offset_Y, size, radius) {
 	this.gm = gmanager;

@@ -4,17 +4,23 @@
 
 const BaseModel = function () {
 	//...
-}
+};
 
-function dummyFunc() {
+function dummyFunc () {
 	console.log(this);
 	alert('Method isn`t implemented!');
 }
 
-function getRandomInt(min, max) {
+function getRandomInt (min, max) {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function sqr(a) {
+function sqr (a) {
 	return a * a;
+}
+
+function swap (ar, i, j) {
+	let buf = ar[i];
+	ar[i] = ar[j];
+	ar[j] = buf;
 }
