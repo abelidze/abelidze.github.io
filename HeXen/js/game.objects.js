@@ -277,18 +277,16 @@ Enemy.prototype.Collide = function (object, callback) {
 };
 
 Enemy.prototype.GetPathTo = function (cell) {
-	this.cell.ShortestWay(cell);
+	return this.cell.ShortestWay(cell);
 };
 
 Enemy.prototype.Live = function () {
 	let target = this.Search();
 	if (target !== null) {
 		this.status = EnemyBehavior.HAUNT;
-		this.path_haunt =
 	}
 
 	switch (this.status) {
-		case EnemyBehavior.HAUNT
 	}
 	if (!this.path_guard.isEmpty()) {
 		this.MoveTo(this.path_guard.NextTurn);

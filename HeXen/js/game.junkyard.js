@@ -1,33 +1,6 @@
 /*
- Base engine functions and models
+ * Junkyard for game functions
  */
-
-const BaseModel = function () {
-	//...
-};
-
-function dummyFunc () {
-	console.log(this);
-	alert('Method isn`t implemented!');
-}
-
-function getRandomInt (min, max) {
-	return Math.floor(Math.random() * (max - min)) + min;
-}
-
-function sqr (a) {
-	return a * a;
-}
-
-function swap (ar, i, j) {
-	let buf = ar[i];
-	ar[i] = ar[j];
-	ar[j] = buf;
-}
-
-function fill_array(array, value) {
-	for (let i = 0; i < array.length; array[i++] = value){}
-}
 
 function bfs_distance(c1, c2) {
 	return sqr(c1.gridPosition.x - c2.gridPosition.x) + sqr(c1.gridPosition.y - c2.gridPosition.y);
