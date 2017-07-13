@@ -35,7 +35,8 @@ const GameState = {
 	TURN: 2,
 	ANIMATING: 3,
 	LOADING: 4,
-	RESULTS: 5
+	RESULTS: 5,
+	NEXTLEVEL: 6
 };
 
 const DoorState = {

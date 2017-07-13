@@ -31,9 +31,11 @@ function SplashWindow(text) {
 	this.overlay = $('#overlay');
 	this.close = $('.splash, #overlay')
 	this.form = $(this.name);
-	$('.splash_close').click(this.Close.bind(this));
+	this.init = false;
+	let splash = $('.splash_close');
+	splash.unbind();
+	splash.click(this.Close.bind(this));
 }
-
 SplashWindow.prototype = Object.create(BaseModel.prototype);
 
 SplashWindow.prototype.FadeIn = function() {
@@ -62,12 +64,55 @@ SplashWindow.prototype.SetText = function(text) {
 SplashWindow.prototype.Show = function() {
 	this.FadeIn();
 	$('h3').html(this.text);
+	this.gm.SetMode(GameState.PAUSE);
 };
 
 SplashWindow.prototype.Close = function() {
 	$('h3').text('');
 	this.FadeOut();
+	this.gm.SetMode(GameState.TURN);
 };
+
+
+function ScoreWindow(text) {
+	SplashWindow.call(this, text);
+}
+ScoreWindow.prototype = Object.create(SplashWindow.prototype);
+
+ScoreWindow.prototype.Close = function() {
+	$('h3').text('');
+	this.FadeOut();
+	this.gm.NextLevel();
+};
+
+
+function ScoreManager() {
+	this.scoreBar = $('#progress_bar');
+	this.scoreWin = new ScoreWindow('No content');
+	this.score = 0;
+	this.maxLevelScore = 100;
+}
+ScoreManager.prototype = Object.create(BaseModel.prototype);
+
+ScoreManager.prototype.UpdateScore = function (value) {
+	this.score += value;
+
+	let barScore = Math.max(0, Math.min(100, Math.floor(this.score / this.maxLevelScore * 100)));
+	this.scoreBar.removeClass().addClass('c100 p' + barScore + ' big');
+	$('#progress_bar_value').text(barScore + '%');
+}
+
+ScoreManager.prototype.ShowScore = function (text) {
+	if(text !== undefined) {
+		this.scoreWin.SetText(text);
+	}
+	this.scoreWin.Show(this.score);
+}
+
+ScoreManager.prototype.Reset = function () {
+	this.score = 0;
+	this.UpdateScore(0);
+}
 
 
 function QuestionWindow(text) {
@@ -75,21 +120,3 @@ function QuestionWindow(text) {
 	//properties
 }
 QuestionWindow.prototype = Object.create(SplashWindow.prototype);
-
-
-function ScoreWindow(text) {
-	SplashWindow.call(this, text);
-	this.ChangeScore(text);
-}
-ScoreWindow.prototype = Object.create(SplashWindow.prototype);
-
-ScoreWindow.prototype.ChangeScore = function(value) {
-	/* DEBUG VERSION */
-	if (value > 100)
-		return;
-	prBar = $('#progress_bar');
-	prBar.removeClass();
-	prBar.addClass('c100 p' + value + ' big');
-	prBarVal = $('#progress_bar_value');
-	prBarVal.text(value + '%');
-}

@@ -1,6 +1,6 @@
 /*
- GameObjects Module
- */
+	GameObjects Module
+*/
 
 function GameObject(cell, drawable, triggers) {
 	this.sprite = drawable;
@@ -173,19 +173,30 @@ DynamicObject.prototype.MoveTo = function (cell) {
 				that.cell.Clear();
 				cell.MoveObject(that);
 				// that.position = cell.center;
-				that.gm.gameState = GameState.ANIMATING;
-				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR);
-				that.gm.scoreBar.ChangeScore(++that.gm.score);
+				that.gm.SetMode(GameState.ANIMATING);
+				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function ()
+					{
+						that.gm.ChangeScore(1);
+					});
+
 				that.cell = cell;
 				setTimeout(function () {
 					that.cell.FillNearby(NearbyCellStyle);
 					that.gm.render.ClearBack();
 					that.gm.grid.Draw();
 				}, 250);
-				break;
-			case InteractResult.EXIT:
-				that.gm.NextLevel();
-				break;
+			break;
+
+            case InteractResult.EXIT:
+				that.cell.ClearNearby();
+				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
+				that.gm.SetMode(GameState.ANIMATING);
+				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function ()
+					{
+						that.gm.scoreManager.ShowScore('Hello!\n');
+            			console.log('Exit');
+					});
+            break;
 		}
 	});
 };
