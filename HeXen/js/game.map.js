@@ -109,7 +109,7 @@ Cell.prototype.Interact = function (cell, callback) {
 };
 
 Cell.prototype.MoveObject = function (object) {
-	//if (this.state !== CellState.EMPTY) return undefined;
+	//if (!this.isEmpty()) return undefined;
 
 	this.object = object;
 	this.state = CellState.OBJECT;
@@ -118,7 +118,7 @@ Cell.prototype.MoveObject = function (object) {
 };
 
 Cell.prototype.AddObject = function (objectFunc) {
-	if (this.state !== CellState.EMPTY) return undefined;
+	if (!this.isEmpty()) return undefined;
 
 	let obj = objectFunc();
 	if(obj.GetType() >= GameObjectTypes.DYNAMIC)
@@ -128,6 +128,10 @@ Cell.prototype.AddObject = function (objectFunc) {
 	this.state = CellState.OBJECT;
 
 	return obj;
+};
+
+Cell.prototype.isEmpty = function () {
+	return (this.state === CellState.EMPTY);
 };
 
 Cell.prototype.GetNearby = function () {
@@ -174,15 +178,16 @@ Cell.prototype.isNearby = function (cell) {
 Cell.prototype.GetRing = function (radius) {
 	let HexDir = HexDirections;
 	let pos = this.position();
-	let ans = [];
+	let ring = [];
 	let curr = {x: 0, y: 0};
 	for (let i = 0; i < HexDir.length; ++i) {
 		for (let j = 0; j < radius; ++j) {
 			curr.x = pos.x + radius * HexDir[i][0] + j * HexDir[(i + 1) % HexDir.length][0];
 			curr.y = pos.y + radius * HexDir[i][1] + j * HexDir[(i + 1) % HexDir.length][1];
-			ans.push(this.grid.map[curr.y][curr.x]);
+			ring.push(this.grid.map[curr.y][curr.x]);
 		}
 	}
+	return ring;
 };
 
 /* GRID */
