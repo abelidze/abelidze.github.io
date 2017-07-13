@@ -11,7 +11,6 @@ function Cell(grid, center, gridPosition) {
 	this.object = null;
 	this.staticObjects = [];
 	this.style = [DefaultCellStyle]; //{edge: 'white', fill: 'black', width: 3};
-	this.id = getRandomInt(10000000, 99999999);
 	this.triggers = [];
 	this.triggersCounter = 0;
 }
@@ -357,7 +356,6 @@ Grid.prototype.Select = function (x, y) {
 	let pos = this.PixelToHex(x, y);
 	if (pos === undefined) return;
 
-    console.log('CLICKED', this.gm.gameState)
 	if (this.gm.gameState == GameState.TURN)
 		this.gm.GridClicked(pos);
 	// this.map[pos.y][pos.x].style = {edge: 'black', fill: '#1F282D', width: 1};

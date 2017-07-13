@@ -122,7 +122,6 @@ GameManager.prototype.AddPlayer = function (player) {
 
 GameManager.prototype.GridClicked = function (pos) {
 	let player, cell = this.grid.map[pos.y][pos.x];
-    console.log('CLICKED', pos)
 	switch(this.gameState) {
 		case GameState.TURN:
 			for(let i = 0; i < this.players.length; ++i) {

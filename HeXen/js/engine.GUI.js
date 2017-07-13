@@ -25,14 +25,17 @@ Button.prototype.Draw = function(onBack) {
 };
 
 
-function SplashWindow(text) {
+function SplashWindow(text, once = true) {
+	this.id = getRandomInt(10000000, 99999999);
 	this.text = text;
-	this.name = '.splash';
 	this.overlay = $('#overlay');
-	this.close = $('.splash, #overlay')
-	this.form = $(this.name);
-	this.init = false;
-	let splash = $('.splash_close');
+	this.name = 'splash';
+	this.once = once;
+
+	var div = $('<div>').addClass(this.name).attr('id', this.id).appendTo('body');
+	div.append('<form action="" method="post"><h3></h3></form>');
+
+	var splash = $('<span>').addClass(this.name + '_close').text('X').appendTo(div);
 	splash.unbind();
 	splash.click(this.Close.bind(this));
 }
@@ -42,7 +45,7 @@ SplashWindow.prototype.FadeIn = function() {
 	let that = this;
 	this.overlay.fadeIn(400, function()
 	{
-		$(that.name)
+		$('#' + that.id)
 		.css('display', 'block')
 		.animate({opacity: 1, top: '30vh'}, 200);
 	});
@@ -50,10 +53,12 @@ SplashWindow.prototype.FadeIn = function() {
 
 SplashWindow.prototype.FadeOut = function() {
 	let that = this;
-	this.form.animate({opacity: 0, top: '20vh'}, 200, function()
+	$('#' + that.id).animate({opacity: 0, top: '20vh'}, 200, function()
 	{
-		$(that.name).css('display', 'none');
+		$('#' + that.id).css('display', 'none');
 		that.overlay.fadeOut(400);
+		if(that.once)
+			that.Destroy();
 	});
 };
 
@@ -73,9 +78,13 @@ SplashWindow.prototype.Close = function() {
 	this.gm.SetMode(GameState.TURN);
 };
 
+SplashWindow.prototype.Destroy = function() {
+	$('#' + this.id).remove();
+};
 
-function ScoreWindow(text) {
-	SplashWindow.call(this, text);
+
+function ScoreWindow(text, once) {
+	SplashWindow.call(this, text, once);
 }
 ScoreWindow.prototype = Object.create(SplashWindow.prototype);
 
@@ -85,10 +94,9 @@ ScoreWindow.prototype.Close = function() {
 	this.gm.NextLevel();
 };
 
-
 function ScoreManager() {
 	this.scoreBar = $('#progress_bar');
-	this.scoreWin = new ScoreWindow('No content');
+	this.scoreWin = new ScoreWindow('No content', false);
 	this.score = 0;
 
 	this.maxLevelScore = 100;
@@ -121,3 +129,9 @@ function QuestionWindow(text) {
 	//properties
 }
 QuestionWindow.prototype = Object.create(SplashWindow.prototype);
+
+
+function ScoreBar() {
+
+}
+ScoreBar.prototype = Object.create(Clickable.prototype);
