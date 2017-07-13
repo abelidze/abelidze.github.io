@@ -231,6 +231,11 @@
   float: right;
   margin: 0.25em 0.5em 0.1em 0;
   background-color: #1F282D;
+ -webkit-user-select: none
+ -moz-user-select: none;
+ -ms-user-select: none;
+ -o-user-select: none;
+ user-select: none;
 }
 .c100 *,
 .c100 *:before,
