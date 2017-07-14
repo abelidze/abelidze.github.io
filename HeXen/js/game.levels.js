@@ -126,6 +126,7 @@ const GameLevels =
                 [LevelObjects.WALL, 10, 0, {}],
 
                 [LevelObjects.WALL, 4, 1, {}],
+                [LevelObjects.STYLE, 4, 8, KeyStyle],
                 [LevelObjects.WALL, 10, 1, {}],
 
                 [LevelObjects.WALL, 3, 2, {}],
@@ -141,13 +142,10 @@ const GameLevels =
                 [LevelObjects.WALL, 10, 4, {}],
 
                 [LevelObjects.WALL, 0, 5, {}],
-                [LevelObjects.EXIT, 1, 5, {}],
-                [LevelObjects.EXIT, 2, 5, {}],
                 [LevelObjects.WALL, 3, 5, {}],
                 [LevelObjects.WALL, 10, 5, {}],
 
                 [LevelObjects.WALL, 0, 6, {}],
-                [LevelObjects.EXIT, 1, 6, {}],
                 [LevelObjects.WALL, 2, 6, {}],
                 [LevelObjects.WALL, 9, 6, {}],
 

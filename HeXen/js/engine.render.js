@@ -288,6 +288,11 @@ Render.prototype.DrawPath = function (points, effect, layer = 1) {
 }
 
 Render.prototype.DrawHex = function (center, radius, effect, layer = 1) {
+	if (effect.img !== undefined){
+        this.ToggleScale(true);
+		this.DrawSprite(effect.img, center.x - this.gm.grid.shift_x, center.y - this.gm.grid.radius, 1, 0);
+        this.ToggleScale(false);
+	}
 	let hexagon = [];
 	for (let i = 0; i < 6; ++i) {
 		let angle_deg = 60 * i + 30;

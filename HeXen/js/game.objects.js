@@ -1,8 +1,8 @@
 /*
-	GameObjects Module
-*/
+ GameObjects Module
+ */
 
-function GameObject(cell, args) { 
+function GameObject(cell, args) {
 	this.sprite = args.img;
 	this.position = new Point(cell.center.x, cell.center.y);
 	this.cell = cell;
@@ -110,7 +110,6 @@ Door.prototype.Draw = function () {
 };
 
 Door.prototype.Open = function () {
-	this.cell.SetStyle(DoorStyleOpened, true);
 	this.status = DoorState.OPENED;
 };
 
@@ -118,6 +117,7 @@ Door.prototype.Collide = function (object, callback) {
 	if (this.status === DoorState.CLOSED) {
 		callback(InteractResult.NOTHING);
 	} else {
+		this.cell.SetStyle(DoorStyleOpened, true);
 		if ((object.GetType() === GameObjectTypes.PLAYER) || (object.GetType() === GameObjectTypes.ENEMY))
 			callback(InteractResult.MOVED);
 		else
@@ -139,7 +139,7 @@ Bonus.prototype = Object.create(StaticObject.prototype);
 
 function Exit(cell, args) {
 	StaticObject.call(this, cell, args);
-	this.cell.SetStyle(ExitStyle, true);
+	this.cell.SetStyle(ExitStyleOpened, true);
 	this._type_ = GameObjectTypes.EXIT;
 }
 Exit.prototype = Object.create(StaticObject.prototype);
@@ -174,10 +174,9 @@ DynamicObject.prototype.MoveTo = function (cell) {
 				cell.MoveObject(that);
 				// that.position = cell.center;
 				that.gm.SetMode(GameState.ANIMATING);
-				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function ()
-					{
-						that.gm.ChangeScore(1);
-					});
+				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function () {
+					that.gm.ChangeScore(1);
+				});
 
 				that.cell = cell;
 				that.gm.event.CallBackEvent('gameturn');
@@ -188,16 +187,15 @@ DynamicObject.prototype.MoveTo = function (cell) {
 				}, 250);
 			break;
 
-            case InteractResult.EXIT:
+			case InteractResult.EXIT:
 				that.cell.ClearNearby(NearbyCellStyle);
 				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
 				that.gm.SetMode(GameState.ANIMATING);
-				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function ()
-					{
-						that.gm.scoreManager.ShowScore('Hello!\n');
-            			console.log('Exit');
-					});
-            break;
+				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function () {
+					that.gm.scoreManager.ShowScore(WinScoreMessage);
+					console.log('Exit');
+				});
+			break;
 		}
 	});
 };
@@ -282,7 +280,8 @@ function Enemy(cell, args) { // drawable, triggers, radius
 	this._type_ = GameObjectTypes.ENEMY;
 	this.path_guard = new Path();
 	this.path_haunt = new Path();
-	this.path_return = new Path();;
+	this.path_return = new Path();
+	;
 	this.status = EnemyBehavior.GUARD;
 	this.vision_radius = 5;//args.radius ? args.radius : 1;
 }
@@ -364,8 +363,8 @@ Enemy.prototype.Search = function (target = GameObjectTypes.PLAYER) {
 	for (let i = 1; i <= this.vision_radius; ++i) {
 		area = this.cell.GetRing(i);
 		for (let j = 0; j < area.length; ++j)
-			if(area[j].object !== null)// if (!area[j].isEmpty())
-				if(area[j].object.GetType() === target)
+			if (area[j].object !== null)// if (!area[j].isEmpty())
+				if (area[j].object.GetType() === target)
 					return area[j];
 	}
 	return null;

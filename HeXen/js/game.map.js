@@ -237,7 +237,7 @@ Grid.prototype.Calculate = function(size) {
 
 	this.shift_x = this.radius * Math.cos(Math.PI / 180 * 30);
 	this.shift_y = this.radius * Math.sin(Math.PI / 180 * 30);
-}
+};
 
 Grid.prototype.GenerateGrid = function(size) {
 	if(this.size == size) return;
@@ -391,40 +391,37 @@ Grid.prototype.isInField = function (x, y) {
 };
 
 /* Path Class */
-function Path(cells = []) {
-	this.points = cells;
+function Path(cell, vectors = []) {
+	this.cell = cell;
+	this.vectors = vectors;
 	this.current = 0;
 }
+Path.prototype = Object.create(BaseModel.prototype);
 
 Path.prototype.NextTurn = function () {
-	return this.points[(this.current++) % this.points.length];
-};
-
-Path.prototype.PrevTurn = function () {
-	return this.points[(this.current - 1 + this.points.length) % this.points.length];
-};
-
-Path.prototype.PushTurn = function (cell) {
-	if (this.isCorrect(cell))
-		this.points.push(cell);
+    let pos = this.cell.gridPosition;
+    this.current++;
+    return this.grid.map[pos.y + this.vectors[this.current % this.vectors.length][1]]
+        [pos.x + this.vectors[this.current % this.vectors.length][0]];
+}
+Path.prototype.PushTurn = function (vector) {
+	this.vectors.push(vector);
 };
 
 Path.prototype.ClearPath = function () {
-	this.points = [];
+	clean_array(this.vectors);
 	this.current = 0;
 };
 
-Path.prototype.isCorrect = function(cell) {
-	return (this.points[this.current].isNearby(cell));
-};
-
 Path.prototype.isEmpty = function () {
-	return (this.points.length === 0);
-};
-Path.prototype.isEnd = function () {
-	return (this.current === (this.points.length));
+	return (this.vectors.length === 0);
 };
 
+Path.prototype.isEnd = function () {
+	return (this.current === (this.vectors.length));
+};
+
+/*It may work incorrect*/
 Path.prototype.SetCurrent = function (current) {
 	this.current = current;
 };

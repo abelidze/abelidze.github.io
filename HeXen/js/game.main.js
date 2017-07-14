@@ -1,8 +1,10 @@
 /*
 	HeXen [2D roguelike game] Main file
 */
-var menu_audio = new Audio();
+
 var gameManager = new GameManager();
+var audio = new Audio();
 window.onload = function() {
-	menu_audio.SetSound(SoundIndex.RESTLESS_1);
+	//audio.SetSound(SoundIndex.HORIZON);
+	//audio.PlayAudio();
 };
