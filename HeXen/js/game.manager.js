@@ -62,7 +62,7 @@ GameManager.prototype.StartGame = function () {
 };
 
 GameManager.prototype.StopGame = function () {
-	this.gm.event.DeleteEvent('gameturn');
+	this.event.DeleteEvent('gameturn');
 	this.freeze = true;
 };
 

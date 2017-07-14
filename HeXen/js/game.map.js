@@ -233,7 +233,7 @@ Grid.prototype.Calculate = function(size) {
 
 	this.shift_x = this.radius * Math.cos(Math.PI / 180 * 30);
 	this.shift_y = this.radius * Math.sin(Math.PI / 180 * 30);
-}
+};
 
 Grid.prototype.GenerateGrid = function(size) {
 	if(this.size == size) return;
@@ -385,11 +385,11 @@ function Path(cell, vectors = []) {
 Path.prototype = Object.create(BaseModel.prototype);
 
 Path.prototype.NextTurn = function () {
-	let pos = this.cell.gridPosition;
-	this.current++;
-	return this.grid.map[pos.y + this.vectors[this.current % this.vectors.length][1]]
-						[pos.x + this.vectors[this.current % this.vectors.length][0]];
-
+    let pos = this.cell.gridPosition;
+    this.current++;
+    return this.grid.map[pos.y + this.vectors[this.current % this.vectors.length][1]]
+        [pos.x + this.vectors[this.current % this.vectors.length][0]];
+}
 Path.prototype.PushTurn = function (vector) {
 	this.vectors.push(vector);
 };
@@ -402,6 +402,7 @@ Path.prototype.ClearPath = function () {
 Path.prototype.isEmpty = function () {
 	return (this.vectors.length === 0);
 };
+
 Path.prototype.isEnd = function () {
 	return (this.current === (this.vectors.length));
 };
