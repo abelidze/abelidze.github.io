@@ -22,6 +22,9 @@ EventSystem.prototype.DeleteEvent = function (event, listener) {
             if(listeners[i] === listener) {
                 window.removeEventListener(event, listener);
                 listeners.splice(i, 1);
+                if (listeners.length === 0){
+                    this.listeners[event] = undefined;
+                }
                 break;
             }
     }

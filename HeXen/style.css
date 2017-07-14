@@ -27,7 +27,19 @@ img, canvas {
 	position: absolute;
 }
 
+#game_pic {
+	width: 100%;
+	z-index: -10;
+	position: absolute;
+	display: none;
+}
+
 .menu {
+	cursor: pointer;
+	z-index: 10;
+	position: relative;
+	width: 90%;
+	margin: auto;
 	padding-top: 23pt;
 	text-align: center;
 	font-size: 45pt;
@@ -39,6 +51,7 @@ img, canvas {
 }
 
 canvas  {
+	display: none;
 	position: absolute;
 	border: none;
 	top: 0;
