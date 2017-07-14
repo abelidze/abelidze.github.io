@@ -295,6 +295,8 @@ Grid.prototype.LoadLevel = function(level) {
 	this.Clear();
 	this.GenerateGrid(level.map.length);
 
+	console.log(...level.map)
+
 	let trig = 0;
 	let opt = 0;
 
@@ -302,10 +304,11 @@ Grid.prototype.LoadLevel = function(level) {
 		for(let j = 0; j < level.map[i].length; ++j) {
 			let cell = this.map[i][j];
 			let pattern = level.map[i][j];
+			let option = {img: spr_player};
 
 			for(let p = 0; p < pattern.length; ++p) {
-				switch(pattern[i]) {
-					case ' ':
+				switch(pattern[p]) {
+					case '#':
 						this.map[i][j].state = CellState.INVISIBLE;
 					break;
 
@@ -316,17 +319,20 @@ Grid.prototype.LoadLevel = function(level) {
 					case 'T':
 						for(let k = 0; k < level.triggers[trig].length; ++k) {
 							cell.AddTrigger (
-								new Trigger(cell, ...level.triggers[trig++][k])
+								new Trigger(cell, ...level.triggers[trig][k])
 							);
 						}
+						trig++;
 					break;
 
 					case '^':
+						option = level.options[opt];
 						this.map[i][j].SetStyle(level.options[opt++].style, true);
 					break;
 
 					default:
-						this.gm.CreateObject(LevelObjFunc[pattern[i]], cell, level.path);
+						this.gm.CreateObject(LevelObjFunc[pattern[p]], cell, option);
+					break;
 				}
 			}
 		}

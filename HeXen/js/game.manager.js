@@ -15,7 +15,7 @@ function GameManager() {
 	this.scoreManager = null;
 
 	this.freeze = true;
-	this.gameState = GameState.PAUSE;
+	this.gameState = GameState.MENU;
 	this.result = GameResult.NONE;
 	this.currentLevel = 0;
 
@@ -49,14 +49,21 @@ GameManager.prototype.ToggleMenu = function () {
 		this.StopGame();
         this.SetMode(GameState.MENU);
 	}
-}
+};
+
+GameManager.prototype.NextLevel = function () {
+	this.grid.LoadLevel(GameLevels[this.currentLevel]);
+	this.scoreManager.Reset();
+	this.SetMode(GameState.TURN);
+	this.currentLevel++;
+};
 
 GameManager.prototype.StartGame = function () {
 	this.freeze = false;
 	this.NextLevel();
 	this.event.CallBackEvent('gamestarted');
 	this.event.AddEvent('gameturn', this.TurnEvent.bind(this), true);
-	this.grid.Draw(); //!!!!!
+	// this.grid.Draw(); //!!!!!
 	
 	requestAnimationFrame(this.RenderEvent.bind(this));
 };
@@ -78,13 +85,6 @@ GameManager.prototype.Pause = function () {
 
 GameManager.prototype.ChangeScore = function (score) {
 	this.scoreManager.UpdateScore(score);
-};
-
-GameManager.prototype.NextLevel = function () {
-	this.grid.LoadLevel(GameLevels[this.currentLevel]);
-	this.scoreManager.Reset();
-	this.SetMode(GameState.TURN);
-	this.currentLevel++;
 };
 
 GameManager.prototype.CreateObject = function (object, cell, paths) {

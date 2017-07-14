@@ -2,7 +2,7 @@
  GameObjects Module
  */
 
-function GameObject(cell, args) {
+function GameObject(cell, args = {}) {
 	this.sprite = args.img;
 	this.position = new Point(cell.center.x, cell.center.y);
 	this.cell = cell;
@@ -250,8 +250,7 @@ function Player(cell, args) {
 	Actor.call(this, cell, args);
 
 	//BADCODER
-	if(this.sprite === undefined)
-		this.sprite = spr_player;
+	this.sprite = spr_player;
 	//BADCODER
 
 	this._type_ = GameObjectTypes.PLAYER;
