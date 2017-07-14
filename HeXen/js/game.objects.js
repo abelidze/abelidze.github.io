@@ -195,7 +195,7 @@ DynamicObject.prototype.MoveTo = function (cell) {
 					that.gm.scoreManager.ShowScore(WinScoreMessage);
 					console.log('Exit');
 				});
-				break;
+			break;
 		}
 	});
 };
@@ -293,8 +293,7 @@ Enemy.prototype.MoveTo = function (cell) {
 	cell.MoveObject(this);
 	this.cell.Clear();
 	this.cell = cell;
-	this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {
-	});
+	this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {});
 };
 
 Enemy.prototype.Collide = function (object, callback) {

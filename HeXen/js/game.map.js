@@ -337,6 +337,9 @@ Grid.prototype.LoadLevel = function(level) {
 					break;
 
 					default:
+						if(pattern[p] == 'E') {
+							level.options[opt++];
+						}
 						this.gm.CreateObject(LevelObjFunc[pattern[p]], cell, option);
 					break;
 				}
