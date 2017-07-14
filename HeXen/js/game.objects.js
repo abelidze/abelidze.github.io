@@ -267,30 +267,25 @@ function Enemy(cell, args) { // drawable, triggers, radius
 	Actor.call(this, cell, args);
 	this._type_ = GameObjectTypes.ENEMY;
 	this.path_guard = new Path();
-	this.path_haunt = new Path();
-	this.path_return = new Path();
-	;
+	/*this.path_haunt = new Path();
+	this.path_return = new Path();*/
 	this.status = EnemyBehavior.GUARD;
 	this.vision_radius = 5;//args.radius ? args.radius : 1;
 }
 Enemy.prototype = Object.create(Actor.prototype);
 
 Enemy.prototype.Live = function () {
-	let curr = {x: 0, y: 0};
-	curr.x = this.cell.gridPosition.x + 1;
-	curr.y = this.cell.gridPosition.y;
-	if (this.cell.grid.map[curr]) {
-
-	}
+	this.MoveTo(this.path_guard.NextTurn());
 };
-Enemy.prototype.MoveTo = function (cell) {
+
+/*Enemy.prototype.MoveTo = function (cell) {
 	this.rotation = this.cell.center.GetVector(cell.center).PolarAngle();
 	cell.MoveObject(this);
 	this.cell.Clear();
 	this.cell = cell;
 	this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {
 	});
-};
+};*/
 
 Enemy.prototype.Collide = function (object, callback) {
 	if (object.GetType() === GameObjectTypes.PLAYER) {
@@ -307,10 +302,8 @@ Enemy.prototype.GetPathTo = function (cell, path) {
 	// 	path[i].SetStyle(TestStyle, true);
 };
 
-/*Enemy.prototype.Live = function () {
- =======
+/*
  Enemy.prototype.MakeTurn = function () {
- >>>>>>> 77ff2a4ec7ced35fd4c5c3d951a957ce60601ba9
  let target = this.Search();
 
  if(target !== null) {

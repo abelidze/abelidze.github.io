@@ -66,7 +66,7 @@ Trigger.prototype.Activate = function (object) {
     if (!this.checker(object))
         return;
     if (!this.repeat)
-        handler.RemoveTrigger(this.id);
+        this.handler.RemoveTrigger(this.id);
     else if (this.repeat > 0)
         this.repeat--;
     if (this.options.delay === undefined)
