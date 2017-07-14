@@ -59,7 +59,8 @@ const LevelObjects = {
 	ENEMY: 4,
 	BONUS: 5,
 	EXIT: 6,
-	STYLE: 7
+	BORDER: 7,
+	STYLE: 8
 };
 
 const HexDirections = [
@@ -71,4 +72,22 @@ const EnemyBehavior = {
 	GUARD: 0,
 	HAUNT: 1,
 	RETURN: 2
+};
+
+const SoundNames = [
+	"./sounds/HIT.mp3",
+	"./sounds/GENERATOR.mp3",
+	"./sounds/ROAR.mp3",
+	"./sounds/RESTLESS_1.mp3",
+	"./sounds/RESTLESS_2.mp3",
+	"./sounds/ALARM.mp3"
+];
+
+const SoundIndex = {
+	HIT: 0,
+	GENERATOR: 1,
+	ROAR: 2,
+	RESTLESS_1: 3,
+	RESTLESS_2: 4,
+	ALARM: 5
 };
