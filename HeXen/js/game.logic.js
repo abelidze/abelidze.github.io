@@ -21,7 +21,7 @@ const DoorTrigger = function (object, options) {
 const OpenDoor = function (object, options) {
 	ChangeStyle(this.handler, DefaultCellStyle);
 	let cell = this.gm.grid.map[this.options.y][this.options.x];
-    cell.staticObjects[0].Open();
+    cell.OpenDoors();
 	//this.gm.grid.map[options.y][options.x].ActivateTriggers(options.key);
 }
 
@@ -31,6 +31,7 @@ const ChangeLevel = function (object) {
 
 const ShowInfo = function (object, options) {
 	ChangeStyle(object.cell, DefaultCellStyle);
+	console.log(options);
 	(new SplashWindow(options.text)).Show();
 }
 
@@ -42,7 +43,7 @@ const Pick = dummyFunc;
 ///                    ///
 
 const TInfoCell = function (text, delay) {
-	return [isTouched, ShowInfo, 1, {text: text}];//{x: this_x, y: this_y, delay: delay, text: text}];
+	return [isTouched, ShowInfo, 1, {text: text, delay: delay}];
 }
 
 //const TDoorOpener = function (this_x, this_y, key, delay) {

@@ -75,7 +75,7 @@ const GameLevels =
             ],
             [
                 [TInfoCell(TutorialInfo1)],
-                [TDoorKey(4, 3)]
+                [TDoorKey(3, 4, 100)]
             ],
             [
                 {style: InfoStyle},

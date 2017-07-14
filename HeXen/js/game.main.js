@@ -3,8 +3,4 @@
 */
 
 var gameManager = new GameManager();
-window.onload = function() {
-
-	audio.SetSound(SoundIndex.HORIZON);
-	audio.PlayAudio();
-};
+// window.onload = function() {};
