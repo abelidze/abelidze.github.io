@@ -295,8 +295,6 @@ Grid.prototype.LoadLevel = function(level) {
 	this.Clear();
 	this.GenerateGrid(level.map.length);
 
-	console.log(...level.map)
-
 	let trig = 0;
 	let opt = 0;
 
@@ -304,7 +302,7 @@ Grid.prototype.LoadLevel = function(level) {
 		for(let j = 0; j < level.map[i].length; ++j) {
 			let cell = this.map[i][j];
 			let pattern = level.map[i][j];
-			let option = {img: spr_player};
+			let option = {};
 
 			for(let p = 0; p < pattern.length; ++p) {
 				switch(pattern[p]) {

@@ -7,6 +7,7 @@ const ScoreBarRadius = 80;
 const WinScoreMessage = 'Congratulations! Your score is ';
 const TutorialInfo1 = 'Pick up keys to open a doors';
 const TutorialInfo2 = 'Be aware of monsters!';
+const GameOverMessage = 'So far... levels are over, we can suggest you try to improve your score result and fight with dark force again!';
 
 
 /* GRID */

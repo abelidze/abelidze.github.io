@@ -250,12 +250,11 @@ function Player(cell, args) {
 	Actor.call(this, cell, args);
 
 	//BADCODER
-	this.sprite = spr_player;
+	this.sprite = spr_enemy;
 	//BADCODER
 
 	this._type_ = GameObjectTypes.PLAYER;
 	this.gm.AddPlayer(this);
-	cell.FillNearby(NearbyCellStyle);
 }
 Player.prototype = Object.create(Actor.prototype);
 
@@ -266,7 +265,6 @@ Player.prototype.Collide = function (object, callback) {
 		callback(InteractResult.NOTHING);
 	}
 };
-
 
 function Enemy(cell, args) { // drawable, triggers, radius
 	Actor.call(this, cell, args);

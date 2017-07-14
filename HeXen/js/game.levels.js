@@ -19,7 +19,6 @@ const LevelObjFunc =
 function Level(map, triggers, options) {
     this.map = map;
     this.triggers = triggers;
-    console.log(triggers);
     this.options = options;
 }
 
