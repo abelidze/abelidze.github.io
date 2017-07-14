@@ -407,3 +407,14 @@ Path.prototype.isCorrect = function(cell) {
 Path.prototype.isEmpty = function () {
 	return (this.points.length === 0);
 };
+Path.prototype.isEnd = function () {
+	return (this.current === (this.points.length));
+};
+
+Path.prototype.SetCurrent = function (current) {
+	this.current = current;
+};
+
+Path.prototype.GetCurrent = function () {
+	return this.current;
+};

@@ -35,3 +35,7 @@ function fill_array2(array, value) {
 		for(let j = 0; j < array[i].length; array[i][j++] = value){}
 	}
 }
+
+function clean_array(array) {
+	for (let i = 0; i < array.length; delete array[i++]) {}
+}

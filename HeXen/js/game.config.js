@@ -67,5 +67,6 @@ const HexDirections = [
 
 const EnemyBehavior = {
 	GUARD: 0,
-	HAUNT: 1
+	HAUNT: 1,
+	RETURN: 2
 };
