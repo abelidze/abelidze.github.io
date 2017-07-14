@@ -15,12 +15,14 @@ const ChangeStyle = function (cell, style) {
 }
 
 const DoorTrigger = function (object, options) {
-	this.handler.Open();
+
 }
 
 const OpenDoor = function (object, options) {
 	ChangeStyle(this.handler, DefaultCellStyle);
-	this.gm.grid.map[options.y][options.x].ActivateTriggers(options.key);
+	let cell = this.gm.grid.map[this.options.y][this.options.x];
+    cell.staticObjects[0].Open();
+	//this.gm.grid.map[options.y][options.x].ActivateTriggers(options.key);
 }
 
 const ChangeLevel = function (object) {
@@ -39,16 +41,18 @@ const Pick = dummyFunc;
 /// Triggers templates ///
 ///                    ///
 
-const TInfoCell = function (this_x, this_y, delay, text) {
-	return [isTouched, ShowInfo, 1, {x: this_x, y: this_y, delay: delay, text: text}];
+const TInfoCell = function (delay, text) {
+	return [isTouched, ShowInfo, 1, {text: text}];//{x: this_x, y: this_y, delay: delay, text: text}];
 }
 
-const TDoorOpener = function (this_x, this_y, key, delay) {
-	return [isValid, DoorTrigger, 1, {x: this_x, y: this_y, key: key, delay: delay}];
+//const TDoorOpener = function (this_x, this_y, key, delay) {
+	//return [isValid, DoorTrigger, 1, {x: this_x, y: this_y, key: key, delay: delay}];
+//}
+
+const TDoorKey = function (target_x, target_y, delay) {
+	return [isTouched, OpenDoor, 1, {delay: delay, x: target_y, y: target_x}];
 }
 
-const TDoorKey = function (target_x, target_y, key, delay) {
-	return [isTouched, OpenDoor, 1, {key: key, delay: delay, x: target_y, y: target_x}];
-}
+
 
 //var DoorOpener = [isTouched, OpenDoor, 1, {delay: 200}];

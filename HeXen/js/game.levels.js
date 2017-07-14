@@ -48,7 +48,7 @@ const GameLevels =
                 [LevelObjects.WALL, 10, 0, {}],
 
                 [LevelObjects.WALL, 4, 1, {}],
-                [LevelObjects.STYLE, 4, 8, SwitcherStyle],
+                [LevelObjects.STYLE, 4, 8, KeyStyle],
                 [LevelObjects.WALL, 10, 1, {}],
 
                 [LevelObjects.WALL, 3, 2, {}],

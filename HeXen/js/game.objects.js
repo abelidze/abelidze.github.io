@@ -110,7 +110,6 @@ Door.prototype.Draw = function () {
 };
 
 Door.prototype.Open = function () {
-	this.cell.SetStyle(DoorStyleOpened, true);
 	this.status = DoorState.OPENED;
 };
 
@@ -118,6 +117,7 @@ Door.prototype.Collide = function (object, callback) {
 	if (this.status === DoorState.CLOSED) {
 		callback(InteractResult.NOTHING);
 	} else {
+		this.cell.SetStyle(DoorStyleOpened, true);
 		if ((object.GetType() === GameObjectTypes.PLAYER) || (object.GetType() === GameObjectTypes.ENEMY))
 			callback(InteractResult.MOVED);
 		else
@@ -192,7 +192,7 @@ DynamicObject.prototype.MoveTo = function (cell) {
 				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
 				that.gm.SetMode(GameState.ANIMATING);
 				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function () {
-					that.gm.scoreManager.ShowScore('Hello!\n');
+					that.gm.scoreManager.ShowScore(WinScoreMessage);
 					console.log('Exit');
 				});
 				break;
