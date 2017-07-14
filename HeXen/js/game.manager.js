@@ -159,7 +159,7 @@ GameManager.prototype.MouseEvent = function (event) {
 };
 
 GameManager.prototype.SelectGUI = function (event) {
-	// otototototototototototototo
+	// otototototototototototototototototootototototototot
 };
 
 GameManager.prototype.GridClicked = function (pos) {

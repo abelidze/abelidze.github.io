@@ -3,8 +3,8 @@
 */
 
 var gameManager = new GameManager();
-var audio = new Audio();
 window.onload = function() {
-	//audio.SetSound(SoundIndex.HORIZON);
-	//audio.PlayAudio();
+
+	audio.SetSound(SoundIndex.HORIZON);
+	audio.PlayAudio();
 };
