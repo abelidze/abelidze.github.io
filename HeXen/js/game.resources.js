@@ -12,6 +12,9 @@ var img_floor = new Image();
 var img_key = new Image();
 var img_exit_opened = new Image();
 var img_exit_closed = new Image();
+var img_info = new Image();
+var img_door_closed = new Image();
+var img_door_opened = new Image();
 
 /* Load Images */
 img_playerIdle.src = 'img/Player/playerIdle.png';
@@ -23,6 +26,9 @@ img_floor.src = 'img/floor.png';
 img_key.src = 'img/key.png';
 img_exit_opened.src = 'img/exit_opened.png';
 img_exit_closed.src = 'img/exit_closed.png';
+img_info.src = 'img/info.png';
+img_door_closed.src = 'img/door_closed.png';
+img_door_opened.src = 'img/door_opened.png';
 
 /* Create Animations */
 var anim_playerIdle = new Animation(img_playerIdle, 1, 0, 0, 48, 48, 5);

@@ -43,7 +43,7 @@ const Pick = dummyFunc;
 ///                    ///
 
 const TInfoCell = function (text, delay) {
-	return [isTouched, ShowInfo, 1, {text: text, delay: delay}];//{x: this_x, y: this_y, delay: delay, text: text}];
+	return [isTouched, ShowInfo, 1, {text: text, delay: delay}];
 }
 
 //const TDoorOpener = function (this_x, this_y, key, delay) {

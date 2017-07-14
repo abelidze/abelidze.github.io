@@ -412,11 +412,16 @@ function Path(cell, vectors = []) {
 Path.prototype = Object.create(BaseModel.prototype);
 
 Path.prototype.NextTurn = function () {
-    let pos = this.cell.gridPosition;
-    this.current++;
-    return this.grid.map[pos.y + this.vectors[this.current % this.vectors.length][1]]
-        [pos.x + this.vectors[this.current % this.vectors.length][0]];
-}
+
+	let pos = this.cell.gridPosition;
+	if (this.isEnd()) {
+		this.vectors.reverse();
+	}
+	this.current++;
+	return this.grid.map[pos.y + this.vectors[this.current % this.vectors.length][1]]
+						[pos.x + this.vectors[this.current % this.vectors.length][0]];
+};
+
 Path.prototype.PushTurn = function (vector) {
 	this.vectors.push(vector);
 };

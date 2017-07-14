@@ -45,14 +45,15 @@ const GameLevels =
                         ['#','B','W','.','.','W','B','#'],
                           ['#','B','.','X','.','B','#','#'],
                             ['#','B','.','.','B','#','#','#'],
-                              ['#','B','B','B','#','#','#','#'],
+                              ['#','B','B','B','#','#','#','#']
             ],
             [
                 [TInfoCell(TutorialInfo1)],
                 [TDoorKey(3, 4, 100)]
             ],
-            [ 
-                {style: KeyStyle},
+            [
+                {style: InfoStyle},
+                {style: KeyStyle}
             ]
         ),
 
@@ -66,7 +67,7 @@ const GameLevels =
                         ['B','.','.','W','.','.','B','B'],
                           ['B','W','T^','W','.','.','E','B'],
                             ['B','P','W','.','.','.','T^','B'],
-                              ['B','B','B','B','B','B','B','B'],
+                              ['B','B','B','B','B','B','B','B']
             ],
             [
                 [TInfoCell(TutorialInfo2)],
