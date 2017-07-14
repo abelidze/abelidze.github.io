@@ -276,9 +276,8 @@ function Enemy(cell, args) { // drawable, triggers, radius
 
 	this._type_ = GameObjectTypes.ENEMY;
 	this.path_guard = new Path();
-	this.path_haunt = new Path();
-	this.path_return = new Path();
-	;
+	/*this.path_haunt = new Path();
+	this.path_return = new Path();*/
 	this.status = EnemyBehavior.GUARD;
 	this.vision_radius = 5;//args.radius ? args.radius : 1;
 }
@@ -307,52 +306,53 @@ Enemy.prototype.GetPathTo = function (cell, path) {
 	// 	path[i].SetStyle(TestStyle, true);
 };
 
-Enemy.prototype.MakeTurn = function () {
-	// let target = this.Search();
+/*
+ Enemy.prototype.MakeTurn = function () {
+ let target = this.Search();
 
-	// if(target !== null) {
-	// 	this.status = EnemyBehavior.HAUNT;
-	// 	console.log(target)
-	// 	let path = [];
-	// 	this.GetPathTo(target, path);//this.path_haunt.points);
-	// 	// this.path_haunt.current = 0;
-	// 	// clean_array(this.path_return.points);
-	// }
+ if(target !== null) {
+ this.status = EnemyBehavior.HAUNT;
+ console.log(target)
+ let path = [];
+ this.GetPathTo(target, path);//this.path_haunt.points);
+ // this.path_haunt.current = 0;
+ // clean_array(this.path_return.points);
+ }
 
-	// if((this.status === EnemyBehavior.HAUNT) && this.path_haunt.isEnd()) {
-	// 	console.log(target)
-	// 	this.status = EnemyBehavior.RETURN;
-	// 	this.path_guard.SetCurrent(getRandomInt(0, this.path_guard.length - 1));
-	// 	this.GetPathTo(target, this.path_return.points);
-	// 	// this.path_return.current = 0;
-	// 	clean_array(this.path_haunt.points);
-	// }
-	
-	// if((this.status === EnemyBehavior.RETURN) && this.path_return.isEnd()) {
-	// 	this.status = EnemyBehavior.GUARD;
-	// 	clean_array(this.path_return.points);
-	// }
+ // if((this.status === EnemyBehavior.HAUNT) && this.path_haunt.isEnd()) {
+ // 	console.log(target)
+ // 	this.status = EnemyBehavior.RETURN;
+ // 	this.path_guard.SetCurrent(getRandomInt(0, this.path_guard.length - 1));
+ // 	this.GetPathTo(target, this.path_return.points);
+ // 	// this.path_return.current = 0;
+ // 	clean_array(this.path_haunt.points);
+ // }
 
-	// switch (this.status) {
-	// 	case EnemyBehavior.GUARD:
-	// 		if (!this.path_guard.isEmpty()) {
-	// 			this.MoveTo(this.path_guard.NextTurn());
-	// 		}
-	// 	break;
+ // if((this.status === EnemyBehavior.RETURN) && this.path_return.isEnd()) {
+ // 	this.status = EnemyBehavior.GUARD;
+ // 	clean_array(this.path_return.points);
+ // }
 
-	// 	case EnemyBehavior.HAUNT:
-	// 		if (!this.path_haunt.isEmpty()) {
-	// 			this.MoveTo(this.path_haunt.NextTurn());
-	// 		}
-	// 	break;
+ switch (this.status) {
+ case EnemyBehavior.GUARD:
+ if (!this.path_guard.isEmpty()) {
+ this.MoveTo(this.path_guard.NextTurn());
+ }
+ break;
 
-	// 	case EnemyBehavior.RETURN:
-	// 		if (!this.path_return.isEmpty()) {
-	// 			this.MoveTo(this.path_return.NextTurn());
-	// 		}
-	// 	break;
-	// }
-};
+ case EnemyBehavior.HAUNT:
+ if (!this.path_haunt.isEmpty()) {
+ this.MoveTo(this.path_haunt.NextTurn());
+ }
+ break;
+
+ case EnemyBehavior.RETURN:
+ if (!this.path_return.isEmpty()) {
+ this.MoveTo(this.path_return.NextTurn());
+ }
+ break;
+ }
+ };*/
 
 Enemy.prototype.Search = function (target = GameObjectTypes.PLAYER) {
 	let area = [];
