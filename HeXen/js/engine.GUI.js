@@ -4,6 +4,7 @@
 
 function GameGUI() {
 	this.GUIElements = [];
+    this.MainMenu();
 }
 GameGUI.prototype = Object.create(BaseModel.prototype);
 
@@ -20,6 +21,12 @@ GameGUI.prototype.DrawGUI = function () {
 	for(let i = 0; i < this.GUIElements.length; ++i) {
 		this.GUIElements[i].Draw();
 	}
+}
+
+GameGUI.prototype.MainMenu = function () {
+	console.log(this.gm)
+	$('#start').click(this.gm.ToggleMenu.bind(this.gm));
+	//Score Table
 }
 
 
@@ -47,7 +54,8 @@ ScoreManager.prototype = Object.create(BaseModel.prototype);
 ScoreManager.prototype.Init = function (radius) {
 	let xpos = this.gm.render.content_width - this.gm.grid.shift_x * this.gm.grid.size / 4 + radius * 2;
 	this.scoreBar = this.gui.AddElement(new ScoreBar(xpos, radius * 1.5, radius, radius * 1.25) );
-	this.scoreWin = new ScoreWindow('No content', false);	
+	this.scoreWin = new ScoreWindow('No content', false);
+    this.gm.event.DeleteEvent('gamestarted', this.Init.bind(this, arguments[1]));
 };
 
 ScoreManager.prototype.UpdateScore = function (value) {
@@ -188,3 +196,4 @@ function QuestionWindow(text) {
 	//properties
 }
 QuestionWindow.prototype = Object.create(SplashWindow.prototype);
+
