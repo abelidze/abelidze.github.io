@@ -21,6 +21,23 @@ img, canvas {
 	user-drag: none;
 }
 
+.menu_bg > img {
+	width: 100%;
+	z-index: -10;
+	position: absolute;
+}
+
+.menu {
+	padding-top: 23pt;
+	text-align: center;
+	font-size: 45pt;
+}
+
+#menu_title {
+	color: white;
+	font-size: 120pt;
+}
+
 canvas  {
 	position: absolute;
 	border: none;
