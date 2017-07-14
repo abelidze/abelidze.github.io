@@ -15,7 +15,7 @@ const ExitStyle        = {edge: 'white', fill: '#9EC5AB', width: 3};
 const NearbyCellStyle  = {edge: 'grey', fill: '#D0D0D0', width: 3, prior: 1};
 const SwitcherStyle    = {edge: 'grey', fill: '#B0A5D7', width: 3, prior: 2};
 const TestStyle        = {edge: 'red', fill: '#000', width: 3};
-const WallStyle        = {edge: 'white', fill: '#E63946', width: 3};
+const WallStyle        = {img: spr_player, edge: 'white', fill: '#E63946', width: 3};
 
 
 /* GUI */
