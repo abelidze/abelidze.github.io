@@ -86,18 +86,19 @@ canvas {
 }
 
 .splash {
+	font-size: 2vw;
 	position: fixed;
 	display: none;
-	width: 20vw;
-	height: 15vw;
+	width: 35vw;
+	height: 20vw;
 	border-radius: 5px;
 	border: 3px #000 solid;
 	background: white;
 	top: 20vh;
 	left: 38vw;
 	opacity: 0;
-	z-index: 5;
-	padding: 20px 10px;
+	z-index: 15;
+	padding: 5% 2%;
 }
 
 .splash_close {
