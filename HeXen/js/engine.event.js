@@ -7,22 +7,35 @@ function EventSystem() {
 }
 EventSystem.prototype = Object.create(BaseModel.prototype);
 
-EventSystem.prototype.AddEvent = function (event, listener) {
+EventSystem.prototype.AddEvent = function (event, listener, mode) {
     if (this.listeners[event] === undefined)
         this.listeners[event] = [];
     this.listeners[event].push(listener);
-    window.addEventListener(event, listener, false);
+    if(mode !== true)
+        window.addEventListener(event, listener, false);
 };
 
 EventSystem.prototype.DeleteEvent = function (event, listener) {
     if (this.listeners[event] !== undefined){
         var listeners = this.listeners[event];
         for (let i = 0; i < listeners.length; ++i)
-            if (listeners[i] === listener){
+            if(listeners[i] === listener) {
                 window.removeEventListener(event, listener);
                 listeners.splice(i, 1);
+                if (listeners.length === 0){
+                    this.listeners[event] = undefined;
+                }
                 break;
             }
+    }
+};
+
+EventSystem.prototype.CallBackEvent = function (event) {
+    if(this.listeners[event] !== undefined) {
+        var listeners = this.listeners[event];
+        for(let i = 0; i < listeners.length; ++i) {
+            listeners[i]();
+        }
     }
 };
 

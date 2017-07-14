@@ -29,6 +29,7 @@ const ChangeLevel = function (object) {
 }
 
 const ShowInfo = function (object, options) {
+	ChangeColor(object.cell, DefaultCellStyle);
 	(new SplashWindow(options.text)).Show();
 }
 
@@ -39,8 +40,8 @@ const Pick = dummyFunc;
 /// Triggers templates ///
 ///                    ///
 
-const TInfoCell = function (this_x, this_y, delay, info) {
-	return [isTouched, ShowInfo, {x: this_x, y: this_y, delay: delay, text: info}];
+const TInfoCell = function (this_x, this_y, delay, text) {
+	return [isTouched, ShowInfo, 1, {x: this_x, y: this_y, delay: delay, text: text}];
 }
 
 const TDoorOpener = function (this_x, this_y, key, delay) {

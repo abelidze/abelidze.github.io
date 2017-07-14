@@ -3,25 +3,25 @@
 */
 
 /* CELLS */
-function Cell(grid, center, gridPosition) {
-	this.grid = grid;
-	this.id = getRandomInt(10000000, 99999999);
-	this.gridPosition = gridPosition;
-	this.center = center;
-	this.state = CellState.EMPTY;
-	this.object = null;
-	this.staticObjects = [];
-	this.style = [DefaultCellStyle]; //{edge: 'white', fill: 'black', width: 3};
-	this.triggers = [];
-	this.triggersCounter = 0;
-}
-
 Cell.prototype.Draw = function(layer = 0) {
 	if(this.state === CellState.INVISIBLE)
 		return;
 	layer = layer ? layer : 0;
 	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], layer);
 };
+
+function Cell(grid, center, gridPosition) {
+    this.grid = grid;
+    this.id = getRandomInt(10000000, 99999999);
+    this.gridPosition = gridPosition;
+    this.center = center;
+    this.state = CellState.EMPTY;
+    this.object = null;
+    this.staticObjects = [];
+    this.style = [DefaultCellStyle]; //{edge: 'white', fill: 'black', width: 3};
+    this.triggers = [];
+    this.triggersCounter = 0;
+}
 
 Cell.prototype.ClearStyle = function(style) {
 	if(this.style.length <= 1)
@@ -67,7 +67,7 @@ Cell.prototype.ActivateTriggers = function (object, obj_only) {
 };
 
 Cell.prototype.RemoveTrigger = function (id) {
-	for (let i = 0; i < this.triggers.length; ++i)
+	for(let i = 0; i < this.triggers.length; ++i)
 		if (this.triggers[i] == id) {
 			delete this.triggers[i];
 			this.triggers.splice(i, 1);
@@ -316,7 +316,6 @@ Grid.prototype.LoadLevel = function(level) {
             						 level.triggers[i][0][3]);
 		cell.AddTrigger(trig);
 	}
-
 	this.Draw();
 };
 
@@ -406,4 +405,15 @@ Path.prototype.isCorrect = function(cell) {
 
 Path.prototype.isEmpty = function () {
 	return (this.points.length === 0);
+};
+Path.prototype.isEnd = function () {
+	return (this.current === (this.points.length));
+};
+
+Path.prototype.SetCurrent = function (current) {
+	this.current = current;
+};
+
+Path.prototype.GetCurrent = function () {
+	return this.current;
 };

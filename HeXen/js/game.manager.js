@@ -35,14 +35,27 @@ GameManager.prototype.Init = function () {
 	this.mouse = new Mouse(this);
 	this.animator = new Animator();
 	this.gui = new GameGUI();
-	this.scoreManager = new ScoreManager(this.gui);
-	this.StartGame();
+	this.scoreManager = new ScoreManager(this.gui, ScoreBarRadius);
+	//this.StartGame();
 };
+
+GameManager.prototype.ToggleMenu = function () {
+	if (this.gameState === GameState.MENU) {
+		$('.menu_bg').css('display', 'none');
+		$('#game_pic').css('display', 'inline');
+		$('canvas').css('display', 'inline');
+        this.StartGame();
+    } else {
+		this.StopGame();
+        this.SetMode(GameState.MENU);
+	}
+}
 
 GameManager.prototype.StartGame = function () {
 	this.freeze = false;
 	this.NextLevel();
-	// this.grid.Draw();
+	this.event.CallBackEvent('gamestarted');
+	this.grid.Draw(); //!!!!!
 	
 	requestAnimationFrame(this.RenderEvent.bind(this));
 };
