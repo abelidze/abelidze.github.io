@@ -5,7 +5,7 @@
 function Audio () {
 	this.path = "";
 	this.name = -1;
-	this.audioElm = $('audio1');
+	this.audioElm = $('#audio1');
 	this.audioElm.src = this.path;
 }
 

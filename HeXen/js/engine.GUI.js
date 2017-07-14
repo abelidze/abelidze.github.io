@@ -183,6 +183,12 @@ function ScoreWindow(text, once) {
 }
 ScoreWindow.prototype = Object.create(SplashWindow.prototype);
 
+ScoreWindow.prototype.Show = function(score) {
+    this.FadeIn();
+    $('h3').html(this.text + score);
+    this.gm.SetMode(GameState.PAUSE);
+};
+
 ScoreWindow.prototype.Close = function() {
 	$('h3').text('');
 	this.FadeOut();

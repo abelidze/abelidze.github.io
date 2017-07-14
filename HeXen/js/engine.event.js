@@ -51,12 +51,12 @@ EventSystem.prototype.CallBackEvent = function (event) {
 // true -> action(initiation_object, options);
 // action()
 
-function Trigger(handler, checker, action, repeat, options, radius) {
+function Trigger(handler, checker, action, repeat = 1, options = {}, radius = 0) {
 	this.handler = handler;
 	this.checker = checker;
 	this.action = action;
 	this.repeat = repeat;
-	this.options = options ? options : {};
+	this.options = options;
 	this.radius = radius;
     this.id = 0;
 }

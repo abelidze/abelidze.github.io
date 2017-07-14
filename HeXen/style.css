@@ -5,8 +5,8 @@
 
 body {
 	margin: 0;
-	width: 100%;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 	background: #1E1E3A; /*#1F282D;*/
 	font-family: Reckoner Bold;
 }
@@ -22,35 +22,52 @@ img, canvas {
 }
 
 .menu_bg > img {
-	width: 100%;
+	position: fixed;
+	width: 100vw;
+	overflow:hidden;
 	z-index: -10;
-	position: absolute;
 }
 
 #game_pic {
 	width: 100%;
+	height: 100%;
 	z-index: -10;
 	position: absolute;
+	top: 0;
+	left: 0;
 	display: none;
 }
 
-.menu {
-	cursor: pointer;
-	z-index: 10;
+.menu, #menu_title {
 	position: relative;
-	width: 90%;
+	cursor: pointer;
 	margin: auto;
-	padding-top: 23pt;
+	z-index: 10;
+	width: 40vw;
+	font-size: 5vw;
 	text-align: center;
-	font-size: 45pt;
+	-webkit-user-select: none;
+	-webkit-user-drag: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	user-drag: none;
+}
+
+.menu {
+	top: 7vw;
+}
+
+.menu:hover {
+	color: #A90315;
 }
 
 #menu_title {
 	color: white;
-	font-size: 120pt;
+	font-size: 15vw;
 }
 
-canvas  {
+canvas {
 	display: none;
 	position: absolute;
 	border: none;

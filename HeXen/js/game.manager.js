@@ -15,7 +15,7 @@ function GameManager() {
 	this.scoreManager = null;
 
 	this.freeze = true;
-	this.gameState = GameState.PAUSE;
+	this.gameState = GameState.MENU;
 	this.result = GameResult.NONE;
 	this.currentLevel = 0;
 
@@ -41,28 +41,42 @@ GameManager.prototype.Init = function () {
 
 GameManager.prototype.ToggleMenu = function () {
 	if (this.gameState === GameState.MENU) {
-		$('.menu_bg').css('display', 'none');
-		$('#game_pic').css('display', 'inline');
-		$('canvas').css('display', 'inline');
+		$('.menu_bg').hide(600, function(){});
+		$('#game_pic').fadeIn(200, function(){});
+		$('canvas').fadeIn(2500, function(){});
         this.StartGame();
     } else {
 		this.StopGame();
         this.SetMode(GameState.MENU);
 	}
-}
+};
+
+GameManager.prototype.AddPlayer = function (player) {
+	this.players.push(player);
+};
+
+GameManager.prototype.SetMode = function (mode) {
+	this.gameState = mode;
+};
 
 GameManager.prototype.StartGame = function () {
 	this.freeze = false;
 	this.NextLevel();
 	this.event.CallBackEvent('gamestarted');
 	this.event.AddEvent('gameturn', this.TurnEvent.bind(this), true);
-	this.grid.Draw(); //!!!!!
+
+	for(let i = 0; i < this.objects.length; ++i) {
+		this.objects[i].Draw();
+		if(this.objects[i].GetType() == GameObjectTypes.PLAYER)
+			this.objects[i].cell.FillNearby(NearbyCellStyle);
+	}
+	// this.grid.Draw(); //!!!!!
 	
 	requestAnimationFrame(this.RenderEvent.bind(this));
 };
 
 GameManager.prototype.StopGame = function () {
-	this.gm.event.DeleteEvent('gameturn');
+	this.event.DeleteEvent('gameturn');
 	this.freeze = true;
 };
 
@@ -74,10 +88,7 @@ GameManager.prototype.Restart = function () {
 
 GameManager.prototype.Pause = function () {
 	this.freeze = true;
-};
-
-GameManager.prototype.ChangeScore = function (score) {
-	this.scoreManager.UpdateScore(score);
+	this.SetMode(GameStates);
 };
 
 GameManager.prototype.NextLevel = function () {
@@ -85,11 +96,22 @@ GameManager.prototype.NextLevel = function () {
 	this.scoreManager.Reset();
 	this.SetMode(GameState.TURN);
 	this.currentLevel++;
+
+	if(this.currentLevel > GameLevels.length)
+		this.GameOver();
 };
 
-GameManager.prototype.CreateObject = function (object, cell, args) {
-	let obj = cell.AddObject(function () {
-		return new object(cell, args);
+GameManager.prototype.ChangeScore = function (score) {
+	this.scoreManager.UpdateScore(score);
+};
+
+GameManager.prototype.CreateObject = function (object, cell, paths) {
+	if(object === undefined) {
+		console.log('Wrong object to create!', cell);
+		return;
+	}
+	let obj = cell.AddContent(function () {
+		return new object(cell, paths);
 	});
 	if (obj !== undefined)
 		this.objects.push(obj);
@@ -102,6 +124,7 @@ GameManager.prototype.ClearObjects = function () {
 
 GameManager.prototype.RenderEvent = function () {
 	let delta = this.render.deltaTime();
+
 
 	this.animator.ProcessMotions(delta);
 
@@ -139,11 +162,6 @@ GameManager.prototype.SelectGUI = function (event) {
 	// otototototototototototototo
 };
 
-GameManager.prototype.AddPlayer = function (player) {
-	this.players.push(player);
-};
-
-
 GameManager.prototype.GridClicked = function (pos) {
 	let player, cell = this.grid.map[pos.y][pos.x];
 	switch(this.gameState) {
@@ -161,9 +179,10 @@ GameManager.prototype.GridClicked = function (pos) {
 	}
 };
 
-GameManager.prototype.SetMode = function (mode) {
-	this.gameState = mode;
-}
+GameManager.prototype.GameOver = function () {
+	this.currentLevel = 0;
+	(new SplashWindow(GameOverMessage)).Show();
+	this.ToggleMenu();
+};
 
-GameManager.prototype.GameOver = dummyFunc;
 GameManager.prototype.ShowGameResult = dummyFunc;

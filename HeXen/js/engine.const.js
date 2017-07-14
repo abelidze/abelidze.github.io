@@ -42,7 +42,7 @@ const AnimatorModes = {
 };
 
 const EventType = {
-	LISTEN : 0,
+	LISTEN: 0,
 	DRAW: 1,
 	CUSTOM: 2
 };
@@ -50,7 +50,6 @@ const EventType = {
 const ClickRadius = 16;
 
 const EPS = Number.EPSILON;
-
 
 const SoundNames = [
 	"./sounds/HIT.mp3",

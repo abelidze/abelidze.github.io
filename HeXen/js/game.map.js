@@ -3,13 +3,6 @@
 */
 
 /* CELLS */
-Cell.prototype.Draw = function(layer = 0) {
-	if(this.state === CellState.INVISIBLE)
-		return;
-	layer = layer ? layer : 0;
-	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], layer);
-};
-
 function Cell(grid, center, gridPosition) {
     this.grid = grid;
     this.id = getRandomInt(10000000, 99999999);
@@ -23,6 +16,13 @@ function Cell(grid, center, gridPosition) {
     this.triggersCounter = 0;
 }
 
+Cell.prototype.Draw = function(layer = 0) {
+	if(this.state === CellState.INVISIBLE)
+		return;
+	layer = layer ? layer : 0;
+	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], layer);
+};
+
 Cell.prototype.ClearStyle = function(style) {
 	if(this.style.length <= 1)
 		return;
@@ -34,6 +34,11 @@ Cell.prototype.ClearStyle = function(style) {
 };
 
 Cell.prototype.SetStyle = function(style, force) {
+	if(style === undefined) {
+		console.log('Undefined style!', this);
+		return;
+	}
+
 	if(force === true) {
 		this.style.length = 0;
 	}
@@ -124,7 +129,7 @@ Cell.prototype.MoveObject = function (object) {
 	return this.object;
 };
 
-Cell.prototype.AddObject = function (objectFunc) {
+Cell.prototype.AddContent = function (objectFunc) {
 	if (!this.isEmpty()) return undefined;
 
 	let obj = objectFunc();
@@ -232,7 +237,7 @@ Grid.prototype.Calculate = function(size) {
 
 	this.shift_x = this.radius * Math.cos(Math.PI / 180 * 30);
 	this.shift_y = this.radius * Math.sin(Math.PI / 180 * 30);
-}
+};
 
 Grid.prototype.GenerateGrid = function(size) {
 	if(this.size == size) return;
@@ -288,33 +293,47 @@ Grid.prototype.GenerateGrid = function(size) {
 
 Grid.prototype.LoadLevel = function(level) {
 	this.Clear();
-	this.GenerateGrid(level.size);
+	this.GenerateGrid(level.map.length);
+
+	let trig = 0;
+	let opt = 0;
 
 	for(let i = 0; i < level.map.length; ++i) {
-		switch(level.map[i][0]) {
-			case LevelObjects.INVISIBLE:
-				this.map[level.map[i][1]][level.map[i][2]].state = CellState.INVISIBLE;
-			continue;
+		for(let j = 0; j < level.map[i].length; ++j) {
+			let cell = this.map[i][j];
+			let pattern = level.map[i][j];
+			let option = {};
 
-			case LevelObjects.STYLE:
-				this.map[level.map[i][1]][level.map[i][2]].SetStyle(level.map[i][3], true);
-			continue;
+			for(let p = 0; p < pattern.length; ++p) {
+				switch(pattern[p]) {
+					case '#':
+						this.map[i][j].state = CellState.INVISIBLE;
+					break;
+
+					case '.':
+						// Nothing
+					break;
+
+					case 'T':
+						for(let k = 0; k < level.triggers[trig].length; ++k) {
+							cell.AddTrigger (
+								new Trigger(cell, ...level.triggers[trig][k])
+							);
+						}
+						trig++;
+					break;
+
+					case '^':
+						option = level.options[opt];
+						this.map[i][j].SetStyle(level.options[opt++].style, true);
+					break;
+
+					default:
+						this.gm.CreateObject(LevelObjFunc[pattern[p]], cell, option);
+					break;
+				}
+			}
 		}
-
-		let cell = this.map[level.map[i][1]][level.map[i][2]];
-		this.gm.CreateObject(LevelObjFunc[level.map[i][0]], cell, level.map[i][3]);
-	}
-
-	if(level.triggers === undefined)
-		return;
-
-	for(let i = 0; i < level.triggers.length; ++i) {
-		let cell = this.map[level.triggers[i][1]][level.triggers[i][2]];
-		let trig = new Trigger(cell, level.triggers[i][0][0],
-								     level.triggers[i][0][1],
-								     level.triggers[i][0][2],
-            						 level.triggers[i][0][3]);
-		cell.AddTrigger(trig);
 	}
 	this.Draw();
 };
@@ -384,6 +403,7 @@ function Path(cell, vectors = []) {
 Path.prototype = Object.create(BaseModel.prototype);
 
 Path.prototype.NextTurn = function () {
+
 	let pos = this.cell.gridPosition;
 	if (this.isEnd()) {
 		this.vectors.reverse();
@@ -405,6 +425,7 @@ Path.prototype.ClearPath = function () {
 Path.prototype.isEmpty = function () {
 	return (this.vectors.length === 0);
 };
+
 Path.prototype.isEnd = function () {
 	return (this.current === (this.vectors.length));
 };
