@@ -12,7 +12,6 @@ const GameOverMessage = 'So far... levels are over, we can suggest you try to im
 
 
 /* GRID */
-const ActivatedStyle   = {edge: 'grey', fill: '#5FD4B1', width: 3, prior: 2};
 const DefaultCellStyle = {img: img_floor, edge: 'grey', width: 3};
 const DoorStyleClosed  = {img: img_door_closed, edge: 'grey', width: 2, prior: 3};
 const DoorStyleOpened  = {img: img_door_opened, edge: 'grey', width: 2, prior: 3};
