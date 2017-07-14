@@ -52,15 +52,14 @@ const ClickRadius = 16;
 const EPS = Number.EPSILON;
 
 const SoundNames = [
-	"./sounds/HIT.mp3",
-	"./sounds/GENERATOR.mp3",
-	"./sounds/ROAR.mp3",
-	"./sounds/RESTLESS_1.mp3",
-	"./sounds/RESTLESS_2.mp3",
-	"./sounds/ALARM.mp3",
-	"./sounds/ALARM.mp3",
-	"./sounds/HORIZON_SHADOWLANDS_1.mp3",
-	"./sounds/BRIDGE_SHADOWLANDS_2.mp3"
+	"./sounds/HIT.wav",
+	"./sounds/GENERATOR.wav",
+	"./sounds/ROAR.wav",
+	"./sounds/RESTLESS_1.wav",
+	"./sounds/RESTLESS_2.wav",
+	"./sounds/ALARM.wav",
+	"./sounds/HORIZON_SHADOWLANDS_1.wav",
+	"./sounds/BRIDGE_SHADOWLANDS_2.wav"
 ];
 
 const SoundIndex = {
@@ -70,5 +69,6 @@ const SoundIndex = {
 	RESTLESS_1: 3,
 	RESTLESS_2: 4,
 	ALARM: 5,
-	HORIZON: 6
+	HORIZON: 6,
+	BRIDGE: 7
 };

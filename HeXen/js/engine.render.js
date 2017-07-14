@@ -201,7 +201,7 @@ function Render(layer_count) {
 	this.content_width = window.innerWidth;
 	this.content_height = window.innerHeight;
 	this.ResizeCanvas();
-	this.gm.event.AddEvent('resize', this.gm.ResizeEvent.bind(this.gm));
+	this.gm.event.AddEvent('resize', this.gm.ResizeEvent.bind(this.gm), EventType.LISTEN);
 }
 Render.prototype = Object.create(BaseModel.prototype);
 

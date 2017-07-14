@@ -8,14 +8,14 @@ function Mouse(gm) {
 	this.posY = 0;
 	this.isMoving = false;
 
-	this.gm.event.AddEvent('mousemove', this.Move.bind(this));
-	this.gm.event.AddEvent('mouseup',   this.Up.bind(this));
-	this.gm.event.AddEvent('mousedown', this.Down.bind(this));
-	this.gm.event.AddEvent('contextmenu', this.Select.bind(this));
+	this.gm.event.AddEvent('mousemove', this.Move.bind(this), EventType.LISTEN);
+	this.gm.event.AddEvent('mouseup',   this.Up.bind(this), EventType.LISTEN);
+	this.gm.event.AddEvent('mousedown', this.Down.bind(this), EventType.LISTEN);
+	this.gm.event.AddEvent('contextmenu', this.Select.bind(this), EventType.LISTEN);
 
-	this.gm.event.AddEvent('touchmove', this.MoveTouch.bind(this));
-	this.gm.event.AddEvent('touchend',  this.UpTouch.bind(this));
-	this.gm.event.AddEvent('touchstart', this.DownTouch.bind(this));
+	this.gm.event.AddEvent('touchmove', this.MoveTouch.bind(this), EventType.LISTEN);
+	this.gm.event.AddEvent('touchend',  this.UpTouch.bind(this), EventType.LISTEN);
+	this.gm.event.AddEvent('touchstart', this.DownTouch.bind(this), EventType.LISTEN);
 }
 
 Mouse.prototype.Move = function(event) {

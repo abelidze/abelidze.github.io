@@ -140,7 +140,6 @@ Cell.prototype.AddContent = function (objectFunc) {
 	if (!this.isEmpty()) return undefined;
 
 	let obj = objectFunc();
-	console.log(obj)
 	if(obj.GetType() >= GameObjectTypes.DYNAMIC)
 		this.object = obj;
 	else 
@@ -344,6 +343,9 @@ Grid.prototype.LoadLevel = function(level) {
 			}
 		}
 	}
+
+	this.gm.SetActionPoints(level.actionPoints);
+
 	this.Draw();
 };
 

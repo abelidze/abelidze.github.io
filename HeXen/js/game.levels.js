@@ -16,10 +16,11 @@ const LevelObjFunc =
     'K': Wall
 };
 
-function Level(map, triggers, options) {
+function Level(map, triggers, options, actionPoints = 10) {
     this.map = map;
     this.triggers = triggers;
     this.options = options;
+    this.actionPoints = actionPoints;
 }
 
 // ' ' - space, invisible
@@ -92,7 +93,8 @@ const GameLevels =
                 {path: [3, 3, 3, 4, 6, 6, 1, 6, 6, 6, 3, 3]},
                 {path: [2, 3, 3, 3, 4, 5, 6, 6, 6, 1]},
                 {style: KeyStyle}
-            ]
+            ],
+            15
         ),
 
         new Level
@@ -114,7 +116,8 @@ const GameLevels =
             [
                 {style: InfoStyle},
                 {style: KeyStyle}
-            ]
+            ],
+            17
         ),
 
         new Level
@@ -140,7 +143,8 @@ const GameLevels =
                 {style: InfoStyle},
                 {path: [3, 3, 2, 6, 6, 5]},
                 {style: KeyStyle}
-            ]
+            ],
+            24
         ),
 
         // new Level

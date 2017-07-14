@@ -7,15 +7,19 @@ function EventSystem() {
 }
 EventSystem.prototype = Object.create(BaseModel.prototype);
 
-EventSystem.prototype.AddEvent = function (event, listener, mode) {
+EventSystem.prototype.AddEvent = function (event, listener, mode, target = null) {
     if (this.listeners[event] === undefined)
         this.listeners[event] = [];
     this.listeners[event].push(listener);
-    if(mode !== true)
-        window.addEventListener(event, listener, false);
+    if(mode == EventType.LISTEN) {
+        if(target !== null)
+            target.addEventListener(event, listener, false);
+        else
+            window.addEventListener(event, listener, false);
+    }
 };
 
-EventSystem.prototype.DeleteEvent = function (event, listener = null) {
+EventSystem.prototype.DeleteEvent = function (event, listener = null, target = null) {
     if(this.listeners[event] !== undefined) {
         let listeners = this.listeners[event];
         for(let i = 0; i < listeners.length; ++i) {
@@ -23,8 +27,12 @@ EventSystem.prototype.DeleteEvent = function (event, listener = null) {
                 delete this.listeners[event][i]
             }
 
-            if(listeners[i] === listener) {
-                window.removeEventListener(event, listener);
+            if(listeners[i] == listener) {
+                console.log(target, listener);
+                if(target !== null)
+                    target.removeEventListener(event, listener);
+                else
+                    window.removeEventListener(event, listener);
                 listeners.splice(i, 1);
                 if (listeners.length === 0){
                     this.listeners[event] = undefined;

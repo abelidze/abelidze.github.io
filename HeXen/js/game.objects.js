@@ -260,6 +260,10 @@ function Player(cell, args) {
 }
 Player.prototype = Object.create(Actor.prototype);
 
+Player.prototype.FieldOfView = function () {
+	console.log(this.cell);
+};
+
 Player.prototype.Collide = function (object, callback) {
 	if (object.GetType() === GameObjectTypes.ENEMY) {
 		callback(InteractResult.ATTACK);
