@@ -7,6 +7,7 @@ const ScoreBarRadius = 80;
 const WinScoreMessage = 'Congratulations! Your score is ';
 const TutorialInfo1 = 'Pick up keys to open doors';
 const TutorialInfo2 = 'Be aware of monsters!';
+const TopSecret = "You've found a secret number one: <br> usq abyxe xul xoshipb";
 const GameOverMessage = 'So far... levels are over, we can suggest you try to improve your score result and fight with dark force again!';
 
 
@@ -19,7 +20,7 @@ const ExitStyleOpened  = {img: img_exit_opened, edge: 'grey', width: 2};
 const NearbyCellStyle  = {edge: 'grey', fill: 'rgba(255, 255, 255, 0.5)', width: 3, prior: 1};
 const KeyStyle    	   = {img: img_key, edge: 'grey', width: 3, prior: 2};
 const TestStyle        = {edge: 'red', fill: '#000', width: 3};
-const WallStyle        = {img: img_wall, edge: 'grey', width: 2};
+const WallStyle        = {img: img_wall, edge: 'grey', width: 2, prior: 2};
 const InfoStyle		   = {img: img_info, edge: 'grey', width: 2};
 
 
