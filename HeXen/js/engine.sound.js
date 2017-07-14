@@ -2,8 +2,6 @@
  * Sound control module
  */
 
-
-
 function Audio () {
 	this.path = "";
 	this.name = -1;

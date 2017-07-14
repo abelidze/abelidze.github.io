@@ -24,7 +24,6 @@ GameGUI.prototype.DrawGUI = function () {
 }
 
 GameGUI.prototype.MainMenu = function () {
-	console.log(this.gm)
 	$('#start').click(this.gm.ToggleMenu.bind(this.gm));
 	//Score Table
 }
