@@ -67,7 +67,7 @@ Cell.prototype.ActivateTriggers = function (object, obj_only) {
 };
 
 Cell.prototype.RemoveTrigger = function (id) {
-	for (let i = 0; i < this.triggers.length; ++i)
+	for(let i = 0; i < this.triggers.length; ++i)
 		if (this.triggers[i] == id) {
 			delete this.triggers[i];
 			this.triggers.splice(i, 1);
