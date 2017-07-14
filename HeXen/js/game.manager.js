@@ -35,13 +35,14 @@ GameManager.prototype.Init = function () {
 	this.mouse = new Mouse(this);
 	this.animator = new Animator();
 	this.gui = new GameGUI();
-	this.scoreManager = new ScoreManager(this.gui);
+	this.scoreManager = new ScoreManager(this.gui, ScoreBarRadius);
 	this.StartGame();
 };
 
 GameManager.prototype.StartGame = function () {
 	this.freeze = false;
 	this.NextLevel();
+	this.event.CallBackEvent('gamestarted');
 	// this.grid.Draw();
 	
 	requestAnimationFrame(this.RenderEvent.bind(this));

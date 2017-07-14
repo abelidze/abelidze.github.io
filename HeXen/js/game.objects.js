@@ -58,8 +58,8 @@ GameObject.prototype.Collide = function (object, callback) {
 };
 
 GameObject.prototype.Draw = function () {
-	if (this.drawable !== undefined)
-		this.drawable.Draw(this.position.x, this.position.y);
+	if (this.sprite !== undefined)
+		this.sprite.Draw(this.position.x, this.position.y);
 };
 
 GameObject.prototype.Destroy = function () {
@@ -262,7 +262,8 @@ function Enemy(cell, args) { // drawable, triggers, radius
 	Actor.call(this, cell, args);
 	this._type_ = GameObjectTypes.ENEMY;
 	this.path_guard = [];
-	this.path_haunt = null;
+	this.path_haunt = [];
+	this.path_return = [];
 	this.status = EnemyBehavior.GUARD;
 	this.vision_radius = args.radius ? args.radius : 1;
 }
@@ -284,14 +285,38 @@ Enemy.prototype.Live = function () {
 	let target = this.Search();
 	if (target !== null) {
 		this.status = EnemyBehavior.HAUNT;
+		this.path_haunt = this.cell.GetPathTo(target);
+		clean_array(this.path_return);
 	}
 
-	// switch (this.status) {
+	if ((this.status === EnemyBehavior.HAUNT) && this.path_haunt.isEnd()) {
+		this.status = EnemyBehavior.RETURN;
+		this.path_guard.SetCurrent(getRandomInt(0, this.path_guard.length - 1));
+		this.path_return = this.cell.GetPathTo(this.path_guard[this.GetCurrent()]);
+		clean_array(this.path_haunt);
+	}
 
-	// }
-	
-	if (!this.path_guard.isEmpty()) {
-		this.MoveTo(this.path_guard.NextTurn);
+	if ((this.status === EnemyBehavior.RETURN) && this.path_return.isEnd()) {
+		this.status = EnemyBehavior.GUARD;
+		clean_array(this.path_return);
+	}
+
+	switch (this.status) {
+		case EnemyBehavior.GUARD:
+			if (!this.path_guard.isEmpty()) {
+				this.MoveTo(this.path_guard.NextTurn());
+			}
+			break;
+		case EnemyBehavior.HAUNT:
+			if (!this.path_haunt.isEmpty()) {
+				this.MoveTo(this.path_haunt.NextTurn());
+			}
+			break;
+		case EnemyBehavior.RETURN:
+			if (!this.path_return.isEmpty()) {
+				this.MoveTo(this.path_return.NextTurn());
+			}
+			break;
 	}
 };
 

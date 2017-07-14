@@ -2,6 +2,10 @@
 	Game Config File
 */
 
+/* CONSTANTS */
+const ScoreBarRadius = 80;
+
+
 /* GRID */
 const ActivatedStyle   = {edge: 'grey', fill: '#5FD4B1', width: 3, prior: 2};
 const DefaultCellStyle = {edge: 'grey', fill: '#C0C0C0', width: 3}; 
@@ -14,11 +18,9 @@ const TestStyle        = {edge: 'red', fill: '#000', width: 3};
 const WallStyle        = {edge: 'white', fill: '#E63946', width: 3};
 
 
-
 /* GUI */
 const BarINStyle       = {edge: 'rgba(0,0,0,0)', fill: '#999999', width: 3};
 const BarOUTStyle      = {edge: 'rgba(0,0,0,0)', fill: '#E63946', width: 3};
-
 
 
 /* ENUMS */
@@ -67,5 +69,6 @@ const HexDirections = [
 
 const EnemyBehavior = {
 	GUARD: 0,
-	HAUNT: 1
+	HAUNT: 1,
+	RETURN: 2
 };
