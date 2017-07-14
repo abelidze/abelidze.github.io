@@ -15,10 +15,14 @@ EventSystem.prototype.AddEvent = function (event, listener, mode) {
         window.addEventListener(event, listener, false);
 };
 
-EventSystem.prototype.DeleteEvent = function (event, listener) {
-    if (this.listeners[event] !== undefined){
-        var listeners = this.listeners[event];
-        for (let i = 0; i < listeners.length; ++i)
+EventSystem.prototype.DeleteEvent = function (event, listener = null) {
+    if(this.listeners[event] !== undefined) {
+        let listeners = this.listeners[event];
+        for(let i = 0; i < listeners.length; ++i) {
+            if(listener === null) {
+                delete this.listeners[event][i]
+            }
+
             if(listeners[i] === listener) {
                 window.removeEventListener(event, listener);
                 listeners.splice(i, 1);
@@ -27,12 +31,16 @@ EventSystem.prototype.DeleteEvent = function (event, listener) {
                 }
                 break;
             }
+        }
+        if(listener === null) {
+            this.listeners[event] = undefined;
+        }
     }
 };
 
 EventSystem.prototype.CallBackEvent = function (event) {
     if(this.listeners[event] !== undefined) {
-        var listeners = this.listeners[event];
+        let listeners = this.listeners[event];
         for(let i = 0; i < listeners.length; ++i) {
             listeners[i]();
         }

@@ -55,12 +55,14 @@ GameManager.prototype.StartGame = function () {
 	this.freeze = false;
 	this.NextLevel();
 	this.event.CallBackEvent('gamestarted');
+	this.event.AddEvent('gameturn', this.TurnEvent.bind(this), true);
 	this.grid.Draw(); //!!!!!
 	
 	requestAnimationFrame(this.RenderEvent.bind(this));
 };
 
 GameManager.prototype.StopGame = function () {
+	this.gm.event.DeleteEvent('gameturn');
 	this.freeze = true;
 };
 
@@ -114,6 +116,13 @@ GameManager.prototype.RenderEvent = function () {
 	requestAnimationFrame(this.RenderEvent.bind(this));
 };
 
+GameManager.prototype.TurnEvent = function () {
+	for(let i = 0; i < this.objects.length; ++i) {
+		if(this.objects[i].GetType() >= GameObjectTypes.DYNAMIC)
+			this.objects[i].MakeTurn();
+	}
+};
+
 GameManager.prototype.ResizeEvent = function () {
 	this.render.ResizeCanvas();
 	this.grid.Draw();
@@ -127,7 +136,7 @@ GameManager.prototype.MouseEvent = function (event) {
 };
 
 GameManager.prototype.SelectGUI = function (event) {
-	//otototototototototototototo
+	// otototototototototototototo
 };
 
 GameManager.prototype.AddPlayer = function (player) {
@@ -158,4 +167,3 @@ GameManager.prototype.SetMode = function (mode) {
 
 GameManager.prototype.GameOver = dummyFunc;
 GameManager.prototype.ShowGameResult = dummyFunc;
-GameManager.prototype.CheckObjects = dummyFunc;

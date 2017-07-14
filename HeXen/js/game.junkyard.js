@@ -6,7 +6,7 @@ function bfs_distance(c1, c2) {
 	return sqr(c1.gridPosition.x - c2.gridPosition.x) + sqr(c1.gridPosition.y - c2.gridPosition.y);
 }
 
-function bfs(start, finish) {
+function bfs(start, finish, path) {
 	let hexDir = HexDirections;
 
 	let queue = new Heap();
@@ -20,15 +20,16 @@ function bfs(start, finish) {
 
 	parent[start.gridPosition.y][start.gridPosition.x] = null;
 
-	while (!queue.isEmpty()) {
+	while(!queue.isEmpty()) {
 		let v = queue.Pop();
+
 		for (let i = 0; i < hexDir.length; ++i) {
 			let to_y = v.gridPosition.y + hexDir[i][1];
 			let to_x = v.gridPosition.x + hexDir[i][0];
 			if(!v.grid.isInField(to_x, to_y)) continue;
 
 			let to = v.grid.map[to_y][to_x];
-			if(!to.isEmpty()) continue;
+			if(to.staticObjects.length > 0) continue;
 
 			if (!used[to.gridPosition.y][to.gridPosition.x]) {
 				used[to.gridPosition.y][to.gridPosition.x] = true;
@@ -37,19 +38,19 @@ function bfs(start, finish) {
 				parent[to.gridPosition.y][to.gridPosition.x] = v;
 			}
 
-			if (to.id === finish.id)
-				return restorePath(parent, start, finish);
+			if (to.id === finish.id) {
+				restorePath(parent, start, finish, path);
+			}
 		}
 	}
-	return null;
 }
 
-function restorePath(parent, start, finish) {
-	let path = [];
-
+function restorePath(parent, start, finish, path = []) {
+	let i = 0;
 	for(let v = finish; v !== start && v !== undefined && v !== null; v = parent[v.gridPosition.y][v.gridPosition.x]) {
-		path.push(v);
+		path[i++] = v; //.push(v);
 	}
+	path.length = i;
 
-	return path.reverse();
+	path.reverse();
 }

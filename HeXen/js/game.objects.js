@@ -1,8 +1,8 @@
 /*
-	GameObjects Module
-*/
+ GameObjects Module
+ */
 
-function GameObject(cell, args) { 
+function GameObject(cell, args) {
 	this.sprite = args.img;
 	this.position = new Point(cell.center.x, cell.center.y);
 	this.cell = cell;
@@ -59,7 +59,7 @@ GameObject.prototype.Collide = function (object, callback) {
 
 GameObject.prototype.Draw = function () {
 	if (this.sprite !== undefined)
-		this.sprite.Draw(this.position.x, this.position.y);
+		this.sprite.Draw(this.position.x, this.position.y, this.rotation);
 };
 
 GameObject.prototype.Destroy = function () {
@@ -86,9 +86,9 @@ function Wall(cell, args) {
 }
 Wall.prototype = Object.create(Obstacle.prototype);
 
-Wall.prototype.Draw = function () {
-	// this.gm.render.DrawHex(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
-};
+// Wall.prototype.Draw = function () {
+// 	// this.gm.render.DrawHex(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
+// };
 
 function Door(cell, args) { // drawable, triggers, status
 	Obstacle.call(this, cell, args);
@@ -174,32 +174,36 @@ DynamicObject.prototype.MoveTo = function (cell) {
 				cell.MoveObject(that);
 				// that.position = cell.center;
 				that.gm.SetMode(GameState.ANIMATING);
-				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function ()
-					{
-						that.gm.ChangeScore(1);
-					});
+				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function () {
+					that.gm.ChangeScore(1);
+				});
 
 				that.cell = cell;
+				that.gm.event.CallBackEvent('gameturn');
 				setTimeout(function () {
 					that.cell.FillNearby(NearbyCellStyle);
 					that.gm.render.Clear(0);
 					that.gm.grid.Draw();
 				}, 250);
-			break;
+				break;
 
-            case InteractResult.EXIT:
+			case InteractResult.EXIT:
 				that.cell.ClearNearby(NearbyCellStyle);
 				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
 				that.gm.SetMode(GameState.ANIMATING);
-				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function ()
-					{
-						that.gm.scoreManager.ShowScore('Hello!\n');
-            			console.log('Exit');
-					});
-            break;
+				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function () {
+					that.gm.scoreManager.ShowScore('Hello!\n');
+					console.log('Exit');
+				});
+				break;
 		}
 	});
 };
+
+DynamicObject.prototype.MakeTurn = function () {
+	console.log(this);
+};
+
 
 function Cube(cell, args) {
 	DynamicObject.call(this, cell, args);
@@ -258,14 +262,16 @@ Player.prototype.Collide = function (object, callback) {
 	}
 };
 
+
 function Enemy(cell, args) { // drawable, triggers, radius
 	Actor.call(this, cell, args);
 	this._type_ = GameObjectTypes.ENEMY;
-	this.path_guard = [];
-	this.path_haunt = [];
-	this.path_return = [];
+	this.path_guard = new Path();
+	this.path_haunt = new Path();
+	this.path_return = new Path();
+	;
 	this.status = EnemyBehavior.GUARD;
-	this.vision_radius = args.radius ? args.radius : 1;
+	this.vision_radius = 5;//args.radius ? args.radius : 1;
 }
 Enemy.prototype = Object.create(Actor.prototype);
 
@@ -277,6 +283,14 @@ Enemy.prototype.Live = function () {
 
 	}
 };
+Enemy.prototype.MoveTo = function (cell) {
+	this.rotation = this.cell.center.GetVector(cell.center).PolarAngle();
+	cell.MoveObject(this);
+	this.cell.Clear();
+	this.cell = cell;
+	this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {
+	});
+};
 
 Enemy.prototype.Collide = function (object, callback) {
 	if (object.GetType() === GameObjectTypes.PLAYER) {
@@ -286,48 +300,62 @@ Enemy.prototype.Collide = function (object, callback) {
 	}
 };
 
-Enemy.prototype.GetPathTo = function (cell) {
-	return this.cell.ShortestWay(cell);
+Enemy.prototype.GetPathTo = function (cell, path) {
+	this.cell.ShortestWay(cell, path);
+	// let path = this.cell.ShortestWay(cell);
+	// for(let i = 0; i < path.length; ++i)
+	// 	path[i].SetStyle(TestStyle, true);
 };
 
 /*Enemy.prototype.Live = function () {
-	let target = this.Search();
-	if (target !== null) {
-		this.status = EnemyBehavior.HAUNT;
-		this.path_haunt = this.cell.GetPathTo(target);
-		clean_array(this.path_return);
-	}
+ =======
+ Enemy.prototype.MakeTurn = function () {
+ >>>>>>> 77ff2a4ec7ced35fd4c5c3d951a957ce60601ba9
+ let target = this.Search();
 
-	if ((this.status === EnemyBehavior.HAUNT) && this.path_haunt.isEnd()) {
-		this.status = EnemyBehavior.RETURN;
-		this.path_guard.SetCurrent(getRandomInt(0, this.path_guard.length - 1));
-		this.path_return = this.cell.GetPathTo(this.path_guard[this.GetCurrent()]);
-		clean_array(this.path_haunt);
-	}
+ if(target !== null) {
+ this.status = EnemyBehavior.HAUNT;
+ console.log(target)
+ let path = [];
+ this.GetPathTo(target, path);//this.path_haunt.points);
+ // this.path_haunt.current = 0;
+ // clean_array(this.path_return.points);
+ }
 
-	if ((this.status === EnemyBehavior.RETURN) && this.path_return.isEnd()) {
-		this.status = EnemyBehavior.GUARD;
-		clean_array(this.path_return);
-	}
+ // if((this.status === EnemyBehavior.HAUNT) && this.path_haunt.isEnd()) {
+ // 	console.log(target)
+ // 	this.status = EnemyBehavior.RETURN;
+ // 	this.path_guard.SetCurrent(getRandomInt(0, this.path_guard.length - 1));
+ // 	this.GetPathTo(target, this.path_return.points);
+ // 	// this.path_return.current = 0;
+ // 	clean_array(this.path_haunt.points);
+ // }
 
-	switch (this.status) {
-		case EnemyBehavior.GUARD:
-			if (!this.path_guard.isEmpty()) {
-				this.MoveTo(this.path_guard.NextTurn());
-			}
-			break;
-		case EnemyBehavior.HAUNT:
-			if (!this.path_haunt.isEmpty()) {
-				this.MoveTo(this.path_haunt.NextTurn());
-			}
-			break;
-		case EnemyBehavior.RETURN:
-			if (!this.path_return.isEmpty()) {
-				this.MoveTo(this.path_return.NextTurn());
-			}
-			break;
-	}
-};*/
+ // if((this.status === EnemyBehavior.RETURN) && this.path_return.isEnd()) {
+ // 	this.status = EnemyBehavior.GUARD;
+ // 	clean_array(this.path_return.points);
+ // }
+
+ switch (this.status) {
+ case EnemyBehavior.GUARD:
+ if (!this.path_guard.isEmpty()) {
+ this.MoveTo(this.path_guard.NextTurn());
+ }
+ break;
+
+ case EnemyBehavior.HAUNT:
+ if (!this.path_haunt.isEmpty()) {
+ this.MoveTo(this.path_haunt.NextTurn());
+ }
+ break;
+
+ case EnemyBehavior.RETURN:
+ if (!this.path_return.isEmpty()) {
+ this.MoveTo(this.path_return.NextTurn());
+ }
+ break;
+ }
+ };*/
 
 Enemy.prototype.Search = function (target = GameObjectTypes.PLAYER) {
 	let area = [];
@@ -335,7 +363,7 @@ Enemy.prototype.Search = function (target = GameObjectTypes.PLAYER) {
 	for (let i = 1; i <= this.vision_radius; ++i) {
 		area = this.cell.GetRing(i);
 		for (let j = 0; j < area.length; ++j)
-			if (!area[j].isEmpty())
+			if (area[j].object !== null)// if (!area[j].isEmpty())
 				if (area[j].object.GetType() === target)
 					return area[j];
 	}

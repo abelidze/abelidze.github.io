@@ -199,8 +199,8 @@ Cell.prototype.isNearby = function (cell) {
 	return this.isNearbyXY(pos1, pos2);
 };
 
-Cell.prototype.ShortestWay = function (cell) {
-	return bfs(this, cell);
+Cell.prototype.ShortestWay = function (cell, path) {
+	bfs(this, cell, path);
 };
 
 /* GRID */
@@ -388,7 +388,6 @@ Path.prototype.NextTurn = function () {
 	this.current++;
 	return this.grid.map[pos.y + this.vectors[this.current % this.vectors.length][1]]
 						[pos.x + this.vectors[this.current % this.vectors.length][0]];
-};
 
 Path.prototype.PushTurn = function (vector) {
 	this.vectors.push(vector);
