@@ -21,6 +21,20 @@ function Level(size, objects, triggers) {
 
 const GameLevels =
     [
+        new Level(12,
+            [
+                [LevelObjects.PLAYER, 0, 0, {img: spr_player}],
+                [LevelObjects.ENEMY, 5, 5, {img: spr_enemy}],
+                [LevelObjects.WALL, 4, 5, {}],
+                [LevelObjects.WALL, 3, 5, {}],
+                [LevelObjects.WALL, 2, 5, {}],
+                [LevelObjects.WALL, 1, 5, {}],
+            ],
+            [
+                // [[checker, action, repeat, {value: ...}], x, y]
+            ]
+        ),
+
         new Level(11,
             [
                 // [LevelObjects.TYPE, x, y, [ [anim1, anim2, anim3, ...], [trigger1, trigger2, ...] ]]
@@ -124,7 +138,7 @@ const GameLevels =
 
         new Level(15,
             [
-                [LevelObjects.WALL, 0, 7, {}],
+                [LevelObjects.WALL, 0, 7, {img: spr_player}],
                 [LevelObjects.WALL, 0, 8, {}],
                 [LevelObjects.WALL, 0, 9, {}],
                 [LevelObjects.WALL, 0, 10, {}],
@@ -268,18 +282,4 @@ const GameLevels =
                 [TDoorKey(4, 9, 8800, 200), 8, 10]
             ]
         ),
-
-        new Level(12,
-            [
-                [LevelObjects.PLAYER, 0, 0, {img: spr_player}],
-                [LevelObjects.ENEMY, 5, 5, {img: spr_enemy}],
-                [LevelObjects.WALL, 4, 5, {}],
-                [LevelObjects.WALL, 3, 5, {}],
-                [LevelObjects.WALL, 2, 5, {}],
-                [LevelObjects.WALL, 1, 5, {}],
-            ],
-            [
-                // [[checker, action, repeat, {value: ...}], x, y]
-            ]
-        )
     ];
