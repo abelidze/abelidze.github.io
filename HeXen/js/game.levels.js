@@ -45,13 +45,15 @@ const GameLevels =
                         ['#','B','W','.','.','W','B','#'],
                           ['#','B','.','X','.','B','#','#'],
                             ['#','B','.','.','B','#','#','#'],
-                              ['#','B','B','B','#','#','#','#'],
+                              ['#','B','B','B','#','#','#','#']
             ],
             [
                 [TInfoCell(TutorialInfo1)],
                 [TDoorKey(4, 3)]
             ],
-            [ 
+            [
+                {style: InfoStyle},
+                {style: KeyStyle}
                 // Nothing
             ]
         ),

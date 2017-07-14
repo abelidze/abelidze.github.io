@@ -5,7 +5,7 @@
 /* CONSTANTS */
 const ScoreBarRadius = 80;
 const WinScoreMessage = 'Congratulations! Your score is ';
-const TutorialInfo1 = 'Pick up keys to open a doors';
+const TutorialInfo1 = 'Pick up keys to open doors';
 const TutorialInfo2 = 'Be aware of monsters!';
 const GameOverMessage = 'So far... levels are over, we can suggest you try to improve your score result and fight with dark force again!';
 
@@ -13,13 +13,14 @@ const GameOverMessage = 'So far... levels are over, we can suggest you try to im
 /* GRID */
 const ActivatedStyle   = {edge: 'grey', fill: '#5FD4B1', width: 3, prior: 2};
 const DefaultCellStyle = {img: img_floor, edge: 'grey', width: 3};
-const DoorStyleClosed  = {edge: 'white', fill: '#F1A9A0', width: 3, prior: 3};
-const DoorStyleOpened  = {edge: 'white', fill: '#5FD4B1', width: 3, prior: 3};
+const DoorStyleClosed  = {img: img_door_closed, edge: 'grey', width: 2, prior: 3};
+const DoorStyleOpened  = {img: img_door_opened, edge: 'grey', width: 2, prior: 3};
 const ExitStyleOpened  = {img: img_exit_opened, edge: 'grey', width: 2};
 const NearbyCellStyle  = {edge: 'grey', fill: 'rgba(255, 255, 255, 0.5)', width: 3, prior: 1};
-const KeyStyle    = {img: img_key, edge: 'grey', width: 3, prior: 2};
+const KeyStyle    	   = {img: img_key, edge: 'grey', width: 3, prior: 2};
 const TestStyle        = {edge: 'red', fill: '#000', width: 3};
 const WallStyle        = {img: img_wall, edge: 'grey', width: 2};
+const InfoStyle		   = {img: img_info, edge: 'grey', width: 2};
 
 
 /* GUI */

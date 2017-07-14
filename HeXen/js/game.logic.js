@@ -41,7 +41,7 @@ const Pick = dummyFunc;
 /// Triggers templates ///
 ///                    ///
 
-const TInfoCell = function (delay, text) {
+const TInfoCell = function (text, delay) {
 	return [isTouched, ShowInfo, 1, {text: text}];//{x: this_x, y: this_y, delay: delay, text: text}];
 }
 
