@@ -175,7 +175,7 @@ DynamicObject.prototype.MoveTo = function (cell) {
 				// that.position = cell.center;
 				that.gm.SetMode(GameState.ANIMATING);
 				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function () {
-					that.gm.ChangeScore(1);
+					that.gm.ChangeActionPoints(-1);
 				});
 
 				that.cell = cell;
@@ -195,7 +195,7 @@ DynamicObject.prototype.MoveTo = function (cell) {
 					that.gm.scoreManager.ShowScore(WinScoreMessage);
 					console.log('Exit');
 				});
-				break;
+			break;
 		}
 	});
 };
@@ -293,13 +293,12 @@ Enemy.prototype.MoveTo = function (cell) {
 	cell.MoveObject(this);
 	this.cell.Clear();
 	this.cell = cell;
-	this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {
-	});
+	this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {});
 };
 
 Enemy.prototype.Collide = function (object, callback) {
 	if (object.GetType() === GameObjectTypes.PLAYER) {
-		callback(InteractResult.ATTACK);
+		callback(InteractResult.DIE);
 	} else {
 		callback(InteractResult.NOTHING);
 	}

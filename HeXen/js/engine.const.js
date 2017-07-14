@@ -15,7 +15,9 @@ const GameState = {
 	ANIMATING: 3,
 	LOADING: 4,
 	RESULTS: 5,
-	NEXTLEVEL: 6
+	NEXTLEVEL: 6,
+	GAMEOVER: 7,
+	WAIT: 8
 };
 
 const GameResult = {
@@ -52,14 +54,14 @@ const ClickRadius = 16;
 const EPS = Number.EPSILON;
 
 const SoundNames = [
-	"./sounds/HIT.wav",
-	"./sounds/GENERATOR.wav",
-	"./sounds/ROAR.wav",
-	"./sounds/RESTLESS_1.wav",
-	"./sounds/RESTLESS_2.wav",
-	"./sounds/ALARM.wav",
-	"./sounds/HORIZON_SHADOWLANDS_1.wav",
-	"./sounds/BRIDGE_SHADOWLANDS_2.wav"
+	"./sounds/HIT.mp3",
+	"./sounds/GENERATOR.mp3",
+	"./sounds/ROAR.mp3",
+	"./sounds/RESTLESS_1.mp3",
+	"./sounds/RESTLESS_2.mp3",
+	"./sounds/ALARM.mp3",
+	"./sounds/HORIZON_SHADOWLANDS_1.mp3",
+	"./sounds/BRIDGE_SHADOWLANDS_2.mp3"
 ];
 
 const SoundIndex = {

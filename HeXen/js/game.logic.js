@@ -22,6 +22,7 @@ const OpenDoor = function (object, options) {
 	ChangeStyle(this.handler, DefaultCellStyle);
 	let cell = this.gm.grid.map[this.options.y][this.options.x];
     cell.OpenDoors();
+    this.gm.scoreManager.ChangeScore(10);
 	//this.gm.grid.map[options.y][options.x].ActivateTriggers(options.key);
 }
 

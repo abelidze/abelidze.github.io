@@ -51,13 +51,22 @@ GameManager.prototype.ToggleMenu = function () {
         this.StartGame();
     } else {
 		this.StopGame();
+        $('.menu_bg').fadeIn(700, function(){});
+        $('#game_pic').hide(200, function(){});
+        $('canvas').hide(200, function(){});
         this.SetMode(GameState.MENU);
 	}
 };
 
 GameManager.prototype.SetActionPoints = function (actionPoints) {
 	this.scoreManager.actionPoints = actionPoints;
+	this.scoreManager.maxPoints = actionPoints;
 };
+
+GameManager.prototype.ChangeActionPoints = function (delta) {
+	this.scoreManager.actionPoints += delta;
+	this.scoreManager.UpdateScore(0);
+}
 
 GameManager.prototype.AddPlayer = function (player) {
 	this.players.push(player);
@@ -188,9 +197,9 @@ GameManager.prototype.GridClicked = function (pos) {
 };
 
 GameManager.prototype.GameOver = function () {
-	this.currentLevel = 0;
-	(new SplashWindow(GameOverMessage)).Show();
-	this.ToggleMenu();
+	this.currentLevel--;
+	this.freeze = true;
+	(new SplashWindow(GameOverMessage, this.ToggleMenu.bind(this))).Show();
 };
 
 GameManager.prototype.ShowGameResult = dummyFunc;

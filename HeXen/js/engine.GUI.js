@@ -46,6 +46,7 @@ function ScoreManager(gui) {
 
 	this.gm.event.AddEvent('gamestarted', this.Init.bind(this, arguments[1]), EventType.CUSTOM);
 	this.maxLevelScore = 100;
+	this.maxPoints = 10;
 	this.actionPoints = 10;
 	this.score = 0;
 }
@@ -58,12 +59,22 @@ ScoreManager.prototype.Init = function (radius) {
     this.gm.event.DeleteEvent('gamestarted', this.Init.bind(this, arguments[1]));
 };
 
+ScoreManager.prototype.UpdateScoreBar = function () {
+    let xpos = this.gm.render.content_width - this.gm.grid.shift_x * this.gm.grid.size / 4 + this.scoreBar.radius_in * 2;
+    this.scoreBar.pos = {x: xpos, y: this.scoreBar.radius_in * 1.5};
+    this.scoreBar.value = 99.99;
+}
+
 ScoreManager.prototype.UpdateScore = function (value) {
 	if(this.scoreBar === null) return;
 
 	this.score += value;
 
-	this.scoreBar.SetValue(this.score, this.maxLevelScore);
+	this.scoreBar.SetValue(this.actionPoints, this.maxPoints);
+
+    if (this.actionPoints <= 0){
+        this.gm.GameOver();
+    }
 };
 
 ScoreManager.prototype.ShowScore = function (text) {
@@ -78,11 +89,13 @@ ScoreManager.prototype.ShowScore = function (text) {
 ScoreManager.prototype.Reset = function () {
 	this.score = 0;
 	this.UpdateScore(0);
+	if (this.scoreBar)
+		this.UpdateScoreBar();
 };
 
 /* SCOREBAR */
 function ScoreBar(x, y, radius_in, radius_out) {
-	this.value = 0;
+	this.value = 99.99;
 	this.pos = new Point(x, y);
 	this.radius_in = radius_in;
 	this.radius_out = radius_out;
@@ -121,8 +134,9 @@ Button.prototype.Draw = function(layer) {
 };
 
 /* SPLASH MESSAGES */
-function SplashWindow(text, once = true) {
+function SplashWindow(text, callback = null, once = true) {
 	this.id = getRandomInt(10000000, 99999999);
+	this.callback = callback;
 	this.text = text;
 	this.overlay = $('#overlay');
 	this.name = 'splash';
@@ -171,7 +185,10 @@ SplashWindow.prototype.Show = function() {
 SplashWindow.prototype.Close = function() {
 	$('h3').text('');
 	this.FadeOut();
-	this.gm.SetMode(GameState.TURN);
+	if (this.callback !== null)
+		this.callback();
+	else
+		this.gm.SetMode(GameState.TURN);
 };
 
 SplashWindow.prototype.Destroy = function() {
