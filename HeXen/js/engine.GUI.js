@@ -12,6 +12,10 @@ GameGUI.prototype.AddElement = function (element) {
 	return element;
 }
 
+GameGUI.prototype.Clear = function () {
+	this.GUIElements.length = 0;
+}
+
 GameGUI.prototype.DrawGUI = function () {
 	for(let i = 0; i < this.GUIElements.length; ++i) {
 		this.GUIElements[i].Draw();
@@ -31,26 +35,32 @@ GUIElement.prototype.Draw = function () {
 /* SCORE */
 function ScoreManager(gui) {
 	this.gui = gui;
-	let rad = Math.min(window.innerWidth, window.innerHeight) * 0.1;
-	this.scoreBar = gui.AddElement(
-						new ScoreBar(window.innerWidth - rad * 3,
-									 rad * 1.5,
-									 rad,
-									 rad * 1.25)
-					);
-	this.scoreWin = new ScoreWindow('No content', false);	
+	this.scoreBar = null;
+	this.scoreWin = null;
+
+	this.gm.event.AddEvent('gamestarted', this.Init.bind(this, arguments[1]), true);
 	this.maxLevelScore = 100;
 	this.score = 0;
 }
 ScoreManager.prototype = Object.create(BaseModel.prototype);
 
+ScoreManager.prototype.Init = function (radius) {
+	let xpos = this.gm.render.content_width - this.gm.grid.shift_x * this.gm.grid.size / 4 + radius * 2;
+	this.scoreBar = this.gui.AddElement(new ScoreBar(xpos, radius * 1.5, radius, radius * 1.25) );
+	this.scoreWin = new ScoreWindow('No content', false);	
+};
+
 ScoreManager.prototype.UpdateScore = function (value) {
+	if(this.scoreBar === null) return;
+
 	this.score += value;
 
 	this.scoreBar.SetValue(this.score, this.maxLevelScore);
 }
 
 ScoreManager.prototype.ShowScore = function (text) {
+	if(this.scoreWin === null) return;
+
 	if(text !== undefined) {
 		this.scoreWin.SetText(text);
 	}

@@ -58,8 +58,8 @@ GameObject.prototype.Collide = function (object, callback) {
 };
 
 GameObject.prototype.Draw = function () {
-	if (this.drawable !== undefined)
-		this.drawable.Draw(this.position.x, this.position.y);
+	if (this.sprite !== undefined)
+		this.sprite.Draw(this.position.x, this.position.y);
 };
 
 GameObject.prototype.Destroy = function () {
