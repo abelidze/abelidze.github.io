@@ -3,12 +3,6 @@
 */
 
 /* CELLS */
-Cell.prototype.Draw = function(layer = 0) {
-	if(this.state === CellState.INVISIBLE)
-		return;
-	layer = layer ? layer : 0;
-	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], layer);
-};
 
 function Cell(grid, center, gridPosition) {
     this.grid = grid;
@@ -22,6 +16,13 @@ function Cell(grid, center, gridPosition) {
     this.triggers = [];
     this.triggersCounter = 0;
 }
+
+Cell.prototype.Draw = function(layer = 0) {
+    if(this.state === CellState.INVISIBLE)
+        return;
+    layer = layer ? layer : 0;
+    this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], layer);
+};
 
 Cell.prototype.ClearStyle = function(style) {
 	if(this.style.length <= 1)

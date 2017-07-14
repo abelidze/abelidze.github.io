@@ -87,7 +87,7 @@ function Wall(cell, args) {
 Wall.prototype = Object.create(Obstacle.prototype);
 
 Wall.prototype.Draw = function () {
-	// this.gm.render.DrawHex(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
+	//this.img.Draw();// this.gm.render.DrawHex(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
 };
 
 function Door(cell, args) { // drawable, triggers, status
@@ -139,7 +139,7 @@ Bonus.prototype = Object.create(StaticObject.prototype);
 
 function Exit(cell, args) {
 	StaticObject.call(this, cell, args);
-	this.cell.SetStyle(ExitStyle, true);
+	this.cell.SetStyle(ExitStyleOpened, true);
 	this._type_ = GameObjectTypes.EXIT;
 }
 Exit.prototype = Object.create(StaticObject.prototype);

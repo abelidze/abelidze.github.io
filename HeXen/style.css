@@ -40,14 +40,14 @@ img, canvas {
 	position: relative;
 	width: 90%;
 	margin: auto;
-	padding-top: 23pt;
+	padding-top: 3%;
 	text-align: center;
-	font-size: 45pt;
+	font-size: 400%;
 }
 
 #menu_title {
 	color: white;
-	font-size: 120pt;
+	font-size: 1000%;
 }
 
 canvas  {

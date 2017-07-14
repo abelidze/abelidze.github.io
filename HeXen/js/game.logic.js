@@ -7,20 +7,19 @@ const isTouched = function (object) {
 }
 
 const isValid = function (object) {
-	return (object == this.options.key);
+	return (object === this.options.key);
 }
 
-const ChangeColor = function (cell, style) {
-    cell.SetStyle(style, true);
+const ChangeStyle = function (cell, style) {
+	cell.SetStyle(style, true);
 }
 
 const DoorTrigger = function (object, options) {
-	ChangeColor(this.handler.cell, ActivatedStyle);
 	this.handler.Open();
 }
 
 const OpenDoor = function (object, options) {
-	ChangeColor(this.handler, ActivatedStyle);
+	ChangeStyle(this.handler, DefaultCellStyle);
 	this.gm.grid.map[options.y][options.x].ActivateTriggers(options.key);
 }
 
@@ -29,7 +28,7 @@ const ChangeLevel = function (object) {
 }
 
 const ShowInfo = function (object, options) {
-	ChangeColor(object.cell, DefaultCellStyle);
+	ChangeStyle(object.cell, DefaultCellStyle);
 	(new SplashWindow(options.text)).Show();
 }
 
