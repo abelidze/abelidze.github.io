@@ -2,31 +2,30 @@
  * Sound control module
  */
 
-function Audio () {
+function Sound () {
 	this.path = "";
 	this.name = -1;
-	this.audioElm = $('#audio1');
+	this.audioElm = document.getElementById('audio1');
 	this.audioElm.src = this.path;
 }
 
-Audio.prototype.SetSound = function (name) {
+Sound.prototype.SetSound = function (name) {
 	this.name = name;
 	this.path = SoundNames[this.name];
 	this.audioElm.src = this.path;
 };
 
-Audio.prototype.PlayAudio = function (name) {
-	console.log(this);
+Sound.prototype.PlayAudio = function (name) {
 	if (this.name ===  name)
 		return;
-	$('audio1').play();
+	this.audioElm.play();
 };
 
-Audio.prototype.PauseAudio = function () {
+Sound.prototype.PauseAudio = function () {
 	this.audioElm.pause();
 };
 
-Audio.prototype.GetSound = function () {
+Sound.prototype.GetSound = function () {
 	return this.name;
 };
 

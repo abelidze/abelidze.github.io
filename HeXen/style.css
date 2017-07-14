@@ -40,7 +40,6 @@ img, canvas {
 
 .menu, #menu_title {
 	position: relative;
-	cursor: pointer;
 	margin: auto;
 	z-index: 10;
 	width: 40vw;
@@ -56,6 +55,7 @@ img, canvas {
 
 .menu {
 	top: 7vw;
+	cursor: pointer;
 }
 
 .menu:hover {

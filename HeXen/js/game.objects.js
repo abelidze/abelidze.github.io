@@ -201,7 +201,7 @@ DynamicObject.prototype.MoveTo = function (cell) {
 };
 
 DynamicObject.prototype.MakeTurn = function () {
-	console.log(this);
+	// console.log(this);
 };
 
 
@@ -250,7 +250,9 @@ function Player(cell, args) {
 	Actor.call(this, cell, args);
 
 	//BADCODER
-	this.sprite = spr_enemy;
+	if(this.sprite === undefined)
+		this.sprite = spr_player;
+	this.sprite.Animate(AnimationState.IDLE);
 	//BADCODER
 
 	this._type_ = GameObjectTypes.PLAYER;
@@ -272,6 +274,7 @@ function Enemy(cell, args) { // drawable, triggers, radius
 	//BADCODER
 	if(this.sprite === undefined)
 		this.sprite = spr_enemy;
+	this.sprite.Animate(AnimationState.IDLE);
 	//BADCODER
 
 	this._type_ = GameObjectTypes.ENEMY;

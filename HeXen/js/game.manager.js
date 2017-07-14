@@ -22,13 +22,17 @@ function GameManager() {
 	this.objects = [];
 	this.players = [];
 
-	that = this;
+	let that = this;
 	$(document).ready(function () {
 		that.Init()
 	});
 }
 
 GameManager.prototype.Init = function () {
+	this.audio = new Sound();
+	this.audio.SetSound(SoundIndex.HORIZON);
+	this.audio.PlayAudio();
+
 	this.event = new EventSystem();
 	this.render = new Render(2);
 	this.grid = new Grid(64, 64, 24, 48);
@@ -105,13 +109,13 @@ GameManager.prototype.ChangeScore = function (score) {
 	this.scoreManager.UpdateScore(score);
 };
 
-GameManager.prototype.CreateObject = function (object, cell, paths) {
+GameManager.prototype.CreateObject = function (object, cell, options) {
 	if(object === undefined) {
 		console.log('Wrong object to create!', cell);
 		return;
 	}
 	let obj = cell.AddContent(function () {
-		return new object(cell, paths);
+		return new object(cell, options);
 	});
 	if (obj !== undefined)
 		this.objects.push(obj);

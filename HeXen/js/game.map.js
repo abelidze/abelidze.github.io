@@ -129,13 +129,21 @@ Cell.prototype.MoveObject = function (object) {
 	return this.object;
 };
 
+Cell.prototype.OpenDoors = function () {
+	for(let i = 0; i < this.staticObjects.length; ++i) {
+		if(this.staticObjects[i].GetType() == GameObjectTypes.DOOR)
+			this.staticObjects[i].Open();
+	}
+}
+
 Cell.prototype.AddContent = function (objectFunc) {
 	if (!this.isEmpty()) return undefined;
 
 	let obj = objectFunc();
+	console.log(obj)
 	if(obj.GetType() >= GameObjectTypes.DYNAMIC)
 		this.object = obj;
-	else
+	else 
 		this.staticObjects.push(obj);
 	this.state = CellState.OBJECT;
 
@@ -319,6 +327,7 @@ Grid.prototype.LoadLevel = function(level) {
 							cell.AddTrigger (
 								new Trigger(cell, ...level.triggers[trig][k])
 							);
+							console.log(cell.triggers);
 						}
 						trig++;
 					break;
