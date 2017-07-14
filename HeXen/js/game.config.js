@@ -59,7 +59,8 @@ const LevelObjects = {
 	ENEMY: 4,
 	BONUS: 5,
 	EXIT: 6,
-	STYLE: 7
+	BORDER: 7,
+	STYLE: 8
 };
 
 const HexDirections = [
