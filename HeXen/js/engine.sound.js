@@ -15,8 +15,11 @@ Audio.prototype.SetSound = function (name) {
 	this.audioElm.src = this.path;
 };
 
-Audio.prototype.PlayAudio = function () {
-	this.audioElm.play();
+Audio.prototype.PlayAudio = function (name) {
+	console.log(this);
+	if (this.name ===  name)
+		return;
+	$('audio1').play();
 };
 
 Audio.prototype.PauseAudio = function () {

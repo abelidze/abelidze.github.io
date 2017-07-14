@@ -47,25 +47,6 @@ const EventType = {
 	CUSTOM: 2
 };
 
-
-const SoundIndex = {
-    HIT: 0,
-    GENERATOR: 1,
-    ROAR: 2,
-    RESTLESS_1: 3,
-    RESTLESS_2: 4,
-    ALARM: 5
-};
-
-const SoundNames = [
-    "./sounds/HIT.mp3",
-    "./sounds/GENERATOR.mp3",
-    "./sounds/ROAR.mp3",
-    "./sounds/RESTLESS_1.mp3",
-    "./sounds/RESTLESS_2.mp3",
-    "./sounds/ALARM.mp3"
-];
-
 const ClickRadius = 16;
 
 const EPS = Number.EPSILON;

@@ -269,6 +269,15 @@ function Enemy(cell, args) { // drawable, triggers, radius
 }
 Enemy.prototype = Object.create(Actor.prototype);
 
+Enemy.prototype.Live = function () {
+	let curr = {x: 0, y: 0};
+	curr.x = this.cell.gridPosition.x + 1;
+	curr.y = this.cell.gridPosition.y;
+	if (this.cell.grid.map[curr]) {
+
+	}
+};
+
 Enemy.prototype.Collide = function (object, callback) {
 	if (object.GetType() === GameObjectTypes.PLAYER) {
 		callback(InteractResult.ATTACK);
@@ -281,7 +290,7 @@ Enemy.prototype.GetPathTo = function (cell) {
 	return this.cell.ShortestWay(cell);
 };
 
-Enemy.prototype.Live = function () {
+/*Enemy.prototype.Live = function () {
 	let target = this.Search();
 	if (target !== null) {
 		this.status = EnemyBehavior.HAUNT;
@@ -318,7 +327,7 @@ Enemy.prototype.Live = function () {
 			}
 			break;
 	}
-};
+};*/
 
 Enemy.prototype.Search = function (target = GameObjectTypes.PLAYER) {
 	let area = [];
