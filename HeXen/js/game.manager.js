@@ -87,9 +87,13 @@ GameManager.prototype.NextLevel = function () {
 	this.currentLevel++;
 };
 
-GameManager.prototype.CreateObject = function (object, cell, args) {
-	let obj = cell.AddObject(function () {
-		return new object(cell, args);
+GameManager.prototype.CreateObject = function (object, cell, paths) {
+	if(object === undefined) {
+		console.log('Wrong object to create!', cell);
+		return;
+	}
+	let obj = cell.AddContent(function () {
+		return new object(cell, paths);
 	});
 	if (obj !== undefined)
 		this.objects.push(obj);

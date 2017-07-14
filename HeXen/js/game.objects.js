@@ -250,6 +250,12 @@ Actor.prototype.ChangeAnimationClip = function (clip) {
 
 function Player(cell, args) {
 	Actor.call(this, cell, args);
+
+	//BADCODER
+	if(this.sprite === undefined)
+		this.sprite = spr_player;
+	//BADCODER
+
 	this._type_ = GameObjectTypes.PLAYER;
 	this.gm.AddPlayer(this);
 	cell.FillNearby(NearbyCellStyle);
@@ -267,6 +273,12 @@ Player.prototype.Collide = function (object, callback) {
 
 function Enemy(cell, args) { // drawable, triggers, radius
 	Actor.call(this, cell, args);
+	
+	//BADCODER
+	if(this.sprite === undefined)
+		this.sprite = spr_enemy;
+	//BADCODER
+
 	this._type_ = GameObjectTypes.ENEMY;
 	this.path_guard = new Path();
 	this.path_haunt = new Path();
@@ -300,16 +312,16 @@ Enemy.prototype.GetPathTo = function (cell, path) {
 };
 
 Enemy.prototype.MakeTurn = function () {
-	let target = this.Search();
+	// let target = this.Search();
 
-	if(target !== null) {
-		this.status = EnemyBehavior.HAUNT;
-		console.log(target)
-		let path = [];
-		this.GetPathTo(target, path);//this.path_haunt.points);
-		// this.path_haunt.current = 0;
-		// clean_array(this.path_return.points);
-	}
+	// if(target !== null) {
+	// 	this.status = EnemyBehavior.HAUNT;
+	// 	console.log(target)
+	// 	let path = [];
+	// 	this.GetPathTo(target, path);//this.path_haunt.points);
+	// 	// this.path_haunt.current = 0;
+	// 	// clean_array(this.path_return.points);
+	// }
 
 	// if((this.status === EnemyBehavior.HAUNT) && this.path_haunt.isEnd()) {
 	// 	console.log(target)
@@ -325,25 +337,25 @@ Enemy.prototype.MakeTurn = function () {
 	// 	clean_array(this.path_return.points);
 	// }
 
-	switch (this.status) {
-		case EnemyBehavior.GUARD:
-			if (!this.path_guard.isEmpty()) {
-				this.MoveTo(this.path_guard.NextTurn());
-			}
-		break;
+	// switch (this.status) {
+	// 	case EnemyBehavior.GUARD:
+	// 		if (!this.path_guard.isEmpty()) {
+	// 			this.MoveTo(this.path_guard.NextTurn());
+	// 		}
+	// 	break;
 
-		case EnemyBehavior.HAUNT:
-			if (!this.path_haunt.isEmpty()) {
-				this.MoveTo(this.path_haunt.NextTurn());
-			}
-		break;
+	// 	case EnemyBehavior.HAUNT:
+	// 		if (!this.path_haunt.isEmpty()) {
+	// 			this.MoveTo(this.path_haunt.NextTurn());
+	// 		}
+	// 	break;
 
-		case EnemyBehavior.RETURN:
-			if (!this.path_return.isEmpty()) {
-				this.MoveTo(this.path_return.NextTurn());
-			}
-		break;
-	}
+	// 	case EnemyBehavior.RETURN:
+	// 		if (!this.path_return.isEmpty()) {
+	// 			this.MoveTo(this.path_return.NextTurn());
+	// 		}
+	// 	break;
+	// }
 };
 
 Enemy.prototype.Search = function (target = GameObjectTypes.PLAYER) {
