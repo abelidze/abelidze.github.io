@@ -30,6 +30,7 @@ function GameManager() {
 
 GameManager.prototype.Init = function () {
 	this.event = new EventSystem();
+	this.event.AddEvent('playerdead', this.PlayerDead.bind(this), EventType.CUSTOM);
 
 	this.audio = new Sound();
 	this.audio.SetSound(SoundIndex.RESTLESS_1);
@@ -199,6 +200,18 @@ GameManager.prototype.GridClicked = function (pos) {
 			}
 		break;
 	}
+};
+
+GameManager.prototype.PlayerDead = function () {
+	this.currentLevel--;
+	this.freeze = true;
+	(new SplashWindow(OHYouDead, this.ToggleMenu.bind(this))).Show();
+};
+
+GameManager.prototype.PlayerHaveNotTurns = function () {
+	this.currentLevel--;
+	this.freeze = true;
+	(new SplashWindow(GameOverMessage, this.ToggleMenu.bind(this))).Show();
 };
 
 GameManager.prototype.GameOver = function () {

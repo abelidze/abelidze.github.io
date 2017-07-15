@@ -180,7 +180,7 @@ DynamicObject.prototype.MoveTo = function (cell) {
 
 			case InteractResult.ATTACK:
 				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
-				that.gm.ChangeActionPoints(-1);
+				that.gm.ChangeActionPoints(-2);
 			break;
 
 			case InteractResult.EXIT:
@@ -298,7 +298,7 @@ Player.prototype.FieldOfView = function (radius) {
 
 Player.prototype.Collide = function (object, callback) {
 	if (object.GetType() === GameObjectTypes.ENEMY) {
-		callback(InteractResult.ATTACK);
+		callback(InteractResult.DIE);
 	} else {
 		callback(InteractResult.NOTHING);
 	}
@@ -315,7 +315,7 @@ function Enemy(cell, args) {
 
 	this._type_ = GameObjectTypes.ENEMY;
 	if(args.path !== undefined)
-		this.path_guard = new Path(this.cell, args.path);
+		this.path_guard = new Path(cell, args.path);
 	else
 		this.path_guard = new Path(this.cell);
 	this.status = EnemyBehavior.GUARD;
@@ -328,7 +328,16 @@ Enemy.prototype.MoveTo = function (cell) {
 	cell.MoveObject(this);
 	this.cell.Clear();
 	this.cell = cell;
-	this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {});
+	let that = this;
+	this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {
+		for(let i = 0; i < that.gm.players.length; ++ i) {
+			let target = that.gm.players[i].cell;
+			if(that.cell.isNearby(target)) {
+				that.rotation = that.cell.center.GetVector(target.center).PolarAngle();
+				that.gm.event.CallBackEvent('playerdead');
+			}
+		}
+	});
 };
 
 Enemy.prototype.Collide = function (object, callback) {
@@ -348,11 +357,10 @@ Enemy.prototype.GetPathTo = function (cell, path) {
 
 
 Enemy.prototype.MakeTurn = function () {
-	console.log(this.path_guard)
 	if (this.path_guard.isEmpty())
 		return;
 	let pos = this.cell.gridPosition;
-	this.cell.MoveTo(this.path_guard.NextTurn);
+	this.MoveTo(this.path_guard.NextTurn());
 };
 
 Enemy.prototype.Search = function (target = GameObjectTypes.PLAYER) {

@@ -337,7 +337,7 @@ Grid.prototype.LoadLevel = function(level) {
 
 					default:
 						if(pattern[p] == 'E') {
-							level.options[opt++];
+							option = level.options[opt++];
 						}
 						this.gm.CreateObject(LevelObjFunc[pattern[p]], cell, option);
 					break;
@@ -412,6 +412,7 @@ function Path(cell, coords = []) {
 	this.cell = cell;
 	this.coords = coords;
 	this.current = 0;
+	this.mode = 1;
 }
 Path.prototype = Object.create(BaseModel.prototype);
 
@@ -420,15 +421,20 @@ Path.prototype.NextTurn = function () {
 	let pos = this.cell.gridPosition;
 
 	if (this.isEnd()) {
-		for (let i = 0; i < this.coords.length; ++i) {
-			this.coords[i] = (this.coords[i] + 3) % H.length;
-		}
+		this.mode *= -1;
+		this.coords.reverse();
+		console.log('rev')
+		// for (let i = 0; i < this.coords.length; ++i) {
+		// 	this.coords[i] = (this.coords[i] + 3) % H.length;
+		// }
 		this.current = 0;
 	}
 
 	this.current++;
-	return this.grid.map[pos.y + H[this.coords[this.current % this.coords.length]][1]]
-						[pos.x + H[this.coords[this.current % this.coords.length]][0]];
+	console.log(H[this.coords[this.current % this.coords.length]])
+	this.cell = this.gm.grid.map[pos.y + this.mode * H[this.coords[this.current % this.coords.length]][0]]
+						[pos.x + this.mode * H[this.coords[this.current % this.coords.length]][1]];
+	return this.cell;
 };
 
 Path.prototype.PushTurn = function (coord) {
