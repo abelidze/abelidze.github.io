@@ -87,7 +87,7 @@ ScoreManager.prototype.ShowScore = function (text) {
 };
 
 ScoreManager.prototype.Reset = function () {
-	this.score = 0;
+	// this.score = 0;
 	this.UpdateScore(0);
 	if (this.scoreBar)
 		this.UpdateScoreBar();
@@ -192,6 +192,7 @@ SplashWindow.prototype.Close = function() {
 };
 
 SplashWindow.prototype.Destroy = function() {
+	console.log('delete');
 	$('#' + this.id).remove();
 };
 
@@ -202,8 +203,9 @@ function ScoreWindow(text, once) {
 ScoreWindow.prototype = Object.create(SplashWindow.prototype);
 
 ScoreWindow.prototype.Show = function(score) {
+	console.log('kek');
     this.FadeIn();
-    $('h3').html(this.text + score);
+    $('h3').html(this.text + '<center style="font-size: 10vw; margin-top: 0;">' + score + '</center>');
     this.gm.SetMode(GameState.PAUSE);
 };
 
@@ -212,6 +214,10 @@ ScoreWindow.prototype.Close = function() {
 	this.FadeOut();
 	this.gm.NextLevel();
 };
+
+ScoreWindow.prototype.Destroy = function () {
+	//nothing
+}
 
 
 function QuestionWindow(text) {

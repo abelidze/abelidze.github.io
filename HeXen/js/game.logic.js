@@ -21,7 +21,7 @@ const DoorTrigger = function (object, options) {
 const OpenDoor = function (object, options) {
 	ChangeStyle(this.handler, DefaultCellStyle);
 	let cell = this.gm.grid.map[this.options.y][this.options.x];
-    this.gm.scoreManager.UpdateScore(10);
+    this.gm.ChangeScore(100);
     cell.OpenDoors();
 	//this.gm.grid.map[options.y][options.x].ActivateTriggers(options.key);
 }
@@ -33,6 +33,7 @@ const ChangeLevel = function (object) {
 const ShowInfo = function (object, options) {
 	ChangeStyle(object.cell, DefaultCellStyle);
 	console.log(options);
+    this.gm.ChangeScore(25);
 	(new SplashWindow(options.text)).Show();
 }
 

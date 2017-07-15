@@ -111,6 +111,8 @@ GameManager.prototype.Pause = function () {
 };
 
 GameManager.prototype.NextLevel = function () {
+	if(this.currentLevel > 0)
+    	this.gm.ChangeScore(this.scoreManager.actionPoints * 13);
 	this.grid.LoadLevel(GameLevels[this.currentLevel]);
 	this.scoreManager.Reset();
 	this.SetMode(GameState.WAIT);
