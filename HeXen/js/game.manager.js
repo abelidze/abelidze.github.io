@@ -33,7 +33,7 @@ GameManager.prototype.Init = function () {
 
 	this.audio = new Sound();
 	this.audio.SetSound(SoundIndex.RESTLESS_1);
-	// this.audio.PlayAudio();
+	this.audio.PlayAudio();
 
 	this.render = new Render(2);
 	this.grid = new Grid(64, 64, 24, 48);
