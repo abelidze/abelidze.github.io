@@ -316,6 +316,8 @@ function Enemy(cell, args) {
 	this._type_ = GameObjectTypes.ENEMY;
 	if(args.path !== undefined)
 		this.path_guard = new Path(this.cell, args.path);
+	else
+		this.path_guard = new Path(this.cell);
 	this.status = EnemyBehavior.GUARD;
 	this.vision_radius = 5;//args.radius ? args.radius : 1;
 }
@@ -346,6 +348,7 @@ Enemy.prototype.GetPathTo = function (cell, path) {
 
 
 Enemy.prototype.MakeTurn = function () {
+	console.log(this.path_guard)
 	if (this.path_guard.isEmpty())
 		return;
 	let pos = this.cell.gridPosition;

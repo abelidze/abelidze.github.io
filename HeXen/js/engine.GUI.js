@@ -192,7 +192,6 @@ SplashWindow.prototype.Close = function() {
 };
 
 SplashWindow.prototype.Destroy = function() {
-	console.log('delete');
 	$('#' + this.id).remove();
 };
 
@@ -203,7 +202,6 @@ function ScoreWindow(text, once) {
 ScoreWindow.prototype = Object.create(SplashWindow.prototype);
 
 ScoreWindow.prototype.Show = function(score) {
-	console.log('kek');
     this.FadeIn();
     $('h3').html(this.text + '<center style="font-size: 10vw; margin-top: 0;">' + score + '</center>');
     this.gm.SetMode(GameState.PAUSE);

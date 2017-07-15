@@ -32,7 +32,6 @@ const ChangeLevel = function (object) {
 
 const ShowInfo = function (object, options) {
 	ChangeStyle(object.cell, DefaultCellStyle);
-	console.log(options);
     this.gm.ChangeScore(25);
 	(new SplashWindow(options.text)).Show();
 }
