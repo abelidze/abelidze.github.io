@@ -128,6 +128,7 @@ Animation.prototype.Play = function () {
 Animation.prototype.Stop = function () {
 	if (!this.isPlayed)
 		return;
+	this.timer = 0;
 	this.isPlayed = false;
 };
 

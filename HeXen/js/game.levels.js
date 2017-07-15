@@ -129,7 +129,7 @@ const GameLevels =
             ],
             [
                 {style: InfoStyle},
-                {path: [2, 3, -1]},
+                {img: spr_monster, path: [2, 3, -1]},
             ]
         ),
 

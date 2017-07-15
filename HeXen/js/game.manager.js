@@ -36,6 +36,8 @@ GameManager.prototype.Init = function () {
 	this.audio.SetSound(SoundIndex.RESTLESS_1);
 	this.audio.PlayAudio();
 
+	this.frame = -1;
+
 	this.render = new Render(2);
 	this.grid = new Grid(64, 64, 24, 48);
 	this.mouse = new Mouse(this);
@@ -92,11 +94,15 @@ GameManager.prototype.StartGame = function () {
 		}
 	}
 	
-	requestAnimationFrame(this.RenderEvent.bind(this));
+	this.frame = requestAnimationFrame(this.RenderEvent.bind(this));
 };
 
 GameManager.prototype.StopGame = function () {
 	this.event.DeleteEvent('gameturn');
+	console.log(this.frame);
+	window.cancelAnimationFrame(this.frame);
+	spr_enemy.Animate(AnimationState.IDLE);
+	spr_monster.Animate(AnimationState.IDLE);
 	this.freeze = true;
 };
 
