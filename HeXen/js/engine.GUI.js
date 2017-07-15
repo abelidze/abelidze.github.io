@@ -188,7 +188,7 @@ SplashWindow.prototype.Close = function() {
 	if (this.callback !== null)
 		this.callback();
 	else
-		this.gm.SetMode(GameState.TURN);
+		this.gm.SetMode(GameState.WAIT);
 };
 
 SplashWindow.prototype.Destroy = function() {
