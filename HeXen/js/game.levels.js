@@ -109,7 +109,7 @@ const GameLevels =
                 {style: InfoStyle},
                 {style: WallStyle},
                 {style: WallStyle},
-                {path: [5, 5, -1]},
+                {path: [5, 5, 0, 0, 5, 5, 0, 5, 3, 4, 3, 3, 3, 2, 2, 1, 1, -1]},
                 {style: KeyStyle}
             ],
             40
