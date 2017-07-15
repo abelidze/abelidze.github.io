@@ -326,7 +326,6 @@ Grid.prototype.LoadLevel = function(level) {
 							cell.AddTrigger (
 								new Trigger(cell, ...level.triggers[trig][k])
 							);
-							console.log(cell.triggers);
 						}
 						trig++;
 					break;
@@ -398,7 +397,7 @@ Grid.prototype.Select = function (x, y) {
 	let pos = this.PixelToHex(x, y);
 	if (pos === undefined) return;
 
-	if (this.gm.gameState == GameState.TURN)
+	if (this.gm.gameState == GameState.WAIT)
 		this.gm.GridClicked(pos);
 	// this.map[pos.y][pos.x].style = {edge: 'black', fill: '#1F282D', width: 1};
 	// this.map[pos.y][pos.x].Draw();

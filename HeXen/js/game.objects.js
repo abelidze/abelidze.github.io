@@ -66,6 +66,11 @@ GameObject.prototype.Destroy = function () {
 	this.cell.Clear();
 };
 
+GameObject.prototype.MakeTurn = function () {
+	///
+};
+
+
 
 /* STATIC */
 function StaticObject(cell, args) {
@@ -159,6 +164,7 @@ Exit.prototype.Collide = function (object, callback) {
 function DynamicObject(cell, args) {
 	GameObject.call(this, cell, args);
 	this._type_ = GameObjectTypes.DYNAMIC;
+	this.target = null;
 }
 
 DynamicObject.prototype = Object.create(GameObject.prototype);
@@ -166,26 +172,16 @@ DynamicObject.prototype = Object.create(GameObject.prototype);
 DynamicObject.prototype.MoveTo = function (cell) {
 	let that = this;
 	cell.Interact(this.cell, function (result) {
-		that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
 		switch (result) {
 			case InteractResult.MOVED:
-				that.cell.ClearNearby(NearbyCellStyle);
-				that.cell.Clear();
-				cell.MoveObject(that);
-				// that.position = cell.center;
-				that.gm.SetMode(GameState.ANIMATING);
-				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function () {
-					that.gm.ChangeActionPoints(-1);
-				});
-
-				that.cell = cell;
+				that.target = cell;
 				that.gm.event.CallBackEvent('gameturn');
-				setTimeout(function () {
-					that.cell.FillNearby(NearbyCellStyle);
-					that.gm.render.Clear(0);
-					that.gm.grid.Draw();
-				}, 250);
-				break;
+			break;
+
+			case InteractResult.ATTACK:
+				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
+				that.gm.ChangeActionPoints(-1);
+			break;
 
 			case InteractResult.EXIT:
 				that.cell.ClearNearby(NearbyCellStyle);
@@ -201,7 +197,7 @@ DynamicObject.prototype.MoveTo = function (cell) {
 };
 
 DynamicObject.prototype.MakeTurn = function () {
-	// console.log(this);
+	this.target = null;
 };
 
 
@@ -260,8 +256,44 @@ function Player(cell, args) {
 }
 Player.prototype = Object.create(Actor.prototype);
 
-Player.prototype.FieldOfView = function () {
-	console.log(this.cell);
+Player.prototype.MakeTurn = function () {
+	if(this.target !== null) {
+		this.rotation = this.cell.center.GetVector(this.target.center).PolarAngle();
+		this.cell.ClearNearby(NearbyCellStyle);
+		this.cell.Clear();
+		this.target.MoveObject(this);
+		this.gm.SetMode(GameState.ANIMATING);
+		let that = this;
+		this.gm.animator.AddMotion(this, this.target.center, 2, AnimatorModes.LINEAR, function () {
+			that.gm.ChangeActionPoints(-1);
+			that.cell.FillNearby(NearbyCellStyle);
+			that.gm.render.Clear(0);
+			that.gm.grid.Draw();
+		});
+
+		this.cell = this.target;
+		this.target = null;
+	};
+	this.FieldOfView(4);
+};
+
+Player.prototype.FindFirstLook = function () {
+	let dir = 0;
+	for(dir = 0; dir < HexDirections.length; ++dir) {
+		let x = this.cell.gridPosition.x + HexDirections[dir][0];
+		let y = this.cell.gridPosition.y + HexDirections[dir][1];
+		let tmp = this.cell.center.GetVector(this.gm.grid.map[y][x].center).PolarAngle();
+		if(Math.abs(tmp - this.rotation) < EPS)
+			break;
+	}
+	return dir % HexDirections.length;
+}
+
+Player.prototype.FieldOfView = function (radius) {
+	let front = this.FindFirstLook();
+	let left = (front -1 + HexDirections.length) % HexDirections.length;
+	let right = (front + 1) % HexDirections.length;
+	console.log(left, front, right)
 };
 
 Player.prototype.Collide = function (object, callback) {

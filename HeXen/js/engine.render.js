@@ -179,7 +179,7 @@ Animator.prototype.ProcessMotions = function(dTime) {
 		this.motion[i][1].position.y += dir.y * dTime / 1000 * this.motion[i][0];
 	}
 	if (this.motion.length == 0 && this.gm.gameState === GameState.ANIMATING) {
-		this.gm.gameState = GameState.TURN;
+		this.gm.gameState = GameState.WAIT;
 	}
 };
 
@@ -320,6 +320,7 @@ Render.prototype.DrawSector = function (center, radius, start, angle, effect = {
 	context.moveTo(center.x, center.y);
 	context.arc(center.x, center.y, radius, start, end, clockwise);
 	context.lineTo(center.x, center.y);
+	context.closePath();
 
 	context.lineWidth = (effect.width !== undefined ? effect.width : 1);
 	context.strokeStyle = (effect.edge !== undefined ? effect.edge : 'black');
