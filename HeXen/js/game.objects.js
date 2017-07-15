@@ -304,7 +304,7 @@ Player.prototype.Collide = function (object, callback) {
 	}
 };
 
-function Enemy(cell, args) { // drawable, triggers, radius
+function Enemy(cell, args) {
 	Actor.call(this, cell, args);
 
 	//BADCODER
@@ -314,7 +314,8 @@ function Enemy(cell, args) { // drawable, triggers, radius
 	//BADCODER
 
 	this._type_ = GameObjectTypes.ENEMY;
-	this.path_guard = new Path();
+	if(args.path !== undefined)
+		this.path_guard = new Path(this.cell, args.path);
 	this.status = EnemyBehavior.GUARD;
 	this.vision_radius = 5;//args.radius ? args.radius : 1;
 }
@@ -337,7 +338,7 @@ Enemy.prototype.Collide = function (object, callback) {
 };
 
 Enemy.prototype.GetPathTo = function (cell, path) {
-	this.cell.ShortestWay(cell, path);
+	this.cell.ShortestWay(cell, path)
 	// let path = this.cell.ShortestWay(cell);
 	// for(let i = 0; i < path.length; ++i)
 	// 	path[i].SetStyle(TestStyle, true);

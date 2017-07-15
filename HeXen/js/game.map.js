@@ -408,39 +408,44 @@ Grid.prototype.isInField = function (x, y) {
 };
 
 /* Path Class */
-function Path(cell, vectors = []) {
+function Path(cell, coords = []) {
 	this.cell = cell;
-	this.vectors = vectors;
+	this.coords = coords;
 	this.current = 0;
 }
 Path.prototype = Object.create(BaseModel.prototype);
 
 Path.prototype.NextTurn = function () {
-
+	let H = HexDirections;
 	let pos = this.cell.gridPosition;
+
 	if (this.isEnd()) {
-		this.vectors.reverse();
+		for (let i = 0; i < this.coords.length; ++i) {
+			this.coords[i] = (this.coords[i] + 3) % H.length;
+		}
+		this.current = 0;
 	}
+
 	this.current++;
-	return this.grid.map[pos.y + this.vectors[this.current % this.vectors.length][1]]
-						[pos.x + this.vectors[this.current % this.vectors.length][0]];
+	return this.grid.map[pos.y + H[this.coords[this.current % this.coords.length]][1]]
+						[pos.x + H[this.coords[this.current % this.coords.length]][0]];
 };
 
-Path.prototype.PushTurn = function (vector) {
-	this.vectors.push(vector);
+Path.prototype.PushTurn = function (coord) {
+	this.coords.push(coord);
 };
 
 Path.prototype.ClearPath = function () {
-	clean_array(this.vectors);
+	clean_array(this.coords);
 	this.current = 0;
 };
 
 Path.prototype.isEmpty = function () {
-	return (this.vectors.length === 0);
+	return (this.coords.length === 0);
 };
 
 Path.prototype.isEnd = function () {
-	return (this.current === (this.vectors.length));
+	return (this.current === (this.coords.length));
 };
 
 /*It may work incorrect*/

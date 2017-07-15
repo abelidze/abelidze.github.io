@@ -19,7 +19,7 @@ Sound.prototype.SetSound = function (name) {
 };
 
 Sound.prototype.Loop = function () {
-	this.audioElm.play();
+	this.PlayAudio(this.name);
 };
 
 Sound.prototype.SetLoop = function (loop) {
