@@ -56,7 +56,7 @@ ScoreManager.prototype.Init = function (radius) {
 	let xpos = this.gm.render.content_width - this.gm.grid.shift_x * this.gm.grid.size / 4 + radius * 2;
 	this.scoreBar = this.gui.AddElement(new ScoreBar(xpos, radius * 1.5, radius, radius * 1.25) );
 	this.scoreWin = new ScoreWindow('No content', false);
-    this.gm.event.DeleteEvent('gamestarted', this.Init.bind(this, arguments[1]));
+    this.gm.event.DeleteEvent('gamestarted');
 };
 
 ScoreManager.prototype.UpdateScoreBar = function () {

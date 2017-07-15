@@ -92,7 +92,7 @@ const GameLevels =
                 ['#','#','B','B','B','#','#','#','#','#','#'],
                 ['#','B','.','.','.','B','#','B','B','B','B'],
                 ['B','.','P','.','T^','B','B','^','T^','B','B'],
-                ['B','.','.','W','.','.','.','.','W','W','B'],
+                ['B','.','.','W','.','.','.','T^','W','W','B'],
                 ['B','W','W','.','.','.','.','.','.','.','B'],
                 ['B','E','.','.','W','.','.','.','.','.','B'],
                 ['B','B','.','.','W','.','.','.','.','W','B'],
@@ -103,12 +103,14 @@ const GameLevels =
             ],
             [
                 [TInfoCell(TutorialInfo3)],
-                [TDoorKey(8, 8)]
+                [TDoorKey(8, 8, 20, SecretStyleOpen)],
+                [TInfoCell('Hmm.. may be something can be there?...')],
             ],
             [
                 {style: InfoStyle},
                 {style: WallStyle},
-                {style: WallStyle},
+                {style: SecretStyle},
+                {style: InfoStyle},
                 {path: [5, 5, 0, 0, 5, 5, 0, 5, 3, 4, 3, 3, 3, 2, 2, 1, 1, -1]},
                 {style: KeyStyle}
             ],
