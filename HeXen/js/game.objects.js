@@ -307,6 +307,8 @@ Player.prototype.Collide = function (object, callback) {
 function Enemy(cell, args) {
 	Actor.call(this, cell, args);
 
+	console.log(args.img);
+
 	//BADCODER
 	if (this.sprite === undefined)
 		this.sprite = spr_enemy;
@@ -331,23 +333,27 @@ Enemy.prototype.MoveTo = function (cell) {
 			let target = that.gm.players[i].cell;
 			if(that.cell.isNearby(target)) {
 				that.rotation = that.cell.center.GetVector(target.center).PolarAngle();
+				that.sprite.Animate(AnimationState.ATTACK);
 				that.gm.event.CallBackEvent('playerdead');
 			return;
 			}
 		}
 		
+		if(that.gm.players[0].cell != that.cell) {
 		cell.MoveObject(this);
-		this.cell.Clear();
-		this.cell = cell;
-		this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {
-			for(let i = 0; i < that.gm.players.length; ++ i) {
-				let target = that.gm.players[i].cell;
-				if(that.cell.isNearby(target)) {
-					that.rotation = that.cell.center.GetVector(target.center).PolarAngle();
-					that.gm.event.CallBackEvent('playerdead');
+			this.cell.Clear();
+			this.cell = cell;
+			this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {
+				for(let i = 0; i < that.gm.players.length; ++ i) {
+					let target = that.gm.players[i].cell;
+					if(that.cell.isNearby(target)) {
+						that.rotation = that.cell.center.GetVector(target.center).PolarAngle();
+						that.sprite.Animate(AnimationState.ATTACK);
+						that.gm.event.CallBackEvent('playerdead');
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 };
 
