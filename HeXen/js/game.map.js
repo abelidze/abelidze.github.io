@@ -420,6 +420,7 @@ Path.prototype.NextTurn = function () {
 	let pos = this.cell.gridPosition;
 
 	if (this.isEnd()) {
+		
 		for (let i = 0; i < this.coords.length; ++i) {
 			this.coords[i] = (this.coords[i] + 3) % H.length;
 		}
