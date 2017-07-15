@@ -8,6 +8,7 @@ const WinScoreMessage = '<center>Congratulations!<br>Your score:</center><br>';
 const TutorialInfo0 = 'Welcome to HexTen!';
 const TutorialInfo1 = 'Pick up keys to open doors';
 const TutorialInfo2 = 'Be aware of monsters!';
+const TutorialInfo3 = 'Don`t believe everything you see!';
 const TopSecret = "You've found a secret number one: <br> usq abyxe xul xoshipb";
 const GameOverMessage = 'So far... levels are over, we can suggest you try to improve your score result and fight with dark force again!';
 const OHYouDead = '<center>Oh, no! Your are dead!</center>';
