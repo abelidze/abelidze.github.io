@@ -25,6 +25,8 @@ const KeyStyle    	   = {img: img_key, edge: 'grey', width: 3, prior: 2};
 const TestStyle        = {edge: 'red', fill: '#000', width: 3};
 const WallStyle        = {img: img_wall, edge: 'grey', width: 2, prior: 2};
 const InfoStyle		   = {img: img_info, edge: 'grey', width: 2, prior: 2};
+const SecretStyle	   = {img: img_exit_closed, edge: 'grey', width: 2, prior: 2};
+const SecretStyleOpen  = {img: img_exit_opened, edge: 'grey', width: 2, prior: 2};
 
 
 /* GUI */

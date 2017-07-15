@@ -19,7 +19,11 @@ const DoorTrigger = function (object, options) {
 }
 
 const OpenDoor = function (object, options) {
-	ChangeStyle(this.handler, DefaultCellStyle);
+	let style = DefaultCellStyle;
+	console.log(options);
+	if(options.style !== undefined)
+		style = options.style;
+	ChangeStyle(this.handler, style);
 	let cell = this.gm.grid.map[this.options.y][this.options.x];
     this.gm.ChangeScore(100);
     cell.OpenDoors();
@@ -51,8 +55,8 @@ const TInfoCell = function (text, delay) {
 	//return [isValid, DoorTrigger, 1, {x: this_x, y: this_y, key: key, delay: delay}];
 //}
 
-const TDoorKey = function (target_x, target_y, delay) {
-	return [isTouched, OpenDoor, 1, {delay: delay, x: target_y, y: target_x}];
+const TDoorKey = function (target_x, target_y, delay, style) {
+	return [isTouched, OpenDoor, 1, {delay: delay, x: target_y, y: target_x, style: style}];
 }
 
 
