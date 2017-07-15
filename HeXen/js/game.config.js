@@ -5,6 +5,7 @@
 /* CONSTANTS */
 const ScoreBarRadius = 80;
 const WinScoreMessage = '<center>Congratulations!<br>Your score:</center><br>';
+const TutorialInfo0 = 'Welcome to HexTen!';
 const TutorialInfo1 = 'Pick up keys to open doors';
 const TutorialInfo2 = 'Be aware of monsters!';
 const TopSecret = "You've found a secret number one: <br> usq abyxe xul xoshipb";

@@ -94,8 +94,8 @@ canvas {
 	border-radius: 5px;
 	border: 3px #000 solid;
 	background: white;
-	top: 20vh;
-	left: 38vw;
+	top: 5vh;
+	left: 28vw;
 	opacity: 0;
 	z-index: 15;
 	padding: 5% 2%;

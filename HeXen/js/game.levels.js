@@ -39,6 +39,23 @@ const GameLevels =
         new Level
         (
             [
+                ['B','B','B','B','B'],
+                  ['B','P','T^','.','B'],
+                    ['B','.','.','.','B'],
+                      ['B','.','.','X','B'],
+                        ['B','B','B','B','B'],
+            ],
+            [
+                [TInfoCell(TutorialInfo0)],
+            ],
+            [
+                {style: InfoStyle},
+            ]
+        ),
+
+        new Level
+        (
+            [
                 ['#','#','#','#','B','B','B','B'],
                   ['#','#','#','B','.','P','.','B'],
                     ['#','#','B','.','.','T^','.','B'],
@@ -80,7 +97,7 @@ const GameLevels =
                 {style: InfoStyle},
                 {style: WallStyle},
                 {style: InfoStyle},
-                {path: [3, 3, 2, 6, 6, 5]},
+                {path: [2, 2, 1, 5, 5, 4]},
                 {style: KeyStyle}
             ],
             24
@@ -114,7 +131,7 @@ const GameLevels =
             [
                 {style: KeyStyle},
                 {style: WallStyle},
-                {path: [2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 1, 1]},
+                {path: [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 0, 0]},
                 {style: KeyStyle},
                 {style: KeyStyle},
                 {style: KeyStyle}
@@ -141,8 +158,8 @@ const GameLevels =
                 [TDoorKey(2, 7)]
             ],
             [
-                {path: [3, 3, 3, 4, 6, 6, 1, 6, 6, 6, 3, 3]},
-                {path: [2, 3, 3, 3, 4, 5, 6, 6, 6, 1]},
+                {path: [2, 2, 2, 3, 5, 5, 0, 5, 5, 5, 2, 2]},
+                {path: [1, 2, 2, 2, 3, 4, 5, 5, 5, 0]},
                 {style: KeyStyle}
             ],
             30
