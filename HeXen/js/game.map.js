@@ -409,8 +409,12 @@ Grid.prototype.isInField = function (x, y) {
 
 /* Path Class */
 function Path(cell, coords = []) {
+	this.start = {x: cell.gridPosition.x, y: cell.gridPosition.y};
 	this.cell = cell;
-	this.coords = coords;
+
+	this.coords = [];
+	for(let i = 0; i < coords.length; ++i)
+		this.coords.push(coords[i]);
 	this.current = 0;
 	this.mode = 1;
 }
@@ -420,20 +424,17 @@ Path.prototype.NextTurn = function () {
 	let H = HexDirections;
 	let pos = this.cell.gridPosition;
 
-	if (this.isEnd()) {
+	this.cell = this.gm.grid.map[pos.y + this.mode * H[this.coords[this.current % this.coords.length]][1]]
+								[pos.x + this.mode * H[this.coords[this.current % this.coords.length]][0]];
+	this.current += this.mode;
+
+	if(this.coords[this.current] == -1 || this.current < 0) {
 		this.mode *= -1;
-		this.coords.reverse();
-		console.log('rev')
-		// for (let i = 0; i < this.coords.length; ++i) {
-		// 	this.coords[i] = (this.coords[i] + 3) % H.length;
-		// }
+		this.current += this.mode;
+	}
+	else if(this.isEnd()) {
 		this.current = 0;
 	}
-
-	this.current++;
-	console.log(H[this.coords[this.current % this.coords.length]])
-	this.cell = this.gm.grid.map[pos.y + this.mode * H[this.coords[this.current % this.coords.length]][0]]
-						[pos.x + this.mode * H[this.coords[this.current % this.coords.length]][1]];
 	return this.cell;
 };
 

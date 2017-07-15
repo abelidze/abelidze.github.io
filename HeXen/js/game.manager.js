@@ -211,7 +211,7 @@ GameManager.prototype.PlayerDead = function () {
 GameManager.prototype.PlayerHaveNotTurns = function () {
 	this.currentLevel--;
 	this.freeze = true;
-	(new SplashWindow(GameOverMessage, this.ToggleMenu.bind(this))).Show();
+	(new SplashWindow(PlayerHaveNotTurns, this.ToggleMenu.bind(this))).Show();
 };
 
 GameManager.prototype.GameOver = function () {

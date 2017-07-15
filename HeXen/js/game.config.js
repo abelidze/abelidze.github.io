@@ -11,6 +11,7 @@ const TutorialInfo2 = 'Be aware of monsters!';
 const TopSecret = "You've found a secret number one: <br> usq abyxe xul xoshipb";
 const GameOverMessage = 'So far... levels are over, we can suggest you try to improve your score result and fight with dark force again!';
 const OHYouDead = '<center>Oh, no! Your are dead!</center>';
+const PlayerHaveNotTurns = '<center>OOOOOPS!!!<br>No energy, be more efficient next time! ;)</center>';
 
 
 /* GRID */

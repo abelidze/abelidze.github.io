@@ -293,7 +293,7 @@ Player.prototype.FieldOfView = function (radius) {
 	let front = this.FindFirstLook();
 	let left = (front -1 + HexDirections.length) % HexDirections.length;
 	let right = (front + 1) % HexDirections.length;
-	console.log(left, front, right)
+	// console.log(left, front, right)
 };
 
 Player.prototype.Collide = function (object, callback) {
@@ -324,20 +324,31 @@ function Enemy(cell, args) {
 Enemy.prototype = Object.create(Actor.prototype);
 
 Enemy.prototype.MoveTo = function (cell) {
-	this.rotation = this.cell.center.GetVector(cell.center).PolarAngle();
-	cell.MoveObject(this);
-	this.cell.Clear();
-	this.cell = cell;
 	let that = this;
-	this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {
+	this.rotation = this.cell.center.GetVector(cell.center).PolarAngle();
+	if(cell.isEmpty()) {
 		for(let i = 0; i < that.gm.players.length; ++ i) {
 			let target = that.gm.players[i].cell;
 			if(that.cell.isNearby(target)) {
 				that.rotation = that.cell.center.GetVector(target.center).PolarAngle();
 				that.gm.event.CallBackEvent('playerdead');
+			return;
 			}
 		}
-	});
+		
+		cell.MoveObject(this);
+		this.cell.Clear();
+		this.cell = cell;
+		this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {
+			for(let i = 0; i < that.gm.players.length; ++ i) {
+				let target = that.gm.players[i].cell;
+				if(that.cell.isNearby(target)) {
+					that.rotation = that.cell.center.GetVector(target.center).PolarAngle();
+					that.gm.event.CallBackEvent('playerdead');
+				}
+			}
+		});
+	}
 };
 
 Enemy.prototype.Collide = function (object, callback) {

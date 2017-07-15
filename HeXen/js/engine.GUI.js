@@ -73,7 +73,8 @@ ScoreManager.prototype.UpdateScore = function (value) {
 	this.scoreBar.SetValue(this.actionPoints, this.maxPoints);
 
     if (this.actionPoints <= 0){
-        this.gm.GameOver();
+    	this.score = 0;
+        this.gm.PlayerHaveNotTurns();
     }
 };
 
