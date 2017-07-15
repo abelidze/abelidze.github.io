@@ -85,8 +85,10 @@ GameManager.prototype.StartGame = function () {
 
 	for(let i = 0; i < this.objects.length; ++i) {
 		this.objects[i].Draw();
-		if(this.objects[i].GetType() == GameObjectTypes.PLAYER)
+		if(this.objects[i].GetType() == GameObjectTypes.PLAYER) {
+			this.objects[i].cell.ClearNearby(NearbyCellStyle);
 			this.objects[i].cell.FillNearby(NearbyCellStyle);
+		}
 	}
 	
 	requestAnimationFrame(this.RenderEvent.bind(this));
@@ -109,9 +111,11 @@ GameManager.prototype.Pause = function () {
 };
 
 GameManager.prototype.NextLevel = function () {
+	if(this.currentLevel > 0)
+    	this.gm.ChangeScore(this.scoreManager.actionPoints * 13);
 	this.grid.LoadLevel(GameLevels[this.currentLevel]);
 	this.scoreManager.Reset();
-	this.SetMode(GameState.TURN);
+	this.SetMode(GameState.WAIT);
 	this.currentLevel++;
 
 	if(this.currentLevel > GameLevels.length)
@@ -158,8 +162,9 @@ GameManager.prototype.RenderEvent = function () {
 
 GameManager.prototype.TurnEvent = function () {
 	for(let i = 0; i < this.objects.length; ++i) {
-		if(this.objects[i].GetType() >= GameObjectTypes.DYNAMIC)
+		if(this.objects[i].GetType() >= GameObjectTypes.DYNAMIC) {
 			this.objects[i].MakeTurn();
+		}
 	}
 };
 
@@ -182,7 +187,7 @@ GameManager.prototype.SelectGUI = function (event) {
 GameManager.prototype.GridClicked = function (pos) {
 	let player, cell = this.grid.map[pos.y][pos.x];
 	switch(this.gameState) {
-		case GameState.TURN:
+		case GameState.WAIT:
 			for(let i = 0; i < this.players.length; ++i) {
 				//this.grid.PixelToHex(this.players[i].cell.center.x, this.players[i].cell.center.y);
 				player = this.players[i].cell.gridPosition;

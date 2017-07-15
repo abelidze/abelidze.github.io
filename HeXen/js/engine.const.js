@@ -11,13 +11,13 @@ const InteractResult = {
 const GameState = {
 	MENU: 0,
 	PAUSE: 1,
-	TURN: 2,
-	ANIMATING: 3,
-	LOADING: 4,
-	RESULTS: 5,
-	NEXTLEVEL: 6,
-	GAMEOVER: 7,
-	WAIT: 8
+	WAIT: 2,
+	TURN: 3,
+	ANIMATING: 4,
+	LOADING: 5,
+	RESULTS: 6,
+	NEXTLEVEL: 7,
+	GAMEOVER: 8
 };
 
 const GameResult = {
