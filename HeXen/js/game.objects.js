@@ -1,8 +1,8 @@
 /*
-	GameObjects Module
-*/
+ GameObjects Module
+ */
 
-function GameObject(cell, args) { 
+function GameObject(cell, args = {}) {
 	this.sprite = args.img;
 	this.position = new Point(cell.center.x, cell.center.y);
 	this.cell = cell;
@@ -59,12 +59,17 @@ GameObject.prototype.Collide = function (object, callback) {
 
 GameObject.prototype.Draw = function () {
 	if (this.sprite !== undefined)
-		this.sprite.Draw(this.position.x, this.position.y);
+		this.sprite.Draw(this.position.x, this.position.y, this.rotation);
 };
 
 GameObject.prototype.Destroy = function () {
 	this.cell.Clear();
 };
+
+GameObject.prototype.MakeTurn = function () {
+	///
+};
+
 
 
 /* STATIC */
@@ -86,9 +91,9 @@ function Wall(cell, args) {
 }
 Wall.prototype = Object.create(Obstacle.prototype);
 
-Wall.prototype.Draw = function () {
-	// this.gm.render.DrawHex(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
-};
+// Wall.prototype.Draw = function () {
+// 	// this.gm.render.DrawHex(this.position, 20, false, {fill: 'pink', edge: 'rgba(255, 255, 255, 0)'});
+// };
 
 function Door(cell, args) { // drawable, triggers, status
 	Obstacle.call(this, cell, args);
@@ -110,7 +115,6 @@ Door.prototype.Draw = function () {
 };
 
 Door.prototype.Open = function () {
-	this.cell.SetStyle(DoorStyleOpened, true);
 	this.status = DoorState.OPENED;
 };
 
@@ -118,6 +122,7 @@ Door.prototype.Collide = function (object, callback) {
 	if (this.status === DoorState.CLOSED) {
 		callback(InteractResult.NOTHING);
 	} else {
+		this.cell.SetStyle(DoorStyleOpened, true);
 		if ((object.GetType() === GameObjectTypes.PLAYER) || (object.GetType() === GameObjectTypes.ENEMY))
 			callback(InteractResult.MOVED);
 		else
@@ -139,7 +144,7 @@ Bonus.prototype = Object.create(StaticObject.prototype);
 
 function Exit(cell, args) {
 	StaticObject.call(this, cell, args);
-	this.cell.SetStyle(ExitStyle, true);
+	this.cell.SetStyle(ExitStyleOpened, true);
 	this._type_ = GameObjectTypes.EXIT;
 }
 Exit.prototype = Object.create(StaticObject.prototype);
@@ -159,6 +164,7 @@ Exit.prototype.Collide = function (object, callback) {
 function DynamicObject(cell, args) {
 	GameObject.call(this, cell, args);
 	this._type_ = GameObjectTypes.DYNAMIC;
+	this.target = null;
 }
 
 DynamicObject.prototype = Object.create(GameObject.prototype);
@@ -166,40 +172,34 @@ DynamicObject.prototype = Object.create(GameObject.prototype);
 DynamicObject.prototype.MoveTo = function (cell) {
 	let that = this;
 	cell.Interact(this.cell, function (result) {
-		that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
 		switch (result) {
 			case InteractResult.MOVED:
-				that.cell.ClearNearby(NearbyCellStyle);
-				that.cell.Clear();
-				cell.MoveObject(that);
-				// that.position = cell.center;
-				that.gm.SetMode(GameState.ANIMATING);
-				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function ()
-					{
-						that.gm.ChangeScore(1);
-					});
-
-				that.cell = cell;
-				setTimeout(function () {
-					that.cell.FillNearby(NearbyCellStyle);
-					that.gm.render.Clear(0);
-					that.gm.grid.Draw();
-				}, 250);
+				that.target = cell;
+				that.gm.event.CallBackEvent('gameturn');
 			break;
 
-            case InteractResult.EXIT:
+			case InteractResult.ATTACK:
+				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
+				that.gm.ChangeActionPoints(-2);
+			break;
+
+			case InteractResult.EXIT:
 				that.cell.ClearNearby(NearbyCellStyle);
 				that.rotation = that.cell.center.GetVector(cell.center).PolarAngle();
 				that.gm.SetMode(GameState.ANIMATING);
-				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function ()
-					{
-						that.gm.scoreManager.ShowScore('Hello!\n');
-            			console.log('Exit');
-					});
-            break;
+				that.gm.animator.AddMotion(that, cell.center, 2, AnimatorModes.LINEAR, function () {
+					that.gm.scoreManager.ShowScore(WinScoreMessage);
+					console.log('Exit');
+				});
+			break;
 		}
 	});
 };
+
+DynamicObject.prototype.MakeTurn = function () {
+	this.target = null;
+};
+
 
 function Cube(cell, args) {
 	DynamicObject.call(this, cell, args);
@@ -244,80 +244,134 @@ Actor.prototype.ChangeAnimationClip = function (clip) {
 
 function Player(cell, args) {
 	Actor.call(this, cell, args);
+
+	//BADCODER
+	if(this.sprite === undefined)
+		this.sprite = spr_player;
+	this.sprite.Animate(AnimationState.IDLE);
+	//BADCODER
+
 	this._type_ = GameObjectTypes.PLAYER;
 	this.gm.AddPlayer(this);
-	cell.FillNearby(NearbyCellStyle);
 }
 Player.prototype = Object.create(Actor.prototype);
 
+Player.prototype.MakeTurn = function () {
+	if(this.target !== null) {
+		this.rotation = this.cell.center.GetVector(this.target.center).PolarAngle();
+		this.cell.ClearNearby(NearbyCellStyle);
+		this.cell.Clear();
+		this.target.MoveObject(this);
+		this.gm.SetMode(GameState.ANIMATING);
+		let that = this;
+		this.gm.animator.AddMotion(this, this.target.center, 2, AnimatorModes.LINEAR, function () {
+			that.gm.ChangeActionPoints(-1);
+			that.cell.FillNearby(NearbyCellStyle);
+			that.gm.render.Clear(0);
+			that.gm.grid.Draw();
+		});
+
+		this.cell = this.target;
+		this.target = null;
+	};
+	this.FieldOfView(4);
+};
+
+Player.prototype.FindFirstLook = function () {
+	let dir = 0;
+	for(dir = 0; dir < HexDirections.length; ++dir) {
+		let x = this.cell.gridPosition.x + HexDirections[dir][0];
+		let y = this.cell.gridPosition.y + HexDirections[dir][1];
+		let tmp = this.cell.center.GetVector(this.gm.grid.map[y][x].center).PolarAngle();
+		if(Math.abs(tmp - this.rotation) < EPS)
+			break;
+	}
+	return dir % HexDirections.length;
+}
+
+Player.prototype.FieldOfView = function (radius) {
+	let front = this.FindFirstLook();
+	let left = (front -1 + HexDirections.length) % HexDirections.length;
+	let right = (front + 1) % HexDirections.length;
+	// console.log(left, front, right)
+};
+
 Player.prototype.Collide = function (object, callback) {
 	if (object.GetType() === GameObjectTypes.ENEMY) {
-		callback(InteractResult.ATTACK);
+		callback(InteractResult.DIE);
 	} else {
 		callback(InteractResult.NOTHING);
 	}
 };
 
-function Enemy(cell, args) { // drawable, triggers, radius
+function Enemy(cell, args) {
 	Actor.call(this, cell, args);
+
+	//BADCODER
+	if (this.sprite === undefined)
+		this.sprite = spr_enemy;
+	this.sprite.Animate(AnimationState.IDLE);
+	//BADCODER
+
 	this._type_ = GameObjectTypes.ENEMY;
-	this.path_guard = [];
-	this.path_haunt = [];
-	this.path_return = [];
+	if(args.path !== undefined)
+		this.path_guard = new Path(cell, args.path);
+	else
+		this.path_guard = new Path(this.cell);
 	this.status = EnemyBehavior.GUARD;
-	this.vision_radius = args.radius ? args.radius : 1;
+	this.vision_radius = 5;//args.radius ? args.radius : 1;
 }
 Enemy.prototype = Object.create(Actor.prototype);
 
+Enemy.prototype.MoveTo = function (cell) {
+	let that = this;
+	this.rotation = this.cell.center.GetVector(cell.center).PolarAngle();
+	if(cell.isEmpty()) {
+		for(let i = 0; i < that.gm.players.length; ++ i) {
+			let target = that.gm.players[i].cell;
+			if(that.cell.isNearby(target)) {
+				that.rotation = that.cell.center.GetVector(target.center).PolarAngle();
+				that.gm.event.CallBackEvent('playerdead');
+			return;
+			}
+		}
+		
+		cell.MoveObject(this);
+		this.cell.Clear();
+		this.cell = cell;
+		this.gm.animator.AddMotion(this, cell.center, 2, AnimatorModes.LINEAR, function () {
+			for(let i = 0; i < that.gm.players.length; ++ i) {
+				let target = that.gm.players[i].cell;
+				if(that.cell.isNearby(target)) {
+					that.rotation = that.cell.center.GetVector(target.center).PolarAngle();
+					that.gm.event.CallBackEvent('playerdead');
+				}
+			}
+		});
+	}
+};
+
 Enemy.prototype.Collide = function (object, callback) {
 	if (object.GetType() === GameObjectTypes.PLAYER) {
-		callback(InteractResult.ATTACK);
+		callback(InteractResult.DIE);
 	} else {
 		callback(InteractResult.NOTHING);
 	}
 };
 
-Enemy.prototype.GetPathTo = function (cell) {
-	return this.cell.ShortestWay(cell);
+Enemy.prototype.GetPathTo = function (cell, path) {
+	this.cell.ShortestWay(cell, path)
+	// let path = this.cell.ShortestWay(cell);
+	// for(let i = 0; i < path.length; ++i)
+	// 	path[i].SetStyle(TestStyle, true);
 };
 
-Enemy.prototype.Live = function () {
-	let target = this.Search();
-	if (target !== null) {
-		this.status = EnemyBehavior.HAUNT;
-		this.path_haunt = this.cell.GetPathTo(target);
-		clean_array(this.path_return);
-	}
 
-	if ((this.status === EnemyBehavior.HAUNT) && this.path_haunt.isEnd()) {
-		this.status = EnemyBehavior.RETURN;
-		this.path_guard.SetCurrent(getRandomInt(0, this.path_guard.length - 1));
-		this.path_return = this.cell.GetPathTo(this.path_guard[this.GetCurrent()]);
-		clean_array(this.path_haunt);
-	}
-
-	if ((this.status === EnemyBehavior.RETURN) && this.path_return.isEnd()) {
-		this.status = EnemyBehavior.GUARD;
-		clean_array(this.path_return);
-	}
-
-	switch (this.status) {
-		case EnemyBehavior.GUARD:
-			if (!this.path_guard.isEmpty()) {
-				this.MoveTo(this.path_guard.NextTurn());
-			}
-			break;
-		case EnemyBehavior.HAUNT:
-			if (!this.path_haunt.isEmpty()) {
-				this.MoveTo(this.path_haunt.NextTurn());
-			}
-			break;
-		case EnemyBehavior.RETURN:
-			if (!this.path_return.isEmpty()) {
-				this.MoveTo(this.path_return.NextTurn());
-			}
-			break;
-	}
+Enemy.prototype.MakeTurn = function () {
+	if (this.path_guard.isEmpty())
+		return;
+	let pos = this.cell.gridPosition;
+	this.MoveTo(this.path_guard.NextTurn());
 };
 
 Enemy.prototype.Search = function (target = GameObjectTypes.PLAYER) {
@@ -326,7 +380,7 @@ Enemy.prototype.Search = function (target = GameObjectTypes.PLAYER) {
 	for (let i = 1; i <= this.vision_radius; ++i) {
 		area = this.cell.GetRing(i);
 		for (let j = 0; j < area.length; ++j)
-			if (!area[j].isEmpty())
+			if (area[j].object !== null)// if (!area[j].isEmpty())
 				if (area[j].object.GetType() === target)
 					return area[j];
 	}

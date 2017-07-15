@@ -179,7 +179,7 @@ Animator.prototype.ProcessMotions = function(dTime) {
 		this.motion[i][1].position.y += dir.y * dTime / 1000 * this.motion[i][0];
 	}
 	if (this.motion.length == 0 && this.gm.gameState === GameState.ANIMATING) {
-		this.gm.gameState = GameState.TURN;
+		this.gm.gameState = GameState.WAIT;
 	}
 };
 
@@ -201,7 +201,7 @@ function Render(layer_count) {
 	this.content_width = window.innerWidth;
 	this.content_height = window.innerHeight;
 	this.ResizeCanvas();
-	this.gm.event.AddEvent('resize', this.gm.ResizeEvent.bind(this.gm));
+	this.gm.event.AddEvent('resize', this.gm.ResizeEvent.bind(this.gm), EventType.LISTEN);
 }
 Render.prototype = Object.create(BaseModel.prototype);
 
@@ -288,6 +288,11 @@ Render.prototype.DrawPath = function (points, effect, layer = 1) {
 }
 
 Render.prototype.DrawHex = function (center, radius, effect, layer = 1) {
+	if (effect.img !== undefined){
+        this.ToggleScale(true);
+		this.DrawSprite(effect.img, center.x - this.gm.grid.shift_x, center.y - this.gm.grid.radius, 1, 0);
+        this.ToggleScale(false);
+	}
 	let hexagon = [];
 	for (let i = 0; i < 6; ++i) {
 		let angle_deg = 60 * i + 30;
@@ -315,6 +320,7 @@ Render.prototype.DrawSector = function (center, radius, start, angle, effect = {
 	context.moveTo(center.x, center.y);
 	context.arc(center.x, center.y, radius, start, end, clockwise);
 	context.lineTo(center.x, center.y);
+	context.closePath();
 
 	context.lineWidth = (effect.width !== undefined ? effect.width : 1);
 	context.strokeStyle = (effect.edge !== undefined ? effect.edge : 'black');

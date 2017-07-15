@@ -3,13 +3,6 @@
 */
 
 /* CELLS */
-Cell.prototype.Draw = function(layer = 0) {
-	if(this.state === CellState.INVISIBLE)
-		return;
-	layer = layer ? layer : 0;
-	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], layer);
-};
-
 function Cell(grid, center, gridPosition) {
     this.grid = grid;
     this.id = getRandomInt(10000000, 99999999);
@@ -23,6 +16,13 @@ function Cell(grid, center, gridPosition) {
     this.triggersCounter = 0;
 }
 
+Cell.prototype.Draw = function(layer = 0) {
+	if(this.state === CellState.INVISIBLE)
+		return;
+	layer = layer ? layer : 0;
+	this.grid.gm.render.DrawHex(this.center, this.grid.radius, this.style[this.style.length-1], layer);
+};
+
 Cell.prototype.ClearStyle = function(style) {
 	if(this.style.length <= 1)
 		return;
@@ -34,6 +34,11 @@ Cell.prototype.ClearStyle = function(style) {
 };
 
 Cell.prototype.SetStyle = function(style, force) {
+	if(style === undefined) {
+		console.log('Undefined style!', this);
+		return;
+	}
+
 	if(force === true) {
 		this.style.length = 0;
 	}
@@ -124,13 +129,20 @@ Cell.prototype.MoveObject = function (object) {
 	return this.object;
 };
 
-Cell.prototype.AddObject = function (objectFunc) {
+Cell.prototype.OpenDoors = function () {
+	for(let i = 0; i < this.staticObjects.length; ++i) {
+		if(this.staticObjects[i].GetType() == GameObjectTypes.DOOR)
+			this.staticObjects[i].Open();
+	}
+}
+
+Cell.prototype.AddContent = function (objectFunc) {
 	if (!this.isEmpty()) return undefined;
 
 	let obj = objectFunc();
 	if(obj.GetType() >= GameObjectTypes.DYNAMIC)
 		this.object = obj;
-	else
+	else 
 		this.staticObjects.push(obj);
 	this.state = CellState.OBJECT;
 
@@ -199,8 +211,8 @@ Cell.prototype.isNearby = function (cell) {
 	return this.isNearbyXY(pos1, pos2);
 };
 
-Cell.prototype.ShortestWay = function (cell) {
-	return bfs(this, cell);
+Cell.prototype.ShortestWay = function (cell, path) {
+	bfs(this, cell, path);
 };
 
 /* GRID */
@@ -232,7 +244,7 @@ Grid.prototype.Calculate = function(size) {
 
 	this.shift_x = this.radius * Math.cos(Math.PI / 180 * 30);
 	this.shift_y = this.radius * Math.sin(Math.PI / 180 * 30);
-}
+};
 
 Grid.prototype.GenerateGrid = function(size) {
 	if(this.size == size) return;
@@ -288,34 +300,54 @@ Grid.prototype.GenerateGrid = function(size) {
 
 Grid.prototype.LoadLevel = function(level) {
 	this.Clear();
-	this.GenerateGrid(level.size);
+	this.GenerateGrid(level.map.length);
+
+	let trig = 0;
+	let opt = 0;
 
 	for(let i = 0; i < level.map.length; ++i) {
-		switch(level.map[i][0]) {
-			case LevelObjects.INVISIBLE:
-				this.map[level.map[i][1]][level.map[i][2]].state = CellState.INVISIBLE;
-			continue;
+		for(let j = 0; j < level.map[i].length; ++j) {
+			let cell = this.map[i][j];
+			let pattern = level.map[i][j];
+			let option = {};
 
-			case LevelObjects.STYLE:
-				this.map[level.map[i][1]][level.map[i][2]].SetStyle(level.map[i][3], true);
-			continue;
+			for(let p = 0; p < pattern.length; ++p) {
+				switch(pattern[p]) {
+					case '#':
+						this.map[i][j].state = CellState.INVISIBLE;
+					break;
+
+					case '.':
+						// Nothing
+					break;
+
+					case 'T':
+						for(let k = 0; k < level.triggers[trig].length; ++k) {
+							cell.AddTrigger (
+								new Trigger(cell, ...level.triggers[trig][k])
+							);
+						}
+						trig++;
+					break;
+
+					case '^':
+						option = level.options[opt];
+						this.map[i][j].SetStyle(level.options[opt++].style, true);
+					break;
+
+					default:
+						if(pattern[p] == 'E') {
+							option = level.options[opt++];
+						}
+						this.gm.CreateObject(LevelObjFunc[pattern[p]], cell, option);
+					break;
+				}
+			}
 		}
-
-		let cell = this.map[level.map[i][1]][level.map[i][2]];
-		this.gm.CreateObject(LevelObjFunc[level.map[i][0]], cell, level.map[i][3]);
 	}
 
-	if(level.triggers === undefined)
-		return;
+	this.gm.SetActionPoints(level.actionPoints);
 
-	for(let i = 0; i < level.triggers.length; ++i) {
-		let cell = this.map[level.triggers[i][1]][level.triggers[i][2]];
-		let trig = new Trigger(cell, level.triggers[i][0][0],
-								     level.triggers[i][0][1],
-								     level.triggers[i][0][2],
-            						 level.triggers[i][0][3]);
-		cell.AddTrigger(trig);
-	}
 	this.Draw();
 };
 
@@ -365,7 +397,7 @@ Grid.prototype.Select = function (x, y) {
 	let pos = this.PixelToHex(x, y);
 	if (pos === undefined) return;
 
-	if (this.gm.gameState == GameState.TURN)
+	if (this.gm.gameState == GameState.WAIT)
 		this.gm.GridClicked(pos);
 	// this.map[pos.y][pos.x].style = {edge: 'black', fill: '#1F282D', width: 1};
 	// this.map[pos.y][pos.x].Draw();
@@ -376,40 +408,54 @@ Grid.prototype.isInField = function (x, y) {
 };
 
 /* Path Class */
-function Path(cells = []) {
-	this.points = cells;
+function Path(cell, coords = []) {
+	this.start = {x: cell.gridPosition.x, y: cell.gridPosition.y};
+	this.cell = cell;
+
+	this.coords = [];
+	for(let i = 0; i < coords.length; ++i)
+		this.coords.push(coords[i]);
 	this.current = 0;
+	this.mode = 1;
 }
+Path.prototype = Object.create(BaseModel.prototype);
 
 Path.prototype.NextTurn = function () {
-	return this.points[(++this.current) % this.points.length];
+	let H = HexDirections;
+	let pos = this.cell.gridPosition;
+
+	this.cell = this.gm.grid.map[pos.y + this.mode * H[this.coords[this.current % this.coords.length]][1]]
+								[pos.x + this.mode * H[this.coords[this.current % this.coords.length]][0]];
+	this.current += this.mode;
+
+	if(this.coords[this.current] == -1 || this.current < 0) {
+		this.mode *= -1;
+		this.current += this.mode;
+	}
+	else if(this.isEnd()) {
+		this.current = 0;
+	}
+	return this.cell;
 };
 
-Path.prototype.PrevTurn = function () {
-	return this.points[(this.current - 1 + this.points.length) % this.points.length];
-};
-
-Path.prototype.PushTurn = function (cell) {
-	if (this.isCorrect(cell))
-		this.points.push(cell);
+Path.prototype.PushTurn = function (coord) {
+	this.coords.push(coord);
 };
 
 Path.prototype.ClearPath = function () {
-	this.points = [];
+	clean_array(this.coords);
 	this.current = 0;
 };
 
-Path.prototype.isCorrect = function(cell) {
-	return (this.points[this.current].isNearby(cell));
-};
-
 Path.prototype.isEmpty = function () {
-	return (this.points.length === 0);
-};
-Path.prototype.isEnd = function () {
-	return (this.current === (this.points.length));
+	return (this.coords.length === 0);
 };
 
+Path.prototype.isEnd = function () {
+	return (this.current === (this.coords.length));
+};
+
+/*It may work incorrect*/
 Path.prototype.SetCurrent = function (current) {
 	this.current = current;
 };

@@ -11,22 +11,22 @@ GameGUI.prototype = Object.create(BaseModel.prototype);
 GameGUI.prototype.AddElement = function (element) {
 	this.GUIElements.push(element);
 	return element;
-}
+};
 
 GameGUI.prototype.Clear = function () {
 	this.GUIElements.length = 0;
-}
+};
 
 GameGUI.prototype.DrawGUI = function () {
 	for(let i = 0; i < this.GUIElements.length; ++i) {
 		this.GUIElements[i].Draw();
 	}
-}
+};
 
 GameGUI.prototype.MainMenu = function () {
 	$('#start').click(this.gm.ToggleMenu.bind(this.gm));
 	//Score Table
-}
+};
 
 
 function GUIElement() {
@@ -44,8 +44,10 @@ function ScoreManager(gui) {
 	this.scoreBar = null;
 	this.scoreWin = null;
 
-	this.gm.event.AddEvent('gamestarted', this.Init.bind(this, arguments[1]), true);
+	this.gm.event.AddEvent('gamestarted', this.Init.bind(this, arguments[1]), EventType.CUSTOM);
 	this.maxLevelScore = 100;
+	this.maxPoints = 10;
+	this.actionPoints = 10;
 	this.score = 0;
 }
 ScoreManager.prototype = Object.create(BaseModel.prototype);
@@ -57,13 +59,24 @@ ScoreManager.prototype.Init = function (radius) {
     this.gm.event.DeleteEvent('gamestarted', this.Init.bind(this, arguments[1]));
 };
 
+ScoreManager.prototype.UpdateScoreBar = function () {
+    let xpos = this.gm.render.content_width - this.gm.grid.shift_x * this.gm.grid.size / 4 + this.scoreBar.radius_in * 2;
+    this.scoreBar.pos = {x: xpos, y: this.scoreBar.radius_in * 1.5};
+    this.scoreBar.value = 99.99;
+}
+
 ScoreManager.prototype.UpdateScore = function (value) {
 	if(this.scoreBar === null) return;
 
 	this.score += value;
 
-	this.scoreBar.SetValue(this.score, this.maxLevelScore);
-}
+	this.scoreBar.SetValue(this.actionPoints, this.maxPoints);
+
+    if (this.actionPoints <= 0){
+    	this.score = 0;
+        this.gm.PlayerHaveNotTurns();
+    }
+};
 
 ScoreManager.prototype.ShowScore = function (text) {
 	if(this.scoreWin === null) return;
@@ -72,16 +85,18 @@ ScoreManager.prototype.ShowScore = function (text) {
 		this.scoreWin.SetText(text);
 	}
 	this.scoreWin.Show(this.score);
-}
+};
 
 ScoreManager.prototype.Reset = function () {
-	this.score = 0;
+	// this.score = 0;
 	this.UpdateScore(0);
-}
+	if (this.scoreBar)
+		this.UpdateScoreBar();
+};
 
 /* SCOREBAR */
 function ScoreBar(x, y, radius_in, radius_out) {
-	this.value = 0;
+	this.value = 99.99;
 	this.pos = new Point(x, y);
 	this.radius_in = radius_in;
 	this.radius_out = radius_out;
@@ -90,11 +105,11 @@ ScoreBar.prototype = Object.create(GUIElement.prototype);
 
 ScoreBar.prototype.Draw = function () {
 	this.gm.render.DrawCircleBar(this.pos, this.radius_in, this.radius_out, 0, this.value, BarOUTStyle, BarINStyle);
-}
+};
 
 ScoreBar.prototype.SetValue = function (value, max) {
 	this.value = Math.max(0, Math.min(100, Math.floor(value / max * 100)));
-}
+};
 
 
 /* BUTTONS */
@@ -120,8 +135,9 @@ Button.prototype.Draw = function(layer) {
 };
 
 /* SPLASH MESSAGES */
-function SplashWindow(text, once = true) {
+function SplashWindow(text, callback = null, once = true) {
 	this.id = getRandomInt(10000000, 99999999);
+	this.callback = callback;
 	this.text = text;
 	this.overlay = $('#overlay');
 	this.name = 'splash';
@@ -170,7 +186,10 @@ SplashWindow.prototype.Show = function() {
 SplashWindow.prototype.Close = function() {
 	$('h3').text('');
 	this.FadeOut();
-	this.gm.SetMode(GameState.TURN);
+	if (this.callback !== null)
+		this.callback();
+	else
+		this.gm.SetMode(GameState.WAIT);
 };
 
 SplashWindow.prototype.Destroy = function() {
@@ -183,11 +202,21 @@ function ScoreWindow(text, once) {
 }
 ScoreWindow.prototype = Object.create(SplashWindow.prototype);
 
+ScoreWindow.prototype.Show = function(score) {
+    this.FadeIn();
+    $('h3').html(this.text + '<center style="font-size: 10vw; margin-top: 0;">' + score + '</center>');
+    this.gm.SetMode(GameState.PAUSE);
+};
+
 ScoreWindow.prototype.Close = function() {
 	$('h3').text('');
 	this.FadeOut();
 	this.gm.NextLevel();
 };
+
+ScoreWindow.prototype.Destroy = function () {
+	//nothing
+}
 
 
 function QuestionWindow(text) {
