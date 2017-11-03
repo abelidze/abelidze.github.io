@@ -1,0 +1,58 @@
+@font-face {
+    font-family: Reckoner Bold;
+    src: url('fonts/reckoner.bold.ttf') format("truetype");
+}
+
+body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #FAFAFA;
+    font-family: Tahoma;
+}
+
+#content {
+    width: 100%;
+}
+
+#reddit-getter {
+    width: 40%;
+    margin-left: 30%;
+}
+
+.spoiler-link {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.spoiler-body {
+    font-weight: italic;
+    display: none;
+}
+
+img, canvas {
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+    user-select: none;
+    user-drag: none;
+}
+
+.menu_bg > img {
+    position: fixed;
+    width: 100vw;
+    overflow:hidden;
+    z-index: -10;
+}
+
+#game_pic {
+    width: 100%;
+    height: 100%;
+    z-index: -10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+}
