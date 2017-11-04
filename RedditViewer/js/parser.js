@@ -2,7 +2,7 @@
 
 $(document).ready(function() {
     $("#reddit-getter").click(function() {
-        let url = "https://www.reddit.com/r/" + $("#reddit-sub").val() + "/.json";
+        var url = "https://www.reddit.com/r/" + $("#reddit-sub").val() + "/.json";
         $(this).attr("value", "Обновить записи");
 
         $.getJSON(url)
@@ -24,12 +24,13 @@ $(document).ready(function() {
 });
 
 function convertToHTML(tree) {
-    let html = "";
-    let stack = [];
+    var html = "";
+    var stack = [];
+    var current = 0;
 
     stack.push(tree);
     while (stack.length > 0) {
-        let current = stack[stack.length - 1];
+        current = stack[stack.length - 1];
         if (!current.visited) {
             html += "<div class=" + current.kind.toLowerCase() + ">\n";
         }
@@ -58,8 +59,8 @@ function convertToHTML(tree) {
 }
 
 function generateRowHTML(data) {
-    let html = "";
-    let preview = "";
+    var html = "";
+    var preview = "";
 
     html += "<div class='row " + data.post_hint + "' style='min-height: " + data.thumbnail_height + "px'>";
     html += "<img class='field row-thumbnail' align='left' src='" + data.thumbnail + 
@@ -73,8 +74,9 @@ function generateRowHTML(data) {
     if (data.preview !== undefined
         && data.preview.enabled === true)
     {
-        let variants = data.preview.images[0].variants;
-        let keys = Object.keys(variants);
+        var variants = data.preview.images[0].variants;
+        var keys = Object.keys(variants);
+        var index = 0;
 
         switch ( data.post_hint ) {
             case "link":
@@ -86,7 +88,7 @@ function generateRowHTML(data) {
                 if (keys.length !== 0) {
                     preview += variants[keys[0]].source.url + "'\\>";
                 } else {
-                    let index = Math.ceil(data.preview.images[0].resolutions.length / 2);
+                    index = Math.ceil(data.preview.images[0].resolutions.length / 2);
                     preview += data.preview.images[0].resolutions[index].url + "'>";
                 }
                 preview += "'\\>"
@@ -121,7 +123,7 @@ function generateRowHTML(data) {
 }
 
 function generateSpoilerHTML(title, body) {
-    let html = "";
+    var html = "";
     html += "<div class='spoiler'>\n";
     html += "<a href='' class='spoiler-link'>" + title + "</a>\n";
     html += "<div class='spoiler-body'>" + body + "</div>\n";
