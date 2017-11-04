@@ -6,9 +6,19 @@
 body {
     margin: 0;
     width: 100vw;
-    height: 100vh;
-    background: #FAFAFA;
+    background: #21232A;
     font-family: Tahoma;
+    color: #fff;
+}
+
+img {
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+    user-select: none;
+    user-drag: none;
 }
 
 #content {
@@ -16,8 +26,53 @@ body {
 }
 
 #reddit-getter {
-    width: 40%;
-    margin-left: 30%;
+    width: 80%;
+    margin: 32px;
+}
+
+.reddit {
+    position: relative;
+    width: 30%;
+    min-width: 240px;
+    top: 32px;
+    left: 35%;
+    text-align: center;
+}
+
+.row {
+    display: block;
+    padding: 0;
+    margin: 32px;
+    padding: 0;
+    background: #fff;
+    color: #aaa;
+    border-radius: 4px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.row > .field {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 16px;
+    padding: 0;
+}
+
+.row-thumbnail {
+    left: 0;
+    top: 0;
+}
+
+.row-body {
+    margin: 8px;
+}
+
+.row-body > .title {
+    display: inline;
+    position: relative;
+    top: 0;
+    font-size: 1.2em;
+    text-overflow: ellipsis;
 }
 
 .spoiler-link {
@@ -30,29 +85,61 @@ body {
     display: none;
 }
 
-img, canvas {
-    -webkit-user-select: none;
-    -webkit-user-drag: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    pointer-events: none;
-    user-select: none;
-    user-drag: none;
-}
-
-.menu_bg > img {
-    position: fixed;
-    width: 100vw;
-    overflow:hidden;
-    z-index: -10;
-}
-
-#game_pic {
+input[type="text"],
+input[type="date"],
+input[type="datetime"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="time"],
+input[type="url"],
+input[type="password"],
+textarea,
+select 
+{
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     width: 100%;
-    height: 100%;
-    z-index: -10;
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: none;
+    display: block;
+    outline: none;
+    border: none;
+    height: 25px;
+    line-height: 25px;
+    font-size: 16px;
+    padding: 0;
+    font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="datetime"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="time"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus 
+ {
+}
+
+input[type="submit"],
+input[type="button"] {
+    background: #2471FF;
+    border: none;
+    padding: 10px 20px 10px 20px;
+    border-bottom: 3px solid #5994FF;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 1.5em;
+    color: #D2E2FF;
+}
+
+input[type="submit"]:hover,
+input[type="button"]:hover {
+    background: #6B9FFF;
+    color:#fff;
+    cursor: pointer;
 }

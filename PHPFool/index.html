@@ -2,37 +2,44 @@
 <html>
 <head>
     <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- <meta http-equiv='X-UA-Compatible' content='IE=edge' /> -->
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
 
     <title>PHPFool - amoCRM</title>
 
     <link rel='stylesheet' href='css/style.css' />
+
+    <!--[if IE]>
+        <script src='https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js'></script>
+    <![endif]-->
 </head>
 <body>
     <h1>amoCRM</h1>
     <h2>Task:</h2>
-    <p>To write php-script working with amoCRM's API. It'd create new task named "Deal without task" for all deals that don't have any opened tasks.</p>
-    <h2>Test it:</h2>
-    <div id="contact_form">
-        <form action="task_script.php" method="post">
-            <div class="field">
-                <p>SUBDOMAIN</p>
-                <input id="contact_position" type="text" name="sub">
-            <div>
-            <div class="field">
-                <p>USER-LOGIN</p>
-                <input id="contact_name" type="text" name="usr">
-            </div>
-            <div class="field">
-                <p>USER-HASH</p>
-                <input id="contact_company" type="text" name="key">
-            </div>
-                <button type="submit">Test It!</button>
-                <button type="reset">Reset form</button>
-            </div>
+    <p>To write php-script working with amoCRM's API. It'd create new task named 'Lead without task' for all leads that don't have any opened tasks.</p>
+    <div id='task-form'>
+        <form class='updater-form' action='task_script.php' method='post'>
+            <h1>Testing form</h1>
+            <ul>
+                <li>
+                    <label for='sub'>SUBDOMAIN</label>
+                    <input id='subdomain' type='email' name='sub' maxlength=100 \>
+                    <span>Enter yor {subdomain}.amocrm.ru</span>
+                </li>
+                <li>
+                    <label for='usr'>USER-LOGIN</label>
+                    <input id='user-login' type='text' name='usr' maxlength=100 \>
+                    <span>Enter yor amoCRM's login (usually email)</span>
+                </li>
+                <li>
+                    <label for='key'>USER-HASH</label>
+                    <input id='user-hash' type='text' name='key' maxlength=100 \>
+                    <span>Enter yor amoCRM's AUTH-HASH</span>
+                </li>
+                <input type='submit' value='Test IT!' \>
+            </ul>
         </form>
     </div>
-    <a href='./RedditViewer/index.html'>link for checking source code</a>
+    <a href='https://github.com/abelidze/abelidze.github.io'><img src='github.png' width='128px' \></a>
 </body>
 </html>

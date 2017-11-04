@@ -1,4 +1,4 @@
-# [SkillMasters Library](https://skillmasters.github.io)
+# [SkillMasters Library](https://abelidze.github.io)
 ## HeXen
 ## Tic Tac Toe
 ## RedditViewer
