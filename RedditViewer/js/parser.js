@@ -66,6 +66,7 @@ function generateRowHTML(data) {
     html += "<img class='field row-thumbnail' align='left' src='" + data.thumbnail + 
             "' height='" + data.thumbnail_height + "px'\\>";
     html += "<div class='field row-body'>";
+    html += "<div>"
     html += "<div class='title'><a href='" + data.url + "'>" + data.title + "</a></div>";
     html += "<div class='domain'>(" + data.domain + ")</div>";
     html += "<div class='author'>" + data.author + "</div>";
@@ -117,6 +118,7 @@ function generateRowHTML(data) {
 
     html += generateSpoilerHTML("JSON", JSON.stringify(data));
     html += "</div>"
+         +  "</div>"
          +  "</div>";
 
     return html;
