@@ -1,16 +1,20 @@
 "use strict";
 
-$(document).ready(function(){
-    let url = "https://www.reddit.com/r/funny/.json";
-
+$(document).ready(function() {
     $("#reddit-getter").click(function() {
+        let url = "https://www.reddit.com/r/" + $("#reddit-sub").val() + "/.json";
         $(this).attr("value", "Обновить записи");
+
         $.getJSON(url)
             .done(function(obj) {
                 $("#content").html( convertToHTML(obj) );
                 $(".spoiler-link").click(function() {
                     $(this).parent().children(".spoiler-body").slideToggle("slow");
                     return false;
+                });
+
+                $("img").each(function() {
+                    this.onerror = function() {$(this).css("display", "none");};
                 });
             })
             .fail(function(request, textStatus) {
@@ -44,7 +48,7 @@ function convertToHTML(tree) {
                 console.log(current);
                 break;
             case "t3":
-                html += generateRowHTML(current.data);
+                html = generateRowHTML(current.data) + html;
                 break;
         }
 
@@ -55,42 +59,63 @@ function convertToHTML(tree) {
 
 function generateRowHTML(data) {
     let html = "";
-    html += generateSpoilerHTML("JSON", JSON.stringify(data));
+    let preview = "";
 
-    html += "<div class='row'>";
-    html += "<div class='" + data.post_hint + "'>";
-    html += "<h1 class='title'><a href='" + data.url + "'>" + data.title + "</a></h1>";
-    html += "<h2 class='domain'>(" + data.domain + ")</h2>";
-    html += "<h2 class='author'>" + data.author + "</h2>";
-    html += "<h2 class='score'>" + data.score + "</h2>";
-    html += "<img class='thumbnail' src='" + data.thumbnail + "' height='" + data.thumbnail_height + "' width='" + data.thumbnail_width + "'>";
-    switch ( data.post_hint ) {
-        case "link":
-            break;
-        case "image":
-            html += "<div class='content_unwrap'>"
-                 +  "<div class='not_clicked'>";
-            if (Object.keys(data.preview.images[0].variants).length !== 0) {
-                html += "<img src='" + data.preview.images[0].variants.gif.source.url + "'>";
-            }
-            else {
-                html += "<img src='" + data.preview.images[0].resolutions[Math.ceil(data.preview.images[0].resolutions.length / 2)].url + "'>";
-            }
-            html += "</div>"
-                 +  "</div>";
-            break;
-        case "hosted:video":
-            html += "<div class='content_unwrap'>"
-                 +  "<div class='not_clicked'>"
-                 +  "<video width='" + data.media.width + "' height='" + data.media.height + "' autoplay controls>"
-                 +  "<source src='" + data.media.reddit_video.fallback_url + "'>"
-                 +  "</video>"
-                 +  "</div>"
-                 +  "</div>";
-            break;
+    html += "<div class='row " + data.post_hint + "' style='min-height: " + data.thumbnail_height + "px'>";
+    html += "<img class='field row-thumbnail' align='left' src='" + data.thumbnail + 
+            "' height='" + data.thumbnail_height + "px'\\>";
+    html += "<div class='field row-body'>";
+    html += "<div class='title'><a href='" + data.url + "'>" + data.title + "</a></div>";
+    html += "<div class='domain'>(" + data.domain + ")</div>";
+    html += "<div class='author'>" + data.author + "</div>";
+    html += "<div class='score'>" + data.score + "</div>";
+    
+    if (data.preview !== undefined
+        && data.preview.enabled === true)
+    {
+        let variants = data.preview.images[0].variants;
+        let keys = Object.keys(variants);
+
+        switch ( data.post_hint ) {
+            case "link":
+            case "image":
+                preview += "<div class='content_unwrap'>"
+                        +  "<div class='not_clicked'>";
+
+                preview += "<img src='";
+                if (keys.length !== 0) {
+                    preview += variants[keys[0]].source.url + "'\\>";
+                } else {
+                    let index = Math.ceil(data.preview.images[0].resolutions.length / 2);
+                    preview += data.preview.images[0].resolutions[index].url + "'>";
+                }
+                preview += "'\\>"
+
+                preview += "</div>"
+                        +  "</div>";
+                break;
+            case "hosted:video":
+                preview += "<div class='content_unwrap'>"
+                        +  "<div class='not_clicked'>"
+                        +  "<video width='" + data.media.width + "' height='" + data.media.height +
+                           "' autoplay controls>"
+                        +  "<source src='" + data.media.reddit_video.fallback_url + "'>"
+                        +  "</video>"
+                        +  "</div>"
+                        +  "</div>";
+                break;
+
+            default:
+                console.log(data.post_hint);
+        }
+        if (preview !== "") {
+            html += generateSpoilerHTML("Preview", preview);
+        }
     }
-    html += "</div>";
-    html += "</div>";
+
+    html += generateSpoilerHTML("JSON", JSON.stringify(data));
+    html += "</div>"
+         +  "</div>";
 
     return html;
 }

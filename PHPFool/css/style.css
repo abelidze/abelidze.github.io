@@ -5,6 +5,7 @@ html {
     -webkit-text-size-adjust: 100%
 }
 
+
 body {
     margin: 0;
     padding: 0;
@@ -21,6 +22,7 @@ body {
     font-family: "Open Sans", Arial, sans-serif
 }
 
+
 h1 {
     font-size: 2em;
     margin: .67em 0
@@ -31,13 +33,15 @@ h1 {
     font-size: 36px
 }
 
+
 a {
     background-color: transparent;
     -webkit-text-decoration-skip: objects
     text-decoration: none;
     color: #fff;
     font-size: inherit;
-    border-bottom: dotted 1px #707070
+    border: 0;
+    /*border-bottom: dotted 1px #707070*/
 }
 
 a:active,
@@ -46,7 +50,132 @@ a:hover {
     color: #zzz;
 }
 
-button,
-input {
-    overflow: visible
+a > img {
+    vertical-align: middle;
+}
+
+.updater-form {
+    max-width:400px;
+    margin:50px auto;
+    border-radius:2px;
+    padding:20px;
+    font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+
+.updater-form h1 {
+    display: block;
+    text-align: center;
+    padding: 0;
+    margin: 0px 0px 20px 0px;
+    color: #C5C5C5;
+    font-size:x-large;
+}
+
+.updater-form ul {
+    list-style:none;
+    padding:0;
+    margin:0;   
+}
+
+.updater-form li {
+    display: block;
+    background: #fff;
+    padding: 9px;
+    border:1px solid #DDDDDD;
+    margin-bottom: 30px;
+    border-radius: 3px;
+}
+
+.updater-form li:last-child {
+    border:none;
+    margin-bottom: 0px;
+    text-align: center;
+}
+
+.updater-form li > label {
+    display: block;
+    float: left;
+    margin-top: -19px;
+    border: 1px solid #AAA;
+    border-radius: 4px;
+    background: #DDD;
+    height: 14px;
+    padding: 2px 5px 2px 5px;
+    color: #333;
+    font-size: 14px;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.updater-form input[type="text"],
+.updater-form input[type="date"],
+.updater-form input[type="datetime"],
+.updater-form input[type="email"],
+.updater-form input[type="number"],
+.updater-form input[type="search"],
+.updater-form input[type="time"],
+.updater-form input[type="url"],
+.updater-form input[type="password"],
+.updater-form textarea,
+.updater-form select 
+{
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    width: 100%;
+    display: block;
+    outline: none;
+    border: none;
+    height: 25px;
+    line-height: 25px;
+    font-size: 16px;
+    padding: 0;
+    font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.updater-form input[type="text"]:focus,
+.updater-form input[type="date"]:focus,
+.updater-form input[type="datetime"]:focus,
+.updater-form input[type="email"]:focus,
+.updater-form input[type="number"]:focus,
+.updater-form input[type="search"]:focus,
+.updater-form input[type="time"]:focus,
+.updater-form input[type="url"]:focus,
+.updater-form input[type="password"]:focus,
+.updater-form textarea:focus,
+.updater-form select:focus 
+ {
+}
+
+.updater-form li > span {
+    background: #F3F3F3;
+    display: block;
+    padding: 3px;
+    margin: 0 -9px -9px -9px;
+    text-align: center;
+    color: #555;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+}
+
+.updater-form textarea {
+    resize:none;
+}
+
+.updater-form input[type="submit"],
+.updater-form input[type="button"] {
+    background: #2471FF;
+    border: none;
+    padding: 10px 20px 10px 20px;
+    border-bottom: 3px solid #5994FF;
+    border-radius: 3px;
+    color: #D2E2FF;
+}
+
+.updater-form input[type="submit"]:hover,
+.updater-form input[type="button"]:hover {
+    background: #6B9FFF;
+    color:#fff;
+    cursor: pointer;
 }
