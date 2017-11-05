@@ -53,6 +53,7 @@ function convertToHTML(tree) {
     var html = "";
     var stack = [];
     var current = 0;
+    console.log(JSON.parse(JSON.stringify(tree)));
 
     stack.push(tree);
     while (stack.length > 0) {
@@ -62,7 +63,6 @@ function convertToHTML(tree) {
 
             switch ( current.kind.toLowerCase() ) {
                 case "listing":
-                    console.log(current);
                     break;
 
                 case "t3":
@@ -71,7 +71,7 @@ function convertToHTML(tree) {
 
                 default:
                     html += generateSpoilerHTML(
-                        "JSON",
+                        "JSON-" + current.kind,
                         JSON.stringify(current.data)
                     );
             }
@@ -105,27 +105,13 @@ function generateRowHTML(data) {
     html += "<div class='author'>" + data.author + "</div>";
     html += "<div class='score'>" + data.score + "</div>";
     
-    if (data.preview !== undefined // && data.preview.enabled === true)
-        || data.media !== null )
-    {
+    if (data.preview !== undefined) { // && data.preview.enabled === true)
         var image = data.preview.images[0];
         var variants = image.variants;
         var keys = Object.keys(variants);
         var index = 0;
 
         switch ( data.post_hint ) {
-
-            case "hosted:video":
-                preview += "<div class='content_unwrap'>"
-                        +  "<div class='not_clicked'>"
-                        +  "<video width='" + data.media.width +
-                           "' height='" + data.media.height + "' autoplay controls>"
-                        +  "<source src='" + data.media.reddit_video.fallback_url + "'>"
-                        +  "</video>"
-                        +  "</div>"
-                        +  "</div>";
-                break;
-
             case "rich:video":
                 if (data.preview.enabled === false) break;
 
@@ -149,7 +135,16 @@ function generateRowHTML(data) {
                 preview += "</div>"
                         +  "</div>";
         }
-    } else if (data.selftext !== undefined) {
+    } else if (data.media !== null && data.media.reddit_video !== undefined) {
+        preview += "<div class='content_unwrap'>"
+                +  "<div class='not_clicked'>"
+                +  "<video width='" + data.media.width +
+                   "' height='" + data.media.height + "' autoplay controls>"
+                +  "<source src='" + data.media.reddit_video.fallback_url + "'>"
+                +  "</video>"
+                +  "</div>"
+                +  "</div>";
+    } else if (data.selftext !== undefined && data.selftext !== "") {
         preview += "<div class='content_unwrap'>"
                 +  "<div class='not_clicked'>"
                 +  "<p>" + data.selftext + "</p>"
