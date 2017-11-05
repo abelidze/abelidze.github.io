@@ -2,9 +2,8 @@ html {
     font-family: sans-serif;
     line-height: 1.15;
     -ms-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%
+    -webkit-text-size-adjust: 100%;
 }
-
 
 body {
     margin: 0;
@@ -19,24 +18,22 @@ body {
     -webkit-box-shadow: inset 0 0 75pt rgba(0, 0, 0, .8);
     box-shadow: inset 0 0 75pt rgba(0, 0, 0, .8);
     display: table;
-    font-family: "Open Sans", Arial, sans-serif
+    font-family: "Open Sans", Arial, sans-serif;
 }
-
 
 h1 {
     font-size: 2em;
-    margin: .67em 0
+    margin: .67em 0;
     font-family: inherit;
     font-weight: 500;
     line-height: 1.1;
     color: white;
-    font-size: 36px
+    font-size: 36px;
 }
-
 
 a {
     background-color: transparent;
-    -webkit-text-decoration-skip: objects
+    -webkit-text-decoration-skip: objects;
     text-decoration: none;
     color: #fff;
     font-size: inherit;
@@ -47,7 +44,7 @@ a {
 a:active,
 a:hover {
     outline-width: 0
-    color: #zzz;
+    color: #aaa;
 }
 
 a > img {
@@ -61,7 +58,6 @@ a > img {
     padding:20px;
     font-family: Georgia, "Times New Roman", Times, serif;
 }
-
 
 .updater-form h1 {
     display: block;
