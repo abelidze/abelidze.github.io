@@ -18,7 +18,7 @@ $(document).ready(function() {
                 });
             })
             .fail(function(request, textStatus) {
-                console.log(textStatus);
+                $("#content").html( "<h1>Subreddit not found</h1>" );
             })
     });
 });
@@ -33,27 +33,34 @@ function convertToHTML(tree) {
         current = stack[stack.length - 1];
         if (!current.visited) {
             html += "<div class=" + current.kind.toLowerCase() + ">\n";
+
+            switch ( current.kind.toLowerCase() ) {
+                case "listing":
+                    console.log(current);
+                    break;
+
+                case "t3":
+                    html += generateRowHTML(current.data);
+                    break;
+
+                default:
+                    html += generateSpoilerHTML(
+                        "JSON",
+                        JSON.stringify(current.data)
+                    );
+            }
         }
         current.visited = true;
 
         if (current.data.children && current.data.children.length > 0) {
-            stack.push( current.data.children.pop() );
+            stack.push( current.data.children.shift() );
             continue;
         }
         
         current = stack.pop();
         delete current.visited;
 
-        switch ( current.kind.toLowerCase() ) {
-            case "listing":
-                console.log(current);
-                break;
-            case "t3":
-                html = generateRowHTML(current.data) + html;
-                break;
-        }
-
-        html += "</div><br>\n";
+        html += "</div>\n";
     }
     return html;
 }
@@ -72,14 +79,16 @@ function generateRowHTML(data) {
     html += "<div class='author'>" + data.author + "</div>";
     html += "<div class='score'>" + data.score + "</div>";
     
-    if (data.preview !== undefined
-        && data.preview.enabled === true)
+    if ( (data.preview !== undefined && data.preview.enabled === true)
+        || data.media !== null )
     {
         var variants = data.preview.images[0].variants;
         var keys = Object.keys(variants);
         var index = 0;
 
         switch ( data.post_hint ) {
+            case "rich:video":
+                if (data.preview.enabled === false) break;
             case "link":
             case "image":
                 preview += "<div class='content_unwrap'>"
@@ -87,21 +96,22 @@ function generateRowHTML(data) {
 
                 preview += "<img src='";
                 if (keys.length !== 0) {
-                    preview += variants[keys[0]].source.url + "'\\>";
+                    preview += variants[keys[0]].source.url;
                 } else {
                     index = Math.ceil(data.preview.images[0].resolutions.length / 2);
-                    preview += data.preview.images[0].resolutions[index].url + "'>";
+                    preview += data.preview.images[0].resolutions[index].url;
                 }
                 preview += "'\\>"
 
                 preview += "</div>"
                         +  "</div>";
                 break;
+
             case "hosted:video":
                 preview += "<div class='content_unwrap'>"
                         +  "<div class='not_clicked'>"
-                        +  "<video width='" + data.media.width + "' height='" + data.media.height +
-                           "' autoplay controls>"
+                        +  "<video width='" + data.media.width +
+                           "' height='" + data.media.height + "' autoplay controls>"
                         +  "<source src='" + data.media.reddit_video.fallback_url + "'>"
                         +  "</video>"
                         +  "</div>"
