@@ -1,8 +1,3 @@
-@font-face {
-    font-family: Reckoner Bold;
-    src: url('fonts/reckoner.bold.ttf') format("truetype");
-}
-
 body {
     max-width: 100vw;
     width: 100vw;
@@ -20,6 +15,30 @@ img {
     pointer-events: none;
     user-select: none;
     user-drag: none;
+}
+
+a {
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+    text-decoration: none;
+    font-size: inherit;
+    color: #23a;
+    border: 0;
+}
+
+a:active,
+a:hover {
+    outline-width: 0;
+    color: #722;
+    text-decoration: underline;
+}
+
+a img {
+    vertical-align: middle;
+}
+
+#github {
+    text-align: center;
 }
 
 #content {
@@ -77,6 +96,7 @@ img {
 .row-thumbnail {
     left: 0;
     top: 0;
+    border-radius: 4px 0 0 4px;
 }
 
 .row-body > div {
@@ -88,7 +108,9 @@ img {
     top: 0;
     font-size: 1.2em;
     white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
+    color: #d11;
 }
 
 .spoiler-link {
@@ -98,8 +120,13 @@ img {
 
 .spoiler-body {
     display: none;
-    width: 100%;
+    max-width: 100%;
     word-wrap: break-word;
+}
+
+.spoiler-body img,
+.spoiler-body video {
+    max-width: 100%;
 }
 
 input[type="text"],
@@ -150,7 +177,6 @@ input[type="button"] {
     border-bottom: 3px solid #5994FF;
     border-radius: 3px;
     font-weight: bold;
-    font-size: 1.3em;
     color: #D2E2FF;
 }
 
@@ -159,4 +185,30 @@ input[type="button"]:hover {
     background: #6B9FFF;
     color:#fff;
     cursor: pointer;
+}
+
+
+/* Маленький экран */
+@media all and (min-width : 960px)
+{
+    input[type="submit"],
+    input[type="button"] {
+        font-size: 1.3em;
+    }
+}
+
+@media screen and (min-width: 1400px)
+{
+    input[type="submit"],
+    input[type="button"] {
+        font-size: 1.6em;
+    }
+}
+
+@media screen and (max-width: 960px)
+{
+    input[type="submit"],
+    input[type="button"] {
+        font-size: 1em;
+    }
 }
