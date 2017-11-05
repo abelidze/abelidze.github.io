@@ -113,6 +113,10 @@ a img {
     color: #d11;
 }
 
+.spoiler {
+    color: #353;
+}
+
 .spoiler-link {
     font-weight: bold;
     cursor: pointer;
@@ -188,7 +192,26 @@ input[type="button"]:hover {
 }
 
 
-/* Маленький экран */
+/* Loader */
+#loader {
+    display: none;
+    margin: auto;
+    margin-bottom: 32px;
+    border: 12px solid #F3F3F3;
+    border-top: 12px solid #3498DB;
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+/* Resolutions */
 @media all and (min-width : 960px)
 {
     input[type="submit"],
@@ -203,6 +226,13 @@ input[type="button"]:hover {
     input[type="button"] {
         font-size: 1.6em;
     }
+
+    #loader {
+        border: 16px solid #F3F3F3;
+        border-top: 16px solid #3498DB;
+        width: 80px;
+        height: 80px;
+    }
 }
 
 @media screen and (max-width: 960px)
@@ -210,5 +240,12 @@ input[type="button"]:hover {
     input[type="submit"],
     input[type="button"] {
         font-size: 1em;
+    }
+
+    #loader {
+        border: 10px solid #F3F3F3;
+        border-top: 10px solid #3498DB;
+        width: 48px;
+        height: 48px;
     }
 }

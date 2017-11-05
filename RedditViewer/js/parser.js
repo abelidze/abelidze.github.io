@@ -1,9 +1,19 @@
 "use strict";
 
+//======================================================================
+// REDDIT PARSER AND VIEWER
+//======================================================================
+
 $(document).ready(function() {
     $("#reddit-getter").click(function() {
         var url = "https://www.reddit.com/r/" + $("#reddit-sub").val() + "/.json";
+        var that = this;
+
         $(this).attr("value", "Обновить записи");
+        $("#loader").show();
+        $("#content").fadeOut("fast", function() {
+            $(this).html( "<h1>Subreddit not found</h1>" );
+        });
 
         $.getJSON(url)
             .done(function(obj) {
@@ -18,10 +28,26 @@ $(document).ready(function() {
                 });
             })
             .fail(function(request, textStatus) {
-                $("#content").html( "<h1>Subreddit not found</h1>" );
+                $(that).attr("value", "Загрузить записи");
+            })
+            .always(function() {
+                $("#loader").hide();
+                $("#content").fadeIn("slow");
             })
     });
+
+    $("#reddit-sub").keypress(function(event) {
+        if (event.keyCode == 13 || event.which == 13) {
+            $('#reddit-getter').click();
+            event.preventDefault();
+        }
+    });
 });
+
+
+//--------------------------------------------------
+// Functions
+//--------------------------------------------------
 
 function convertToHTML(tree) {
     var html = "";
@@ -79,33 +105,15 @@ function generateRowHTML(data) {
     html += "<div class='author'>" + data.author + "</div>";
     html += "<div class='score'>" + data.score + "</div>";
     
-    if ( (data.preview !== undefined && data.preview.enabled === true)
+    if (data.preview !== undefined // && data.preview.enabled === true)
         || data.media !== null )
     {
-        var variants = data.preview.images[0].variants;
+        var image = data.preview.images[0];
+        var variants = image.variants;
         var keys = Object.keys(variants);
         var index = 0;
 
         switch ( data.post_hint ) {
-            case "rich:video":
-                if (data.preview.enabled === false) break;
-            case "link":
-            case "image":
-                preview += "<div class='content_unwrap'>"
-                        +  "<div class='not_clicked'>";
-
-                preview += "<img src='";
-                if (keys.length !== 0) {
-                    preview += variants[keys[0]].source.url;
-                } else {
-                    index = Math.ceil(data.preview.images[0].resolutions.length / 2);
-                    preview += data.preview.images[0].resolutions[index].url;
-                }
-                preview += "'\\>"
-
-                preview += "</div>"
-                        +  "</div>";
-                break;
 
             case "hosted:video":
                 preview += "<div class='content_unwrap'>"
@@ -118,12 +126,39 @@ function generateRowHTML(data) {
                         +  "</div>";
                 break;
 
+            case "rich:video":
+                if (data.preview.enabled === false) break;
+
             default:
-                console.log(data.post_hint);
+                if (image === undefined) break;
+
+                preview += "<div class='content_unwrap'>"
+                        +  "<div class='not_clicked'>";
+
+                preview += "<img src='";
+                if (keys.length !== 0) {
+                    preview += variants[keys[0]].source.url;
+                } else if (image.source !== undefined) {
+                    preview += image.source.url;
+                } else {
+                    index = Math.floor(image.resolutions.length / 2);
+                    preview += image.resolutions[index].url;
+                }
+                preview += "'\\>"
+
+                preview += "</div>"
+                        +  "</div>";
         }
-        if (preview !== "") {
-            html += generateSpoilerHTML("Preview", preview);
-        }
+    } else if (data.selftext !== undefined) {
+        preview += "<div class='content_unwrap'>"
+                +  "<div class='not_clicked'>"
+                +  "<p>" + data.selftext + "</p>"
+                +  "</div>"
+                +  "</div>";
+    }
+
+    if (preview !== "") {
+        html += generateSpoilerHTML("Preview", preview);
     }
 
     html += generateSpoilerHTML("JSON", JSON.stringify(data));
