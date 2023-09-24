@@ -8,7 +8,7 @@ body {
 
 body {
     line-height: 1.5em;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: monospace, sans-serif;
     font-size: 0.75em;
     color: #999;
     background: #272525 url(../images/bg_header.jpg) repeat-x;
@@ -98,7 +98,7 @@ hr.hr-margin {
 
 #header {
     width: 980px;
-    height: 250px;
+    height: 194px;
     background: url(../images/header.png) no-repeat;
 }
 
@@ -116,15 +116,18 @@ hr.hr-margin {
     margin: 0px;
     padding: 20px 0 0 15px;
     list-style: none;
+    text-align: center;
+}
+
+#menu ul li {
+    display: inline-block;
 }
 
 #menu ul li a {
-    display: inline;
     color: #999;
-    float: left;
     padding: 0 20px;
     text-align: center;
-    font-size: 12px;
+    font-size: 1.2em;
     font-weight: bold;
     text-align: center;
     text-decoration: none;
